@@ -20,9 +20,9 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 
-	"github.com/beego/wetalk/modules/auth"
-	"github.com/beego/wetalk/modules/models"
-	"github.com/beego/wetalk/modules/utils"
+	"github.com/missdeer/KellyBackend/modules/auth"
+	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/KellyBackend/modules/utils"
 )
 
 type UserAdminRouter struct {

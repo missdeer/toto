@@ -19,9 +19,9 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"github.com/beego/wetalk/modules/post"
-	"github.com/beego/wetalk/modules/utils"
-	"github.com/beego/wetalk/routers/base"
+	"github.com/missdeer/KellyBackend/modules/post"
+	"github.com/missdeer/KellyBackend/modules/utils"
+	"github.com/missdeer/KellyBackend/routers/base"
 )
 
 type SearchRouter struct {

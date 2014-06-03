@@ -27,10 +27,10 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/beego/i18n"
 
-	"github.com/beego/wetalk/modules/auth"
-	"github.com/beego/wetalk/modules/models"
-	"github.com/beego/wetalk/modules/utils"
-	"github.com/beego/wetalk/setting"
+	"github.com/missdeer/KellyBackend/modules/auth"
+	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/KellyBackend/modules/utils"
+	"github.com/missdeer/KellyBackend/setting"
 )
 
 type NestPreparer interface {

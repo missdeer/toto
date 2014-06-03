@@ -20,9 +20,9 @@ import (
 
 	"github.com/astaxie/beego/orm"
 
-	"github.com/beego/wetalk/modules/models"
-	"github.com/beego/wetalk/modules/utils"
-	"github.com/beego/wetalk/setting"
+	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/KellyBackend/modules/utils"
+	"github.com/missdeer/KellyBackend/setting"
 )
 
 var searchEscapePattern = []string{

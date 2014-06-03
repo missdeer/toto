@@ -32,7 +32,7 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"github.com/beego/wetalk/setting"
+	"github.com/missdeer/KellyBackend/setting"
 )
 
 func NumberEncode(number string, alphabet []byte) string {

@@ -20,7 +20,7 @@ import (
 
 	"github.com/astaxie/beego/orm"
 
-	"github.com/beego/wetalk/setting"
+	"github.com/missdeer/KellyBackend/setting"
 )
 
 var ErrSphinxDBClosed = fmt.Errorf("SphinxDB already closed and give back to pools")

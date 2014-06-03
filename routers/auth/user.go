@@ -17,9 +17,9 @@ package auth
 import (
 	"github.com/astaxie/beego/orm"
 
-	"github.com/beego/wetalk/modules/models"
-	"github.com/beego/wetalk/modules/utils"
-	"github.com/beego/wetalk/routers/base"
+	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/KellyBackend/modules/utils"
+	"github.com/missdeer/KellyBackend/routers/base"
 )
 
 type UserRouter struct {

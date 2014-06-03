@@ -17,10 +17,10 @@ package api
 import (
 	"github.com/astaxie/beego/orm"
 
-	"github.com/beego/wetalk/modules/auth"
-	"github.com/beego/wetalk/modules/models"
-	"github.com/beego/wetalk/modules/utils"
-	"github.com/beego/wetalk/routers/base"
+	"github.com/missdeer/KellyBackend/modules/auth"
+	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/KellyBackend/modules/utils"
+	"github.com/missdeer/KellyBackend/routers/base"
 )
 
 type ApiRouter struct {

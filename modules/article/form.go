@@ -17,8 +17,8 @@ package article
 import (
 	"github.com/astaxie/beego/validation"
 
-	"github.com/beego/wetalk/modules/models"
-	"github.com/beego/wetalk/modules/utils"
+	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/KellyBackend/modules/utils"
 )
 
 type ArticleAdminForm struct {

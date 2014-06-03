@@ -15,7 +15,7 @@
 package attachment
 
 import (
-	"github.com/beego/wetalk/setting"
+	"github.com/missdeer/KellyBackend/setting"
 	"net/http"
 	"path"
 	"path/filepath"
@@ -25,9 +25,9 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 
-	"github.com/beego/wetalk/modules/attachment"
-	"github.com/beego/wetalk/modules/models"
-	"github.com/beego/wetalk/routers/base"
+	"github.com/missdeer/KellyBackend/modules/attachment"
+	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/KellyBackend/routers/base"
 )
 
 type UploadRouter struct {

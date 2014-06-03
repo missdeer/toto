@@ -26,7 +26,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 
-	"github.com/beego/wetalk/setting"
+	"github.com/missdeer/KellyBackend/setting"
 )
 
 func init() {

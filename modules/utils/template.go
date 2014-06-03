@@ -26,7 +26,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"
 
-	"github.com/beego/wetalk/setting"
+	"github.com/missdeer/KellyBackend/setting"
 )
 
 // get HTML i18n string

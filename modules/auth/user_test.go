@@ -18,7 +18,7 @@ import (
 	"testing"
 
 	"github.com/astaxie/beego/orm"
-	. "github.com/beego/wetalk/setting"
+	. "github.com/missdeer/KellyBackend/setting"
 )
 
 var encoded = "9e2a6b0a670d48bc9fae7f79503a0d7e888650ede413810ff762ae767181fb3e7cdec433d435ed2c671bf4b6ecc49ebae5c7"
