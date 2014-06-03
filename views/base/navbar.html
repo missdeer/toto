@@ -21,8 +21,8 @@
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
                 <li {{if .IsHome}}class="active"{{end}}><a href="{{.AppUrl}}">{{i18n .Lang "home"}}</a></li>
-                <li><a target="_blank" href="http://blog.go-china.org">{{i18n .Lang "blog"}}</a></li>
-                <li><a target="_blank" href="http://beego.me">{{i18n .Lang "beego_website"}}</a></li>
+                <li><a target="_blank" href="http://blog.yii.li">{{i18n .Lang "blog"}}</a></li>
+                <li><a target="_blank" href="http://shop.yii.li">{{i18n .Lang "shop"}}</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right navbar-menu">
                 {{if .IsLogin}}
@@ -61,8 +61,8 @@
                         </p>
                         <button class="btn btn-primary btn-block" type="submit">{{i18n .Lang "auth.login"}}</button>
                         <div class="auth-socials">
-                            <a href="{{.AppUrl}}login/google" class="icon-google-plus google"></a>
-                            <a href="{{.AppUrl}}login/github" class="icon-github github"></a>
+                            <!-- <a href="{{.AppUrl}}login/google" class="icon-google-plus google"></a> -->
+                            <!-- <a href="{{.AppUrl}}login/github" class="icon-github github"></a> -->
                             <!-- <a href="{{.AppUrl}}login/weibo" class="icon-weibo weibo"></a> -->
                             <!-- <a href="{{.AppUrl}}login/qq" class="icon-qq-round qq"></a> -->
                         </div>
