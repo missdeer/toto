@@ -331,7 +331,7 @@ func reloadConfig() {
 
 func settingLocales() {
 	// load locales with locale_LANG.ini files
-	langs := "en-US|zh-CN"
+	langs := "zh-CN|en-US"
 	for _, lang := range strings.Split(langs, "|") {
 		lang = strings.TrimSpace(lang)
 		files := []string{"conf/" + "locale_" + lang + ".ini"}
@@ -340,7 +340,7 @@ func settingLocales() {
 		} else {
 			files = nil
 		}
-		if err := i18n.SetMessage(lang, "conf/global/"+"locale_"+lang+".ini", files...); err != nil {
+		if err := i18n.SetMessage(lang, lang, "conf/global/"+"locale_"+lang+".ini", files...); err != nil {
 			beego.Error("Fail to set message file: " + err.Error())
 			os.Exit(2)
 		}
