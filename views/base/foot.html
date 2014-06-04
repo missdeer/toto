@@ -5,7 +5,7 @@
 				|
 				<a href="/faq"><strong>FAQ</strong></a>
 				|
-				<a target="_blank" href="https://github.com/beego/wetalk" target="_blank"><strong>GitHub</strong></a>
+                <a href="/contact"><strong>{{i18n .Lang "contact"}}</strong></a>
 			</p>
 
 			<p>
@@ -13,9 +13,16 @@
 			</p>
 			
 			<p class="desc">
-				{{i18n .Lang "footer_desc"}}
-				<br>
-				Ver.{{.AppVer}} - {{.PageStartTime|loadtimes}}ms. {{i18n .Lang "powered_by"}} <a target="_blank" href="http://beego.me">Beego</a>. {{i18n .Lang "based_on"}} <a target="_blank" href="http://getbootstrap.com/">Bootstrap</a>. {{i18n .Lang "icons_from"}} <a target="_blank" href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a>.
+				{{i18n .Lang "footer_desc"}} Ver.{{.AppVer}} - {{.PageStartTime|loadtimes}}ms.
+                <br>{{i18n .Lang "sidebar.follow_us"}}: 
+            <a target="_blank" href="https://www.facebook.com/kelly.shen.501"><img width="14" height="14" src="/static/img/snsicon/32-facebook.png">Facebook</a>
+			<a target="_blank" href="https://twitter.com/misskerisdream"><img width="14" height="14" src="/static/img/snsicon/32-twitter.png">Twitter</a>
+			<a target="_blank" href="https://plus.google.com/105276220177876343905"><img width="14" height="14" src="/static/img/snsicon/32-googleplus.png">Google Plus</a>
+			<a target="_blank" href="http://fanfou.com/misskerisdream"><img width="14" height="14" src="/static/img/snsicon/32-fanfou.png">饭否</a>
+			<a target="_blank" href="http://weibo.com/misskerisdream"><img width="14" height="14" src="/static/img/snsicon/32-sinaweibo.png">新浪微博</a>
+			<a target="_blank" href="http://t.qq.com/misskerisdream"><img width="14" height="14" src="/static/img/snsicon/32-qqweibo.png">腾讯微博</a>
+			<a target="_blank" href="http://t.163.com/misskerisdream"><img width="14" height="14" src="/static/img/snsicon/32-163weibo.png">网易微博</a>
+			<a target="_blank" href="http://misskerisdream.t.sohu.com"><img width="14" height="14" src="/static/img/snsicon/32-sohuweibo.png">搜狐微博</a>
 			</p>
 
 			<strong>{{i18n .Lang "language_choice"}}: </strong>
