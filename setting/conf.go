@@ -340,7 +340,7 @@ func settingLocales() {
 		} else {
 			files = nil
 		}
-		if err := i18n.SetMessage(lang, lang, "conf/global/"+"locale_"+lang+".ini", files...); err != nil {
+		if err := i18n.SetMessage(lang, "conf/global/"+"locale_"+lang+".ini", files...); err != nil {
 			beego.Error("Fail to set message file: " + err.Error())
 			os.Exit(2)
 		}
