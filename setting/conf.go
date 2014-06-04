@@ -47,6 +47,7 @@ var (
 	AppHost             string
 	AppUrl              string
 	AppLogo             string
+    ImgBedUrl           string
 	EnforceRedirect     bool
 	AvatarURL           string
 	SecretKey           string
@@ -252,6 +253,7 @@ func reloadConfig() {
 	AppHost = Cfg.MustValue("app", "app_host", "127.0.0.1:8092")
 	AppUrl = Cfg.MustValue("app", "app_url", "http://127.0.0.1:8092/")
 	AppLogo = Cfg.MustValue("app", "app_logo", "/static/img/logo.gif")
+    ImgBedUrl = Cfg.MustValue("app", "imgbed_url", "http://kelly.qiniudn.com/")
 	AvatarURL = Cfg.MustValue("app", "avatar_url")
 
 	EnforceRedirect = Cfg.MustBool("app", "enforce_redirect")
@@ -349,7 +351,7 @@ func settingLocales() {
 }
 
 func settingCompress() {
-	setting, err := compress.LoadJsonConf(CompressConfPath, IsProMode, AppUrl)
+	setting, err := compress.LoadJsonConf(CompressConfPath, IsProMode, ImgBedUrl)
 	if err != nil {
 		beego.Error(err)
 		return
