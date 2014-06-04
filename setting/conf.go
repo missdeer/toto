@@ -38,7 +38,7 @@ import (
 )
 
 const (
-	APP_VER = "0.1.0.1114"
+	APP_VER = "1.0.0.1"
 )
 
 var (
@@ -150,8 +150,8 @@ func LoadConfig() *goconfig.ConfigFile {
 
 	Cfg.BlockMode = false
 
-	// set time zone of wetalk system
-	TimeZone = Cfg.MustValue("app", "time_zone", "UTC")
+	// set time zone of system
+	TimeZone = Cfg.MustValue("app", "time_zone", "Asia/Shanghai")
 	if _, err := time.LoadLocation(TimeZone); err == nil {
 		os.Setenv("TZ", TimeZone)
 	} else {
@@ -181,7 +181,7 @@ func LoadConfig() *goconfig.ConfigFile {
 	beego.SessionOn = true
 	beego.SessionProvider = Cfg.MustValue("session", "session_provider", "file")
 	beego.SessionSavePath = Cfg.MustValue("session", "session_path", "sessions")
-	beego.SessionName = Cfg.MustValue("session", "session_name", "wetalk_sess")
+	beego.SessionName = Cfg.MustValue("session", "session_name", "yiili_sess")
 	beego.SessionCookieLifeTime = Cfg.MustInt("session", "session_life_time", 0)
 	beego.SessionGCMaxLifetime = Cfg.MustInt64("session", "session_gc_time", 86400)
 
@@ -190,7 +190,7 @@ func LoadConfig() *goconfig.ConfigFile {
 	beego.XSRFExpire = 86400 * 365
 
 	driverName := Cfg.MustValue("orm", "driver_name", "mysql")
-	dataSource := Cfg.MustValue("orm", "data_source", "root:root@/wetalk?charset=utf8&loc=UTC")
+	dataSource := Cfg.MustValue("orm", "data_source", "root:root@/yiili?charset=utf8&loc=Local")
 	maxIdle := Cfg.MustInt("orm", "max_idle_conn", 30)
 	maxOpen := Cfg.MustInt("orm", "max_open_conn", 50)
 
@@ -246,7 +246,7 @@ func LoadConfig() *goconfig.ConfigFile {
 }
 
 func reloadConfig() {
-	AppName = Cfg.MustValue("app", "app_name", "WeTalk Community")
+	AppName = Cfg.MustValue("app", "app_name", "Yiili Community")
 	beego.AppName = AppName
 
 	AppHost = Cfg.MustValue("app", "app_host", "127.0.0.1:8092")
@@ -272,8 +272,8 @@ func reloadConfig() {
 	LoginMaxRetries = Cfg.MustInt("app", "login_max_retries", 5)
 	LoginFailedBlocks = Cfg.MustInt("app", "login_failed_blocks", 10)
 
-	CookieRememberName = Cfg.MustValue("app", "cookie_remember_name", "wetalk_magic")
-	CookieUserName = Cfg.MustValue("app", "cookie_user_name", "wetalk_powerful")
+	CookieRememberName = Cfg.MustValue("app", "cookie_remember_name", "yiili_magic")
+	CookieUserName = Cfg.MustValue("app", "cookie_user_name", "yiili_powerful")
 
 	RealtimeRenderMD = Cfg.MustBool("app", "realtime_render_markdown")
 
@@ -297,8 +297,8 @@ func reloadConfig() {
 	ImageXSend = Cfg.MustBool("image", "image_xsend", false)
 	ImageXSendHeader = Cfg.MustValue("image", "image_xsend_header", "X-Accel-Redirect")
 
-	MailUser = Cfg.MustValue("mailer", "mail_name", "WeTalk Community")
-	MailFrom = Cfg.MustValue("mailer", "mail_from", "example@example.com")
+	MailUser = Cfg.MustValue("mailer", "mail_name", "Yiili Community")
+	MailFrom = Cfg.MustValue("mailer", "mail_from", "noreply@yii.li")
 
 	// set mailer connect args
 	MailHost = Cfg.MustValue("mailer", "mail_host", "127.0.0.1:25")
@@ -308,7 +308,7 @@ func reloadConfig() {
 	orm.Debug = Cfg.MustBool("orm", "debug_log")
 
 	// search setting
-	SphinxIndex = Cfg.MustValue("search", "sphinx_index", "wetalk, wetalk_delta")
+	SphinxIndex = Cfg.MustValue("search", "sphinx_index", "yiili, yiili_delta")
 
 	SearchEnabled = Cfg.MustBool("search", "enabled")
 	SphinxEnabled = Cfg.MustBool("search", "sphinx_enabled")
