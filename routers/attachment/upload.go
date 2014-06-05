@@ -17,9 +17,6 @@ package attachment
 import (
 	"github.com/missdeer/KellyBackend/setting"
 	"net/http"
-	"path"
-	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -76,36 +73,6 @@ func (this *UploadRouter) Post() {
 }
 
 func ImageFilter(ctx *context.Context) {
-	token := path.Base(ctx.Request.RequestURI)
-
-	// split token and file ext
-	var filePath string
-	if i := strings.IndexRune(token, '.'); i == -1 {
-		return
-	} else {
-		filePath = token[i+1:]
-		token = token[:i]
-	}
-
-	// decode token to file path
-	var image models.Image
-	if err := image.DecodeToken(token); err != nil {
-		beego.Info(err)
-		return
-	}
-
-	// file real path
-	filePath = attachment.GenImagePath(&image) + filePath
-
-	// if x-send on then set header and http status
-	// fall back use proxy serve file
-	if setting.ImageXSend {
-		ext := filepath.Ext(filePath)
-		ctx.Output.ContentType(ext)
-		ctx.Output.Header(setting.ImageXSendHeader, "/"+filePath)
-		ctx.Output.SetStatus(200)
-	} else {
-		// direct serve file use go
-		http.ServeFile(ctx.ResponseWriter, ctx.Request, filePath)
-	}
+    url := setting.ImgBedUrl + "upload" + ctx.Request.RequestURI
+    http.Redirect(ctx.ResponseWriter, ctx.Request, url, 302)
 }

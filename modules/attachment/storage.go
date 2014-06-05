@@ -116,8 +116,11 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
     var ret qiniuio.PutRet
     var extra = &qiniuio.PutExtra{}
 
-    err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, fullPath, extra)
+    // get encoded file name as the key
+    var key = "upload" + m.LinkFull();
+    err = qiniuio.PutFile(nil, &ret, uptoken, key, fullPath, extra)
     if err != nil {
+        fmt.Println("put file without key failed")
         return err
     }
 
@@ -129,7 +132,8 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 				return err
 			}
             savePath := GenImageFilePath(m, setting.ImageSizeSmall)
-            if err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, savePath, extra); err != nil {
+            key = "upload" + m.LinkSmall()
+            if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
                 os.RemoveAll(savePath)
                 return err
             }
@@ -142,7 +146,8 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 				return err
 			}
             savePath := GenImageFilePath(m, setting.ImageSizeMiddle)
-            if err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, savePath, extra); err != nil {
+            key = "upload" + m.LinkMiddle()
+            if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
                 os.RemoveAll(savePath)
                 return err
             }
