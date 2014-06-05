@@ -47,10 +47,8 @@ func (this *ApiRouter) PostBest() {
                 p := models.Post{ Id: int(id) }
                 o.Read(&p);
 
-                p.IsBest  = !p.IsBest
-                _, err := o.Update(p);
-
-                if err != nil {
+                p.IsBest = !p.IsBest
+                if _, err := o.Update(&p); err != nil {
                     beego.Error("PostCounterAdd ", err)
                 } else {
                     result["success"] = true
