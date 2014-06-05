@@ -22,49 +22,40 @@ import (
 )
 
 func (this *ApiRouter) PostBest() {
-	result := map[string]interface{}{
-		"success": false,
-	}
+    result := map[string]interface{}{
+        "success": false,
+    }
 
-	defer func() {
-		this.Data["json"] = result
-		this.ServeJson()
-	}()
+    defer func() {
+        this.Data["json"] = result
+        this.ServeJson()
+    }()
 
-	if !this.IsAjax() {
-		return
-	}
+    if !this.IsAjax() {
+        return
+    }
 
-	action := this.GetString("action")
+    action := this.GetString("action")
 
-	if this.IsLogin {
+    if this.IsLogin {
 
-		switch action {
-		case "toggle-best":
+        switch action {
+        case "toggle-best":
             id, _ := this.GetInt("post")
             if id > 0 {
                 o := orm.NewOrm()
                 p := models.Post{ Id: int(id) }
                 o.Read(&p);
 
-                var err error
-                if p.IsBest == false {
-                    _, err = models.Posts().Filter("Id", id).Update(orm.Params{
-                        "IsBest": orm.ColValue(orm.Col_Add, 1),
-                    })
-
-                } else {
-                    _, err = models.Posts().Filter("Id", id).Update(orm.Params{
-                        "IsBest": orm.ColValue(orm.Col_Minus, 1),
-                    })
-
-                }
+                p.IsBest  = !p.IsBest
+                _, err := o.Update(p);
 
                 if err != nil {
                     beego.Error("PostCounterAdd ", err)
+                } else {
+                    result["success"] = true
                 }
             }
-            result["success"] = true
         }
     }
 }
