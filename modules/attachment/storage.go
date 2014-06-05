@@ -107,24 +107,6 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 		return err
 	}
 
-	if ext != ".gif" {
-
-		if m.Width > setting.ImageSizeSmall {
-			if err := ImageResize(m, img, setting.ImageSizeSmall); err != nil {
-				os.RemoveAll(fullPath)
-				return err
-			}
-		}
-
-		if m.Width > setting.ImageSizeMiddle {
-			if err := ImageResize(m, img, setting.ImageSizeMiddle); err != nil {
-				os.RemoveAll(fullPath)
-				return err
-			}
-		}
-
-	}
-
     ACCESS_KEY = setting.QiniuAppKey
     SECRET_KEY = setting.QiniuSecretKey
     putPolicy := rs.PutPolicy {}
@@ -136,9 +118,35 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 
     err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, fullPath, extra)
     if err != nil {
-        //log.Print("io.PutFile failed:", err)
         return err
     }
+
+	if ext != ".gif" {
+
+		if m.Width > setting.ImageSizeSmall {
+			if err := ImageResize(m, img, setting.ImageSizeSmall); err != nil {
+				os.RemoveAll(fullPath)
+				return err
+			}
+            savePath := GenImageFilePath(m, setting.ImageSizeSmall)
+            err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, savePath, extra)
+            if err != nil {
+                return err
+            }
+		}
+
+		if m.Width > setting.ImageSizeMiddle {
+			if err := ImageResize(m, img, setting.ImageSizeMiddle); err != nil {
+				os.RemoveAll(fullPath)
+				return err
+			}
+            savePath := GenImageFilePath(m, setting.ImageSizeMiddle)
+            err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, savePath, extra)
+            if err != nil {
+                return err
+            }
+		}
+	}
 
 	return nil
 }
