@@ -129,10 +129,11 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 				return err
 			}
             savePath := GenImageFilePath(m, setting.ImageSizeSmall)
-            err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, savePath, extra)
-            if err != nil {
+            if err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, savePath, extra); err != nil {
+                os.RemoveAll(savePath)
                 return err
             }
+            os.RemoveAll(savePath)
 		}
 
 		if m.Width > setting.ImageSizeMiddle {
@@ -141,12 +142,14 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 				return err
 			}
             savePath := GenImageFilePath(m, setting.ImageSizeMiddle)
-            err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, savePath, extra)
-            if err != nil {
+            if err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, savePath, extra); err != nil {
+                os.RemoveAll(savePath)
                 return err
             }
+            os.RemoveAll(savePath)
 		}
 	}
+    os.RemoveAll(fullPath)
 
 	return nil
 }
