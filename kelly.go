@@ -126,6 +126,7 @@ func main() {
 	apiR := new(api.ApiRouter)
 	beego.Router("/api/user", apiR, "post:Users")
 	beego.Router("/api/md", apiR, "post:Markdown")
+	beego.Router("/api/post", apiR, "post:PostBest")
 
 	adminDashboard := new(admin.AdminDashboardRouter)
 	beego.Router("/admin", adminDashboard)
