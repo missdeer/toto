@@ -32,6 +32,9 @@ import (
 
 	"github.com/missdeer/KellyBackend/modules/models"
 	"github.com/missdeer/KellyBackend/modules/utils"
+    . "github.com/qiniu/api/conf"
+    "github.com/qiniu/api/rs"
+    qiniuio "github.com/qiniu/api/io" 
 )
 
 func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, created time.Time) error {
@@ -121,6 +124,21 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 		}
 
 	}
+
+    ACCESS_KEY = setting.QiniuAppKey
+    SECRET_KEY = setting.QiniuSecretKey
+    putPolicy := rs.PutPolicy {}
+    putPolicy.Scope = setting.QiniuBucketName
+    uptoken := putPolicy.Token(nil)
+
+    var ret qiniuio.PutRet
+    var extra = &qiniuio.PutExtra{}
+
+    err = qiniuio.PutFileWithoutKey(nil, &ret, uptoken, fullPath, extra)
+    if err != nil {
+        //log.Print("io.PutFile failed:", err)
+        return err
+    }
 
 	return nil
 }

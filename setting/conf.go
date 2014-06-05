@@ -50,6 +50,7 @@ var (
     ImgBedUrl           string
     QiniuAppKey         string
     QiniuSecretKey      string
+    QiniuBucketName     string
 	EnforceRedirect     bool
 	AvatarURL           string
 	SecretKey           string
@@ -258,6 +259,7 @@ func reloadConfig() {
     ImgBedUrl = Cfg.MustValue("app", "imgbed_url", "http://kelly.qiniudn.com/")
     QiniuAppKey = Cfg.MustValue("app", "qiniu_appkey")
     QiniuSecretKey = Cfg.MustValue("app", "qiniu_secretkey")
+    QiniuBucketName = Cfg.MustValue("app", "qiniu_bucketname", "kelly")
 	AvatarURL = Cfg.MustValue("app", "avatar_url")
 
 	EnforceRedirect = Cfg.MustBool("app", "enforce_redirect")
