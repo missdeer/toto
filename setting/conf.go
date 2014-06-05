@@ -48,6 +48,8 @@ var (
 	AppUrl              string
 	AppLogo             string
     ImgBedUrl           string
+    QiniuAppKey         string
+    QiniuSecretKey      string
 	EnforceRedirect     bool
 	AvatarURL           string
 	SecretKey           string
@@ -252,8 +254,10 @@ func reloadConfig() {
 
 	AppHost = Cfg.MustValue("app", "app_host", "127.0.0.1:8092")
 	AppUrl = Cfg.MustValue("app", "app_url", "http://127.0.0.1:8092/")
-	AppLogo = Cfg.MustValue("app", "app_logo", "/static/img/logo.gif")
+    AppLogo = Cfg.MustValue("app", "app_logo", "http://kelly.qiniudn.com/static/img/logo.png")
     ImgBedUrl = Cfg.MustValue("app", "imgbed_url", "http://kelly.qiniudn.com/")
+    QiniuAppKey = Cfg.MustValue("app", "qiniu_appkey")
+    QiniuSecretKey = Cfg.MustValue("app", "qiniu_secretkey")
 	AvatarURL = Cfg.MustValue("app", "avatar_url")
 
 	EnforceRedirect = Cfg.MustBool("app", "enforce_redirect")
