@@ -7,14 +7,11 @@
 				|
                 <a href="/contact"><strong>{{i18n .Lang "contact"}}</strong></a>
 			</p>
-
 			<p>
-				{{i18n .Lang "copyright"}} © 2013 {{i18n .Lang "beego_community"}}
+				{{i18n .Lang "copyright"}} © 2013 {{i18n .Lang "beego_community"}} - {{i18n .Lang "footer_desc"}} Ver.{{.AppVer}} - {{.PageStartTime|loadtimes}}ms.
 			</p>
-			
 			<p class="desc">
-				{{i18n .Lang "footer_desc"}} Ver.{{.AppVer}} - {{.PageStartTime|loadtimes}}ms.
-                <br>{{i18n .Lang "sidebar.follow_us"}}: 
+                {{i18n .Lang "sidebar.follow_us"}}: 
             <a target="_blank" href="https://www.facebook.com/kelly.shen.501"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-facebook.png">Facebook</a>
 			<a target="_blank" href="https://twitter.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-twitter.png">Twitter</a>
 			<a target="_blank" href="https://plus.google.com/105276220177876343905"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-googleplus.png">Google Plus</a>
