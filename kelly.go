@@ -16,6 +16,7 @@
 package main
 
 import (
+    "flag"
 	"fmt"
 
 	"github.com/astaxie/beego"
@@ -38,6 +39,9 @@ import (
 // because we use `bee bale` to pack static resources
 // and we cannot make sure that which init() execute first.
 func initialize() {
+	flag.StringVar(&setting.AppConfPath, "rc", "conf/app.ini", "configuration file")
+	flag.Parse()
+
 	setting.LoadConfig()
 
 	if err := utils.InitSphinxPools(); err != nil {
