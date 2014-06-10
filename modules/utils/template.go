@@ -43,6 +43,11 @@ func boolicon(b bool) (s template.HTML) {
 	return
 }
 
+func timeLessThan(createdTime time.Time, limit int) bool {
+    var timeLimit = time.Since(createdTime).Minutes() < float64(limit)
+    return timeLimit
+}
+
 func date(t time.Time) string {
 	return beego.Date(t, setting.DateFormat)
 }
@@ -126,6 +131,7 @@ func init() {
 	beego.AddFuncMap("loadtimes", loadtimes)
 	beego.AddFuncMap("sum", sum)
 	beego.AddFuncMap("loginto", loginto)
+    beego.AddFuncMap("timeLessThan", timeLessThan)
 }
 
 func RenderTemplate(TplNames string, Data map[interface{}]interface{}) string {
