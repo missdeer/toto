@@ -368,6 +368,27 @@ func (this *BaseRouter) FormOnceCreate(args ...bool) {
 	this.Data["once_html"] = template.HTML(`<input type="hidden" name="_once" value="` + value + `">`)
 }
 
+func (this *BaseRouter) validAppendForm(form interface{}, names ...string) (bool, map[string]*validation.ValidationError) {
+	// parse request params to form ptr struct
+	utils.ParseForm(form, this.Input())
+
+	// Put data back in case users input invalid data for any section.
+	name := reflect.ValueOf(form).Elem().Type().Name()
+	if len(names) > 0 {
+		name = names[0]
+	}
+	this.Data[name] = form
+
+	// check form once
+	if this.FormOnceNotMatch() {
+		return false, nil
+	}
+
+	// Verify basic input.
+
+	return true, nil
+}
+
 func (this *BaseRouter) validForm(form interface{}, names ...string) (bool, map[string]*validation.ValidationError) {
 	// parse request params to form ptr struct
 	utils.ParseForm(form, this.Input())
@@ -407,6 +428,12 @@ func (this *BaseRouter) ValidFormSets(form interface{}, names ...string) bool {
 	valid, errs := this.validForm(form, names...)
 	this.setFormSets(form, errs, names...)
 	return valid
+}
+
+func (this *BaseRouter) ValidAppendFormSets(form interface{}, names ...string) bool {
+    valid, errs := this.validAppendForm(form, names...)
+    this.setFormSets(form, errs, names...)
+    return valid
 }
 
 func (this *BaseRouter) SetFormSets(form interface{}, names ...string) *utils.FormSets {

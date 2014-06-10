@@ -111,8 +111,6 @@ type AppendPost struct {
 	Post         *Post  `orm:"rel(fk)"`
 	Message      string `orm:"type(text)"`
 	MessageCache string `orm:"type(text)"`
-	Floor        int
-	Status       int
 	Created      time.Time `orm:"auto_now_add;index"`
 }
 

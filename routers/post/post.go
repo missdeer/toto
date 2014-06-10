@@ -525,16 +525,20 @@ func (this *PostRouter) AppendSubmit() {
 
 	form := post.PostForm{}
 	form.SetFromPost(&postMd)
-	if !this.ValidFormSets(&form) {
+	if !this.ValidAppendFormSets(&form) {
 		return
 	}
 
+    if len(postMd.Content) == 0 {
+        return
+    }
     var appendPostMd models.AppendPost
-    appendPostMd.Message = postMd.Content
-    appendPostMd.MessageCache = postMd.ContentCache
+    appendPostMd.Message = form.Content
     appendPostMd.Post = &postMd
+
 	if err := form.AppendPost(&appendPostMd, &this.User); err == nil {
 		this.JsStorage("deleteKey", "post/append")
 		this.Redirect(postMd.Link(), 302)
 	}
 }
+
