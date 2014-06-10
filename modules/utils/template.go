@@ -43,6 +43,15 @@ func boolicon(b bool) (s template.HTML) {
 	return
 }
 
+func canedit(createdTime time.Time, postUserId uint64, currentUserId uint64, isAdmin bool) bool {
+    fmt.Println(createdTime)
+    fmt.Println(time.Since(createdTime).Minutes())
+    fmt.Println(postUserId)
+    fmt.Println(currentUserId)
+    fmt.Println(isAdmin)
+    return ((time.Since(createdTime).Minutes() < 15.0) && (postUserId == currentUserId )) || isAdmin 
+}
+
 func timeLessThan(createdTime time.Time, limit int) bool {
     var timeLimit = time.Since(createdTime).Minutes() < float64(limit)
     return timeLimit
@@ -132,6 +141,7 @@ func init() {
 	beego.AddFuncMap("sum", sum)
 	beego.AddFuncMap("loginto", loginto)
     beego.AddFuncMap("timeLessThan", timeLessThan)
+    beego.AddFuncMap("canedit", canedit)
 }
 
 func RenderTemplate(TplNames string, Data map[interface{}]interface{}) string {

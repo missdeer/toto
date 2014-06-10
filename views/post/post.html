@@ -33,7 +33,11 @@
                     {{if .IsLogin}}
                         <p>
                         {{if eq .Post.User.Id .User.Id}}
+                        {{if timeLessThan .Post.Created 15}}
                             <a class="color-link" href="{{.Post.Link}}/edit">{{i18n .Lang "post.post_edit"}}</a>
+                            {{else}}
+                            <a class="color-link" href="{{.Post.Link}}/append">{{i18n .Lang "post.post_append"}}</a>
+                            {{end}}
                         {{end}}
                         {{if .User.IsAdmin}}
                             - 
