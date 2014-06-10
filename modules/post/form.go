@@ -15,6 +15,7 @@
 package post
 
 import (
+    "fmt"
 	"github.com/astaxie/beego/validation"
 	"github.com/beego/i18n"
 
@@ -135,19 +136,10 @@ func (form *PostForm) UpdatePost(post *models.Post, user *models.User) error {
 }
 
 func (form *PostForm) AppendPost(appendPost *models.AppendPost, user *models.User) error {
-	changes := utils.FormChanges(appendPost, form)
-	if len(changes) == 0 {
-		return nil
-	}
-	utils.SetFormValues(form, appendPost)
-	for _, c := range changes {
-		if c == "Content" {
-			appendPost.MessageCache = utils.RenderMarkdown(form.Content)
-			changes = append(changes, "ContentCache")
-		}
-	}
-
-	return appendPost.Append(changes...)
+    fmt.Println("raw content: " + form.Content)
+    appendPost.MessageCache = utils.RenderMarkdown(form.Content)
+    fmt.Println("rendered content: " + appendPost.MessageCache)
+	return appendPost.Insert()
 }
 
 func (form *PostForm) Placeholders() map[string]string {

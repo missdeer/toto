@@ -114,17 +114,13 @@ type AppendPost struct {
 	Created      time.Time `orm:"auto_now_add;index"`
 }
 
-func (m *AppendPost) Append(fields ...string) error {
-	if _, err := orm.NewOrm().Update(m, fields...); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m *AppendPost) Insert() error {
+    fmt.Println("start inserting append post");
 	if _, err := orm.NewOrm().Insert(m); err != nil {
+        fmt.Println("inserting append post failed")
 		return err
 	}
+    fmt.Println("inserting append post succeeded")
 	return nil
 }
 

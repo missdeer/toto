@@ -538,7 +538,10 @@ func (this *PostRouter) AppendSubmit() {
 
 	if err := form.AppendPost(&appendPostMd, &this.User); err == nil {
 		this.JsStorage("deleteKey", "post/append")
+        fmt.Println("redirect to " + postMd.Link())
 		this.Redirect(postMd.Link(), 302)
-	}
+	} else {
+        fmt.Println("appending post failed")
+    }
 }
 
