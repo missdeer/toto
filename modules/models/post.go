@@ -93,6 +93,10 @@ func (m *Post) Comments() orm.QuerySeter {
 	return Comments().Filter("Post", m.Id)
 }
 
+func (m *Post) Appends() orm.QuerySeter {
+    return Appends().Filter("Post", m.Id)
+}
+
 func (m *Post) GetLang() string {
 	return i18n.GetLangByIndex(m.Lang)
 }
@@ -101,7 +105,69 @@ func Posts() orm.QuerySeter {
 	return orm.NewOrm().QueryTable("post").OrderBy("-Id")
 }
 
-// commnet content for post
+// append content for post
+type AppendPost struct {
+	Id           int
+	Post         *Post  `orm:"rel(fk)"`
+	Message      string `orm:"type(text)"`
+	MessageCache string `orm:"type(text)"`
+	Floor        int
+	Status       int
+	Created      time.Time `orm:"auto_now_add;index"`
+}
+
+func (m *AppendPost) Append(fields ...string) error {
+	if _, err := orm.NewOrm().Update(m, fields...); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *AppendPost) Insert() error {
+	if _, err := orm.NewOrm().Insert(m); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *AppendPost) Read(fields ...string) error {
+	if err := orm.NewOrm().Read(m, fields...); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *AppendPost) Update(fields ...string) error {
+	if _, err := orm.NewOrm().Update(m, fields...); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *AppendPost) Delete() error {
+	if _, err := orm.NewOrm().Delete(m); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *AppendPost) GetMessageCache() string {
+	if setting.RealtimeRenderMD {
+		return utils.RenderMarkdown(m.Message)
+	} else {
+		return m.MessageCache
+	}
+}
+
+func (m *AppendPost) String() string {
+	return utils.ToStr(m.Id)
+}
+
+func Appends() orm.QuerySeter {
+	return orm.NewOrm().QueryTable("appends").OrderBy("-Id")
+}
+
+// comment content for post
 type Comment struct {
 	Id           int
 	User         *User  `orm:"rel(fk)"`

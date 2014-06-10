@@ -134,30 +134,20 @@ func (form *PostForm) UpdatePost(post *models.Post, user *models.User) error {
 	return post.Update(changes...)
 }
 
-func (form *PostForm) AppendPost(post *models.Post, user *models.User) error {
-	changes := utils.FormChanges(post, form)
+func (form *PostForm) AppendPost(appendPost *models.AppendPost, user *models.User) error {
+	changes := utils.FormChanges(appendPost, form)
 	if len(changes) == 0 {
 		return nil
 	}
-	utils.SetFormValues(form, post)
+	utils.SetFormValues(form, appendPost)
 	for _, c := range changes {
 		if c == "Content" {
-			post.ContentCache = utils.RenderMarkdown(form.Content)
+			appendPost.MessageCache = utils.RenderMarkdown(form.Content)
 			changes = append(changes, "ContentCache")
 		}
 	}
 
-	// update last edit author
-	if post.LastAuthor != nil && post.LastAuthor.Id != user.Id {
-		post.LastAuthor = user
-		changes = append(changes, "LastAuthor")
-	}
-
-	changes = append(changes, "Updated")
-
-    var err error
-    return err
-	//return post.Append(changes...)
+	return appendPost.Append(changes...)
 }
 
 func (form *PostForm) Placeholders() map[string]string {
