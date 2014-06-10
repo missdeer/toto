@@ -134,6 +134,32 @@ func (form *PostForm) UpdatePost(post *models.Post, user *models.User) error {
 	return post.Update(changes...)
 }
 
+func (form *PostForm) AppendPost(post *models.Post, user *models.User) error {
+	changes := utils.FormChanges(post, form)
+	if len(changes) == 0 {
+		return nil
+	}
+	utils.SetFormValues(form, post)
+	for _, c := range changes {
+		if c == "Content" {
+			post.ContentCache = utils.RenderMarkdown(form.Content)
+			changes = append(changes, "ContentCache")
+		}
+	}
+
+	// update last edit author
+	if post.LastAuthor != nil && post.LastAuthor.Id != user.Id {
+		post.LastAuthor = user
+		changes = append(changes, "LastAuthor")
+	}
+
+	changes = append(changes, "Updated")
+
+    var err error
+    return err
+	//return post.Append(changes...)
+}
+
 func (form *PostForm) Placeholders() map[string]string {
 	return map[string]string{
 		"Category": "model.category_choose_dot",

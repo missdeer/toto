@@ -88,6 +88,7 @@ func main() {
 	beego.Router("/new", postR, "get:New;post:NewSubmit")
 	beego.Router("/post/:post([0-9]+)", postR, "get:Single;post:SingleSubmit")
 	beego.Router("/post/:post([0-9]+)/edit", postR, "get:Edit;post:EditSubmit")
+	beego.Router("/post/:post([0-9]+)/append", postR, "get:Append;post:AppendSubmit")
 
 	if setting.NativeSearch || setting.SphinxEnabled {
 		searchR := new(post.SearchRouter)

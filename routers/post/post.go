@@ -483,3 +483,46 @@ func (this *PostRouter) EditSubmit() {
 		this.Redirect(postMd.Link(), 302)
 	}
 }
+
+func (this *PostRouter) Append() {
+	this.TplNames = "post/append.html"
+
+	if this.CheckActiveRedirect() {
+		return
+	}
+
+	var postMd models.Post
+	if this.loadPost(&postMd, &this.User) {
+		return
+	}
+
+    postMd.Content = ""
+    postMd.ContentCache = ""
+	form := post.PostForm{}
+	form.SetFromPost(&postMd)
+	this.SetFormSets(&form)
+}
+
+func (this *PostRouter) AppendSubmit() {
+	this.TplNames = "post/append.html"
+
+	if this.CheckActiveRedirect() {
+		return
+	}
+
+	var postMd models.Post
+	if this.loadPost(&postMd, &this.User) {
+		return
+	}
+
+	form := post.PostForm{}
+	form.SetFromPost(&postMd)
+	if !this.ValidFormSets(&form) {
+		return
+	}
+
+	if err := form.AppendPost(&postMd, &this.User); err == nil {
+		this.JsStorage("deleteKey", "post/append")
+		this.Redirect(postMd.Link(), 302)
+	}
+}
