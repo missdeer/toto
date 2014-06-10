@@ -153,8 +153,8 @@ func (m *AppendPost) GetMessageCache() string {
 	}
 }
 
-func (m *AppendPost) String() string {
-	return utils.ToStr(m.Id)
+func (m *AppendPost) TableName() string {
+	return "append_post"
 }
 
 func Appends() orm.QuerySeter {
