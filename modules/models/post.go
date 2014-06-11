@@ -232,5 +232,5 @@ func (*FavoritePost) TableUnique() [][]string {
 }
 
 func init() {
-	orm.RegisterModel(new(Post), new(FavoritePost), new(Comment))
+	orm.RegisterModel(new(Post), new(FavoritePost), new(Comment), new(AppendPost))
 }
