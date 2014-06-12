@@ -57,6 +57,27 @@
                     <div class="pull-right">
                         {{template "post/component/share.html"}}
                     </div>
+            {{if .AppendsNum}}
+                {{range .Appends}}
+                    <div class="cell comment" >
+                        <div class="avatar">
+                        </div>
+                        <div class="content">
+                            <div class="meta">
+                                <span class="time">&nbsp;</span>
+                                <p class="post-meta pull-right">
+                                {{i18n $.Lang "post.appended_on"}} {{timesince $.Lang .Created}} / {{.Created|datetimes}}
+                                </p>
+                            </div>
+                            <div class="post-content markdown">
+                                {{.GetMessageCache|str2html}}
+                            </div>
+                        </div>
+                        <span class="clearfix"></span>
+                    </div>
+                {{end}}
+            {{end}}
+
                     <span class="clearfix"></span>
                 </div>
             </div>

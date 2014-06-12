@@ -115,12 +115,9 @@ type AppendPost struct {
 }
 
 func (m *AppendPost) Insert() error {
-    fmt.Println("start inserting append post");
 	if _, err := orm.NewOrm().Insert(m); err != nil {
-        fmt.Println("inserting append post failed")
 		return err
 	}
-    fmt.Println("inserting append post succeeded")
 	return nil
 }
 
@@ -153,12 +150,12 @@ func (m *AppendPost) GetMessageCache() string {
 	}
 }
 
-func (m *AppendPost) TableName() string {
-	return "append_post"
+func (m *AppendPost) String() string {
+	return utils.ToStr(m.Id)
 }
 
 func Appends() orm.QuerySeter {
-	return orm.NewOrm().QueryTable("appends").OrderBy("-Id")
+	return orm.NewOrm().QueryTable("append_post").OrderBy("-Id")
 }
 
 // comment content for post

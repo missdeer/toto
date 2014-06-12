@@ -15,7 +15,6 @@
 package post
 
 import (
-    "fmt"
 	"github.com/astaxie/beego/validation"
 	"github.com/beego/i18n"
 
@@ -136,9 +135,7 @@ func (form *PostForm) UpdatePost(post *models.Post, user *models.User) error {
 }
 
 func (form *PostForm) AppendPost(appendPost *models.AppendPost, user *models.User) error {
-    fmt.Println("raw content: " + form.Content)
     appendPost.MessageCache = utils.RenderMarkdown(form.Content)
-    fmt.Println("rendered content: " + appendPost.MessageCache)
 	return appendPost.Insert()
 }
 

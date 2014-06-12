@@ -380,7 +380,7 @@ func (this *PostRouter) loadPost(post *models.Post, user *models.User) bool {
 
 func (this *PostRouter) loadAppends(post *models.Post, appends *[]*models.AppendPost) {
     qs := post.Appends()
-    if num, err := qs.RelatedSel("User").OrderBy("Id").All(appends); err == nil {
+    if num, err := qs.OrderBy("Id").All(appends); err == nil {
         this.Data["Appends"] = *appends
         this.Data["AppendsNum"] = num
     }
@@ -404,6 +404,9 @@ func (this *PostRouter) Single() {
 
 	var comments []*models.Comment
 	this.loadComments(&postMd, &comments)
+
+    var appends []*models.AppendPost
+    this.loadAppends(&postMd, &appends)
 
 	form := post.CommentForm{}
 	this.SetFormSets(&form)
@@ -538,10 +541,7 @@ func (this *PostRouter) AppendSubmit() {
 
 	if err := form.AppendPost(&appendPostMd, &this.User); err == nil {
 		this.JsStorage("deleteKey", "post/append")
-        fmt.Println("redirect to " + postMd.Link())
 		this.Redirect(postMd.Link(), 302)
-	} else {
-        fmt.Println("appending post failed")
     }
 }
 
