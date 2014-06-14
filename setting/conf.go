@@ -54,6 +54,7 @@ var (
 	EnforceRedirect     bool
 	AvatarURL           string
 	SecretKey           string
+	ORCAVerifyCode      string
 	IsProMode           bool
 	ActiveCodeLives     int
 	ResetPwdCodeLives   int
@@ -282,6 +283,8 @@ func reloadConfig() {
 	if len(SecretKey) == 0 {
 		fmt.Println("Please set your secret_key in app.ini file")
 	}
+
+	ORCAVerifyCode = Cfg.MustValue("app", "orca_verify_code")
 
 	ActiveCodeLives = Cfg.MustInt("app", "acitve_code_live_minutes", 180)
 	ResetPwdCodeLives = Cfg.MustInt("app", "resetpwd_code_live_minutes", 180)

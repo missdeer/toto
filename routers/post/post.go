@@ -23,6 +23,7 @@ import (
 	"github.com/missdeer/KellyBackend/modules/post"
 	"github.com/missdeer/KellyBackend/modules/utils"
 	"github.com/missdeer/KellyBackend/routers/base"
+	"github.com/missdeer/KellyBackend/setting"
 )
 
 // HomeRouter serves home page.
@@ -49,6 +50,11 @@ func (this *PostListRouter) postsFilter(qs orm.QuerySeter) orm.QuerySeter {
 	args = append(args, utils.ToStr(this.User.Lang))
 	qs = qs.Filter("Lang__in", args)
 	return qs
+}
+
+func (this *PostListRouter) ORCA() {
+	orca_verify_code := setting.ORCAVerifyCode
+	this.Ctx.WriteString(orca_verify_code)
 }
 
 // Get implemented Get method for HomeRouter.
@@ -379,11 +385,11 @@ func (this *PostRouter) loadPost(post *models.Post, user *models.User) bool {
 }
 
 func (this *PostRouter) loadAppends(post *models.Post, appends *[]*models.AppendPost) {
-    qs := post.Appends()
-    if num, err := qs.OrderBy("Id").All(appends); err == nil {
-        this.Data["Appends"] = *appends
-        this.Data["AppendsNum"] = num
-    }
+	qs := post.Appends()
+	if num, err := qs.OrderBy("Id").All(appends); err == nil {
+		this.Data["Appends"] = *appends
+		this.Data["AppendsNum"] = num
+	}
 }
 
 func (this *PostRouter) loadComments(post *models.Post, comments *[]*models.Comment) {
@@ -405,8 +411,8 @@ func (this *PostRouter) Single() {
 	var comments []*models.Comment
 	this.loadComments(&postMd, &comments)
 
-    var appends []*models.AppendPost
-    this.loadAppends(&postMd, &appends)
+	var appends []*models.AppendPost
+	this.loadAppends(&postMd, &appends)
 
 	form := post.CommentForm{}
 	this.SetFormSets(&form)
@@ -507,8 +513,8 @@ func (this *PostRouter) Append() {
 		return
 	}
 
-    postMd.Content = ""
-    postMd.ContentCache = ""
+	postMd.Content = ""
+	postMd.ContentCache = ""
 	form := post.PostForm{}
 	form.SetFromPost(&postMd)
 	this.SetFormSets(&form)
@@ -532,16 +538,15 @@ func (this *PostRouter) AppendSubmit() {
 		return
 	}
 
-    if len(postMd.Content) == 0 {
-        return
-    }
-    var appendPostMd models.AppendPost
-    appendPostMd.Message = form.Content
-    appendPostMd.Post = &postMd
+	if len(postMd.Content) == 0 {
+		return
+	}
+	var appendPostMd models.AppendPost
+	appendPostMd.Message = form.Content
+	appendPostMd.Post = &postMd
 
 	if err := form.AppendPost(&appendPostMd, &this.User); err == nil {
 		this.JsStorage("deleteKey", "post/append")
 		this.Redirect(postMd.Link(), 302)
-    }
+	}
 }
-
