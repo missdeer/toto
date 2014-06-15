@@ -1,23 +1,58 @@
 {{template "base/base.html" .}}
 {{template "base/base_common.html" .}}
 {{define "meta"}}
-    <title>{{i18n .Lang "app_name"}} - {{i18n .Lang "app_intro"}}</title>
-    <meta name="description" content="{{i18n .Lang "app_desc"}}" />
-    <meta name="keywords" content="{{i18n .Lang "app_keywords"}}">
+<title>{{i18n .Lang "app_name"}} - {{i18n .Lang "app_intro"}}</title>
+<meta name="description" content="{{i18n .Lang "app_desc"}}" />
+<meta name="keywords" content="{{i18n .Lang "app_keywords"}}">
+<meta http-equiv="cache-control" content="max-age=31536000" />
 {{end}}
 {{define "body"}}
 <div class="row">
-    <div id="content" class="col-md-8">
-    	<div class="box">
-            <div class="cell breadcrumb first">
-				{{i18n .Lang "about"}}
-            </div>
-        </div>
-        
-	</div>
-
-    <div id="sidebar" class="col-md-4">
-        {{template "post/component/sidebar.html" .}}
+  <div id="content" class="col-md-8">
+    <div class="box">
+      <div class="cell breadcrumb first"> {{i18n .Lang "about"}}Yiili </div>
+      <div class="cell nav-topics last">
+        <p>衣丽是一个面向新女性的轻松、有爱的交流讨论社区。你可以在这里分享自己的宝贵经验和生活感悟，更可以在这里学习和借鉴其他的方法和技巧。</p>
+        <p>目前衣丽社区的主要方向集中在化妆美容、美发、穿着服饰、运动健康、饮食营养、情绪修养和香水品鉴等主题上。原则上我们尽量避免出现除此以外的诸如政治之类话题。</p>
+        <p>希望大家能够多多分享自己正在做的有趣事物、交流想法，在这里找到朋友甚至新的机会。并且，最重要的是，在这一切的过程中，保持对他人的友善。</p>
+        <p>为了保持这里的良好氛围，衣丽有自己的明确规则：
+        <ul>
+          <li>这里绝对不会全文转载任何文章，而只会以链接方式分享；</li>
+          <li>这里感激和崇尚美的事物；</li>
+          <li>这里尊重并鼓励原创；</li>
+          <li>这里反对中文互联网上的无信息量习惯如“顶”，“沙发”，“前排”，“留名”，“路过” ；</li>
+        </ul>
+        <p>我们致力于为每一位爱美女性提供一个轻松，写意的分享交流环境！</p>
+      </div>
     </div>
+  </div>
+  <div id="sidebar" class="col-md-4">
+    <div class="box">
+      <div class="cell first">{{i18n .Lang "sidebar.follow_us"}}</div>
+      <div class="cell last">
+        <ul class="sidebar-list">
+          <li><a target="_blank" href="https://www.facebook.com/kelly.shen.501"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-facebook.png">Facebook</a></li>
+          <li><a target="_blank" href="https://twitter.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-twitter.png">Twitter</a></li>
+          <li><a target="_blank" href="https://plus.google.com/105276220177876343905"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-googleplus.png">Google Plus</a></li>
+          <li><a target="_blank" href="http://fanfou.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-fanfou.png">饭否</a></li>
+          <li><a target="_blank" href="http://weibo.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-sinaweibo.png">新浪微博</a></li>
+          <li><a target="_blank" href="http://t.qq.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-qqweibo.png">腾讯微博</a></li>
+          <li><a target="_blank" href="http://t.163.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-163weibo.png">网易微博</a></li>
+          <li><a target="_blank" href="http://misskerisdream.t.sohu.com"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-sohuweibo.png">搜狐微博</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="box">
+      <div class="cell first">{{i18n .Lang "sidebar.frined_links"}}</div>
+      <div class="cell last">
+        <ul class="sidebar-list">
+          <li><a target="_blank" href="http://shop.yii.li/">Miss Keri's Dream</a></li>
+          <li><a target="_blank" href="http://blog.yii.li/">卧薪尝胆的类库要赚好多钱</a></li>
+          <li><a target="_blank" href="http://www.miaocoffee.com">喵咖啡</a></li>
+          <li><a target="_blank" href="http://www.dfordsoft.com">DForD Software</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 {{end}}
