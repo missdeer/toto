@@ -85,6 +85,11 @@ func main() {
 	beego.Router("/category/:slug", posts, "get:Category")
 	beego.Router("/topic/:slug", posts, "get:Topic;post:TopicSubmit")
 
+	auxiliaryR := new(post.AuxiliaryRouter)
+	beego.Router("/faq", auxiliaryR, "get:FAQ")
+	beego.Router("/contact", auxiliaryR, "get:Contact")
+	beego.Router("/about", auxiliaryR, "get:About")
+
 	postR := new(post.PostRouter)
 	beego.Router("/new", postR, "get:New;post:NewSubmit")
 	beego.Router("/post/:post([0-9]+)", postR, "get:Single;post:SingleSubmit")
