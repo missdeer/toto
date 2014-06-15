@@ -1,10 +1,10 @@
 {{template "base/base.html" .}}
 {{template "base/base_common.html" .}}
 {{define "meta"}}
-    <title>{{i18n .Lang "app_name"}} - {{i18n .Lang "app_intro"}}</title>
-    <meta name="description" content="{{i18n .Lang "app_desc"}}" />
-    <meta name="keywords" content="{{i18n .Lang "app_keywords"}}">
-    <style type="text/css" media="screen">
+<title>{{i18n .Lang "app_name"}} - {{i18n .Lang "app_intro"}}</title>
+<meta name="description" content="{{i18n .Lang "app_desc"}}" />
+<meta name="keywords" content="{{i18n .Lang "app_keywords"}}">
+<style type="text/css" media="screen">
     .snsicon {
         padding-right: 5px;
         padding-left: 5px;
@@ -14,30 +14,25 @@
 {{end}}
 {{define "body"}}
 <div class="row">
-    <div id="content" class="col-md-8">
-    	<div class="box">
-            <div class="cell breadcrumb first">
-				{{i18n .Lang "contact"}}
-            </div>
-            <div class="cell nav-topics last">
-                <p>如果你对衣丽社区有任何意见或建议，可通过电子邮件<a href="mailto:yiili@dfordsoft.com">yiili@dfordsoft.com</a>联系我们。</p>
-                <p>你也可以在以下主流的社交网站中关注我们并随时与我们互动：</p>
-                <ul class="sidebar-list">
-                    <li><a target="_blank" href="https://www.facebook.com/kelly.shen.501"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-facebook.png">Facebook</a></li>
-                    <li><a target="_blank" href="https://twitter.com/misskerisdream"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-twitter.png">Twitter</a></li>
-                    <li><a target="_blank" href="https://plus.google.com/105276220177876343905"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-googleplus.png">Google Plus</a></li>
-                    <li><a target="_blank" href="http://fanfou.com/misskerisdream"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-fanfou.png">饭否</a></li>
-                    <li><a target="_blank" href="http://weibo.com/misskerisdream"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-sinaweibo.png">新浪微博</a></li>
-                    <li><a target="_blank" href="http://t.qq.com/misskerisdream"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-qqweibo.png">腾讯微博</a></li>
-                    <li><a target="_blank" href="http://t.163.com/misskerisdream"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-163weibo.png">网易微博</a></li>
-                    <li><a target="_blank" href="http://misskerisdream.t.sohu.com"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-sohuweibo.png">搜狐微博</a></li>
-                </ul>
-            </div>
-        </div>
+  <div id="content" class="col-md-8">
+    <div class="box">
+      <div class="cell breadcrumb first"> {{i18n .Lang "contact"}} </div>
+      <div class="cell nav-topics last">
+        <p>如果你对衣丽社区有任何意见或建议，可通过电子邮件<a href="mailto:yiili@dfordsoft.com">yiili@dfordsoft.com</a>联系我们。</p>
+        <p>你也可以在以下主流的社交网站中关注我们并随时与我们互动：</p>
+        <ul class="sidebar-list">
+          <li><a target="_blank" href="https://www.facebook.com/kelly.shen.501"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-facebook.png">Facebook</a></li>
+          <li><a target="_blank" href="https://twitter.com/misskerisdream"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-twitter.png">Twitter</a></li>
+          <li><a target="_blank" href="https://plus.google.com/105276220177876343905"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-googleplus.png">Google Plus</a></li>
+          <li><a target="_blank" href="http://fanfou.com/misskerisdream"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-fanfou.png">饭否</a></li>
+          <li><a target="_blank" href="http://weibo.com/misskerisdream"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-sinaweibo.png">新浪微博</a></li>
+          <li><a target="_blank" href="http://t.qq.com/misskerisdream"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-qqweibo.png">腾讯微博</a></li>
+          <li><a target="_blank" href="http://t.163.com/misskerisdream"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-163weibo.png">网易微博</a></li>
+          <li><a target="_blank" href="http://misskerisdream.t.sohu.com"><img class='snsicon' width="32" height="32" src="{{.ImgBedUrl}}static/img/snsicon/32-sohuweibo.png">搜狐微博</a></li>
+        </ul>
+      </div>
     </div>
-
-    <div id="sidebar" class="col-md-4">
-        {{template "post/component/sidebar.html" .}}
-    </div>
+  </div>
+  <div id="sidebar" class="col-md-4"> {{template "post/component/sidebar.html" .}} </div>
 </div>
-{{end}}
+{{end}} 
