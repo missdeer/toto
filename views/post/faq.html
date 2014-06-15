@@ -1,59 +1,56 @@
 {{template "base/base.html" .}}
 {{template "base/base_common.html" .}}
 {{define "meta"}}
-    <title>{{i18n .Lang "app_name"}} - {{i18n .Lang "app_intro"}}</title>
-    <meta name="description" content="{{i18n .Lang "app_desc"}}" />
-    <meta name="keywords" content="{{i18n .Lang "app_keywords"}}">
+<title>{{i18n .Lang "app_name"}} - {{i18n .Lang "app_intro"}}</title>
+<meta name="description" content="{{i18n .Lang "app_desc"}}" />
+<meta name="keywords" content="{{i18n .Lang "app_keywords"}}">
 {{end}}
 {{define "body"}}
 <div class="row">
-    <div id="content" class="col-md-8">
-    	<div class="box">
-            <div class="cell breadcrumb first">
-				FAQ
-            </div>
-            <div class="cell nav-topics last">
-				<div class="post cell">
-			    <h4>Yiili（衣丽）是什么意思？</h4>
-				<p>Yiili就是衣丽的谐音拼写，衣丽的原意是穿上各种漂亮的衣服打扮出最美丽的自己。</p>
-				</div>
-				<div class="post cell">
-			    <h4>Yiili（衣丽）的主题是什么？</h4>
-				<p>Yiili（衣丽）是一个轻松写意的交流社区，这里存在的主要意义是帮助每一位爱美的女性分享经验和获取知识。目前衣丽社区的主要方向集中在化妆美容、美发、穿着服饰、运动健康、饮食营养、情绪修养和香水品鉴等主题上。原则上我们尽量避免出现除此以外的诸如政治之类话题。</p>
-				</div>
-				<div class="post cell">
-			    <h4>我可以在这里推广自己的商品么？</h4>
-				<p>我们欢迎能为大家带来帮助的东西的介绍。但是如果你在这里注册一个账号，就是为了将自己网站上的链接一个一个搬运过来的话，请停止这样做。 </p>
-				</div>
-				<div class="post cell">
-			    <h4>如何发图？</h4>
-				<p>在发表帖子或回复时可以选择本地图片并上传，由于网络延时的原因，点击上传图片按钮后，你需要耐心等待几秒钟，直到提示上传成功并显示上传后的路径。你也可以直接写入网上其他图片的链接地址。图片链接方法具体请看Markdown标记语法说明文档。</p>
-				</div>
-				<div class="post cell">
-			    <h4>我在这里看到了一些不感兴趣的信息怎么办？</h4>
-				<p>目前我们还没有相应的措施帮助你过滤一些信息，我们已经在考虑加入一些行之有效又使用简单的方法。</p>
-				</div>
-				<div class="post cell">
-			    <h4>我是否可以编辑或者移动自己的主题？</h4>
-				<p>在主题发布之后的15分钟内，你可以自由地编辑自己的主题，或者将其移动到其他节点。但是在15分钟之后，就不可以再进行这些操作了。对于编辑的限制是为了让大家对发表在Yiili（衣丽）的言论更加负责。</p>
-				</div>
-				<div class="post cell">
-			    <h4>我是否可以编辑自己的回复？</h4>
-				<p>回复在发表之后就不可以再进行任何编辑。因此，建议大家在按下发布按钮之前，仔细阅读一下以确保没有错别字或者不友善的表达方式。 </p>
-				</div>
-				<div class="post cell">
-			    <h4>我是否可以删除自己的回复？</h4>
-				<p>在Yiili（衣丽），回复一旦发布，就不再可以删除和编辑。这个规则的设立，是为了创造一个所有人对自己说过的话更加负责的社区氛围。 </p>
-				</div>
-				<div class="post cell">
-			    <h4>我是否可以删除自己的主题？</h4>
-				<p>如果你创建的主题没有收到过任何来自其他人的回复，那就可以。请联系管理员提出你的删除请求。</p>
-				<p>已经有回复的主题，在Yiili（衣丽）是不会被删除的。</p>
-				</div>
-            </div>
+  <div id="content" class="col-md-8">
+    <div class="box">
+      <div class="cell breadcrumb first"> FAQ </div>
+      <div class="cell nav-topics last">
+        <div class="post cell">
+          <h4>Yiili（衣丽）是什么意思？</h4>
+          <p>Yiili就是衣丽的谐音拼写，衣丽的原意是穿上各种漂亮的衣服打扮出最美丽的自己。</p>
         </div>
-	</div>
-
+        <div class="post cell">
+          <h4>Yiili（衣丽）的主题是什么？</h4>
+          <p>Yiili（衣丽）是一个轻松写意的交流社区，这里存在的主要意义是帮助每一位爱美的女性分享经验和获取知识。目前衣丽社区的主要方向集中在化妆美容、美发、穿着服饰、运动健康、饮食营养、情绪修养和香水品鉴等主题上。原则上我们尽量避免出现除此以外的诸如政治之类话题。</p>
+        </div>
+        <div class="post cell">
+          <h4>我可以在这里推广自己的商品么？</h4>
+          <p>我们欢迎能为大家带来帮助的东西的介绍。但是如果你在这里注册一个账号，就是为了将自己网站上的链接一个一个搬运过来的话，请停止这样做。 </p>
+        </div>
+        <div class="post cell">
+          <h4>如何发图？</h4>
+          <p>在发表帖子或回复时可以选择本地图片并上传，由于网络延时的原因，点击上传图片按钮后，你需要耐心等待几秒钟，直到提示上传成功并显示上传后的路径。你也可以直接写入网上其他图片的链接地址。图片链接方法具体请看Markdown标记语法说明文档。</p>
+        </div>
+        <div class="post cell">
+          <h4>我在这里看到了一些不感兴趣的信息怎么办？</h4>
+          <p>目前我们还没有相应的措施帮助你过滤一些信息，我们已经在考虑加入一些行之有效又使用简单的方法。</p>
+        </div>
+        <div class="post cell">
+          <h4>我是否可以编辑或者移动自己的主题？</h4>
+          <p>在主题发布之后的15分钟内，你可以自由地编辑自己的主题，或者将其移动到其他节点。但是在15分钟之后，就不可以再进行这些操作了。对于编辑的限制是为了让大家对发表在Yiili（衣丽）的言论更加负责。</p>
+        </div>
+        <div class="post cell">
+          <h4>我是否可以编辑自己的回复？</h4>
+          <p>回复在发表之后就不可以再进行任何编辑。因此，建议大家在按下发布按钮之前，仔细阅读一下以确保没有错别字或者不友善的表达方式。 </p>
+        </div>
+        <div class="post cell">
+          <h4>我是否可以删除自己的回复？</h4>
+          <p>在Yiili（衣丽），回复一旦发布，就不再可以删除和编辑。这个规则的设立，是为了创造一个所有人对自己说过的话更加负责的社区氛围。 </p>
+        </div>
+        <div class="post cell">
+          <h4>我是否可以删除自己的主题？</h4>
+          <p>如果你创建的主题没有收到过任何来自其他人的回复，那就可以。请联系管理员提出你的删除请求。</p>
+          <p>已经有回复的主题，在Yiili（衣丽）是不会被删除的。</p>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="sidebar" class="col-md-4">
     <div class="box">
       <div class="cell first">{{i18n .Lang "sidebar.follow_us"}}</div>
