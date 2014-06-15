@@ -52,33 +52,8 @@
       </div>
     </div>
   </div>
-  <div id="sidebar" class="col-md-4">
-    <div class="box">
-      <div class="cell first">{{i18n .Lang "sidebar.follow_us"}}</div>
-      <div class="cell last">
-        <ul class="sidebar-list">
-          <li><a target="_blank" href="https://www.facebook.com/kelly.shen.501"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-facebook.png">Facebook</a></li>
-          <li><a target="_blank" href="https://twitter.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-twitter.png">Twitter</a></li>
-          <li><a target="_blank" href="https://plus.google.com/105276220177876343905"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-googleplus.png">Google Plus</a></li>
-          <li><a target="_blank" href="http://fanfou.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-fanfou.png">饭否</a></li>
-          <li><a target="_blank" href="http://weibo.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-sinaweibo.png">新浪微博</a></li>
-          <li><a target="_blank" href="http://t.qq.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-qqweibo.png">腾讯微博</a></li>
-          <li><a target="_blank" href="http://t.163.com/misskerisdream"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-163weibo.png">网易微博</a></li>
-          <li><a target="_blank" href="http://misskerisdream.t.sohu.com"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-sohuweibo.png">搜狐微博</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="box">
-      <div class="cell first">{{i18n .Lang "sidebar.frined_links"}}</div>
-      <div class="cell last">
-        <ul class="sidebar-list">
-          <li><a target="_blank" href="http://shop.yii.li/">Miss Keri's Dream</a></li>
-          <li><a target="_blank" href="http://blog.yii.li/">卧薪尝胆的类库要赚好多钱</a></li>
-          <li><a target="_blank" href="http://www.miaocoffee.com">喵咖啡</a></li>
-          <li><a target="_blank" href="http://www.dfordsoft.com">DForD Software</a></li>
-        </ul>
-      </div>
-    </div>
+  <div id="sidebar" class="col-md-4">    
+        {{template "post/component/links.html" .}}
   </div>
 </div>
 {{end}}
