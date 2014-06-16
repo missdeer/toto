@@ -18,6 +18,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 
 	"github.com/astaxie/beego"
 	"github.com/beego/social-auth"
@@ -53,6 +54,31 @@ func initialize() {
 	setting.SocialAuth.ConnectFailedURL = "/settings/profile"
 	setting.SocialAuth.ConnectRegisterURL = "/register/connect"
 	setting.SocialAuth.LoginURL = "/login"
+}
+
+func unauthorized_handler(rw http.ResponseWriter, r *http.Request) {
+	response := []byte("<html><body><meta http-equiv=\"refresh\" content=\"0;url=/401\"></body></html>")
+	rw.Write(response)
+}
+
+func forbidden_handler(rw http.ResponseWriter, r *http.Request) {
+	response := []byte("<html><body><meta http-equiv=\"refresh\" content=\"0;url=/403\"></body></html>")
+	rw.Write(response)
+}
+
+func not_found_handler(rw http.ResponseWriter, r *http.Request) {
+	response := []byte("<html><body><meta http-equiv=\"refresh\" content=\"0;url=/404\"></body></html>")
+	rw.Write(response)
+}
+
+func internal_server_error_handler(rw http.ResponseWriter, r *http.Request) {
+	response := []byte("<html><body><meta http-equiv=\"refresh\" content=\"0;url=/500\"></body></html>")
+	rw.Write(response)
+}
+
+func service_unavailable_handler(rw http.ResponseWriter, r *http.Request) {
+	response := []byte("<html><body><meta http-equiv=\"refresh\" content=\"0;url=/503\"></body></html>")
+	rw.Write(response)
 }
 
 func main() {
@@ -94,6 +120,12 @@ func main() {
 	beego.Router("/404", auxiliaryR, "get:Err404")
 	beego.Router("/500", auxiliaryR, "get:Err500")
 	beego.Router("/503", auxiliaryR, "get:Err503")
+
+	beego.Errorhandler("401", unauthorized_handler)
+	beego.Errorhandler("403", forbidden_handler)
+	beego.Errorhandler("404", not_found_handler)
+	beego.Errorhandler("500", internal_server_error_handler)
+	beego.Errorhandler("503", service_unavailable_handler)
 
 	postR := new(post.PostRouter)
 	beego.Router("/new", postR, "get:New;post:NewSubmit")
