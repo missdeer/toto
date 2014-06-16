@@ -30,7 +30,7 @@
         </div>
         <div class="post cell">
           <h4>我在这里看到了一些不感兴趣的信息怎么办？</h4>
-          <p>目前我们还没有相应的措施帮助你过滤一些信息，我们已经在考虑加入一些行之有效又使用简单的方法。</p>
+          <p>目前我们还没有相应的措施帮助你过滤一些信息，我们已经在考虑加入一些行之有效又使用简单的方法。如果你有好的建议，请<a href="/contact">联系我们</a>。</p>
         </div>
         <div class="post cell">
           <h4>我是否可以编辑或者移动自己的主题？</h4>
@@ -52,7 +52,8 @@
       </div>
     </div>
   </div>
-  <div id="sidebar" class="col-md-4">    
+  <div id="sidebar" class="col-md-4">   
+        {{template "post/component/followus-vert.html" .}} 
         {{template "post/component/links.html" .}}
   </div>
 </div>
