@@ -1,0 +1,18 @@
+{{template "base/base.html" .}}
+{{template "base/base_common.html" .}}
+{{define "meta"}}
+<title>{{i18n .Lang "error.internal_server_error"}}</title>
+<meta name="description" content="{{i18n .Lang "app_desc"}}" />
+<meta name="keywords" content="{{i18n .Lang "app_keywords"}}">
+{{end}}
+{{define "body"}}
+<div class="row">
+  <div id="content" class="col-md-8">
+        <img src="{{.ImgBedUrl}}static/img/errors/500.png">
+  </div>
+  <div id="sidebar" class="col-md-4">  
+        {{template "post/component/followus-vert.html" .}}
+        {{template "post/component/links.html" .}}
+  </div>
+</div>
+{{end}} 
