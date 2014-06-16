@@ -198,8 +198,8 @@ func main() {
 		beego.Router(fmt.Sprintf("/admin/:model(%s)/:id([0-9]+)/:action(delete)", name), router, "get:Confirm;post:Delete")
 	}
 
-	// "robot.txt"
-	beego.Router("/robot.txt", &base.RobotRouter{})
+	// "robots.txt"
+	beego.Router("/robots.txt", &base.RobotRouter{})
 
 	articleR := new(article.ArticleRouter)
 	beego.Router("/:slug([0-9a-z-./]+)", articleR, "get:Show")
