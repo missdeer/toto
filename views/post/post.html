@@ -18,7 +18,7 @@
                         </a>
                     </div>
                     <h1 class="post-title">
-                        {{.Post.Title}}{{if .Post.IsBest}} <i class="icon-bookmark color-red"></i>{{end}}{{if .Post.IsTop}} <i class="icon-bookmark color-orange"></i>{{end}}
+                        {{.Post.Title}}{{if .Post.IsBest}} <i class="icon-bookmark color-red"></i>{{end}}{{if .Post.IsTop}} <i class="icon-cloud-upload color-red"></i>{{end}}
                     </h1>
                     <div class="post-meta">
                         <a target="_blank" class="tag" href="{{.Post.Category.Link}}">{{i18n .Lang (print "category." .Post.Category.Name)}}</a> • <a target="_blank" class="tag" href="{{.Post.Topic.Link}}">{{.Post.Topic.GetName .Lang}}</a> • {{i18n .Lang .Post.GetLang}} • {{i18n .Lang "post.post_author"}} <a target="_blank" href="{{.Post.User.Link}}">{{.Post.User.NickName}}</a> • <span class="time">{{timesince .Lang .Post.Created}}</span>{{if .Post.Replys}}{{if .Post.LastReply}} • <span class="last-reply">{{i18n .Lang "post.last_reply"}} <a href="{{.Post.LastReply.Link}}">{{.Post.LastReply.NickName}}</a></span>{{end}}{{end}}
