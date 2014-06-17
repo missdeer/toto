@@ -62,14 +62,25 @@ func (this *PostListRouter) Home() {
 	this.Data["IsHome"] = true
 	this.TplNames = "post/home.html"
 
-	var cats []models.Category
-	this.setCategories(&cats)
+    var cats []models.Category
+    this.setCategories(&cats)
 
 	var posts []models.Post
-	qs := models.Posts().OrderBy("-Created").Limit(25).RelatedSel()
-	qs = this.postsFilter(qs)
+    postsModel := models.Posts()
 
-	models.ListObjects(qs, &posts)
+	var topposts []models.Post
+	qs := postsModel.Filter("IsTop", true).OrderBy("-Created").Limit(25).RelatedSel()
+	qs = this.postsFilter(qs)
+	models.ListObjects(qs, &topposts)
+
+    topCount := len(topposts)
+	qs2 := postsModel.Filter("IsTop", false).OrderBy("-Created").Limit(25 - topCount).RelatedSel()
+	qs2 = this.postsFilter(qs2)
+	var nontopposts []models.Post
+	models.ListObjects(qs2, &nontopposts)
+
+    posts = append(topposts, nontopposts...)
+
 	this.Data["Posts"] = posts
 
 	this.Data["CategorySlug"] = "hot"
