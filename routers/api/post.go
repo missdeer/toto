@@ -21,7 +21,7 @@ import (
 	"github.com/missdeer/KellyBackend/modules/models"
 )
 
-func (this *ApiRouter) PostBest() {
+func (this *ApiRouter) PostToggle() {
     result := map[string]interface{}{
         "success": false,
     }
@@ -48,6 +48,20 @@ func (this *ApiRouter) PostBest() {
                 o.Read(&p);
 
                 p.IsBest = !p.IsBest
+                if _, err := o.Update(&p); err != nil {
+                    beego.Error("PostCounterAdd ", err)
+                } else {
+                    result["success"] = true
+                }
+            }
+        case "toggle-top":
+            id, _ := this.GetInt("post")
+            if id > 0 {
+                o := orm.NewOrm()
+                p := models.Post{ Id: int(id) }
+                o.Read(&p);
+
+                p.IsTop = !p.IsTop
                 if _, err := o.Update(&p); err != nil {
                     beego.Error("PostCounterAdd ", err)
                 } else {

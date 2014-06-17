@@ -18,18 +18,13 @@
                         </a>
                     </div>
                     <h1 class="post-title">
-                        {{.Post.Title}}{{if .Post.IsBest}} <i class="icon-bookmark color-red"></i>{{end}}
+                        {{.Post.Title}}{{if .Post.IsBest}} <i class="icon-bookmark color-red"></i>{{end}}{{if .Post.IsTop}} <i class="icon-bookmark color-orange"></i>{{end}}
                     </h1>
                     <div class="post-meta">
                         <a target="_blank" class="tag" href="{{.Post.Category.Link}}">{{i18n .Lang (print "category." .Post.Category.Name)}}</a> • <a target="_blank" class="tag" href="{{.Post.Topic.Link}}">{{.Post.Topic.GetName .Lang}}</a> • {{i18n .Lang .Post.GetLang}} • {{i18n .Lang "post.post_author"}} <a target="_blank" href="{{.Post.User.Link}}">{{.Post.User.NickName}}</a> • <span class="time">{{timesince .Lang .Post.Created}}</span>{{if .Post.Replys}}{{if .Post.LastReply}} • <span class="last-reply">{{i18n .Lang "post.last_reply"}} <a href="{{.Post.LastReply.Link}}">{{.Post.LastReply.NickName}}</a></span>{{end}}{{end}}
                     </div>
                 </div>
                 <div class="cell last slim">
-                    {{if ne (datetime .Post.Updated) (datetime .Post.Created)}}
-                        <p class="post-meta pull-right">
-                            {{if .Post.LastAuthor}}<a target="_blank" href="{{.Post.LastAuthor.Link}}">{{.Post.LastAuthor.NickName}}</a> • {{end}}{{i18n .Lang "post.modified_on"}} {{timesince .Lang .Post.Updated}} / {{.Post.Updated|datetimes}}
-                        </p>
-                    {{end}}
                     {{if .IsLogin}}
                         <p>
                         {{if eq .Post.User.Id .User.Id}}
@@ -46,6 +41,11 @@
                             <a rel="toggle-post-best" class="color-link" href="javascript:">
                                 {{if .Post.IsBest}}{{i18n .Lang "post.remove_best"}}{{else}}
                                 {{i18n .Lang "post.set_best"}}{{end}}
+                            </a>
+                            - 
+                            <a rel="toggle-post-top" class="color-link" href="javascript:">
+                                {{if .Post.IsTop}}{{i18n .Lang "post.remove_top"}}{{else}}
+                                {{i18n .Lang "post.set_top"}}{{end}}
                             </a>
                         {{end}}
                         </p>
@@ -168,11 +168,24 @@
     </div>
 </div>
 {{if .User.IsAdmin}}
+<!-- toggle post best BEGIN -->
 <script type="text/javascript">
     (function($){
         $(document).on('click', '[rel=toggle-post-best]', function(){
             var $btn = $(this);
             $.post('/api/post', {action: 'toggle-best', post: '{{.Post.Id}}'}).complete(function(){
+                window.location.reload();
+            });
+        });
+    })(jQuery);
+</script>
+
+<!-- toggle post top BEGIN -->
+<script type="text/javascript">
+    (function($){
+        $(document).on('click', '[rel=toggle-post-top]', function(){
+            var $btn = $(this);
+            $.post('/api/post', {action: 'toggle-top', post: '{{.Post.Id}}'}).complete(function(){
                 window.location.reload();
             });
         });

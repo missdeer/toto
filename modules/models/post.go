@@ -40,6 +40,7 @@ type Post struct {
 	Topic        *Topic    `orm:"rel(fk)"`
 	Lang         int       `orm:"index"`
 	IsBest       bool      `orm:"index"`
+    IsTop        bool      `orm:"index"`
 	Category     *Category `orm:"rel(fk)"`
 	Created      time.Time `orm:"auto_now_add"`
 	Updated      time.Time `orm:"auto_now;index"`
