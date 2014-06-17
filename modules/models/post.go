@@ -168,6 +168,7 @@ type Comment struct {
 	MessageCache string `orm:"type(text)"`
 	Floor        int
 	Status       int
+    Duplicated   bool    `orm:"index"`
 	Created      time.Time `orm:"auto_now_add;index"`
 }
 

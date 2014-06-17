@@ -404,11 +404,17 @@ func (this *PostRouter) loadAppends(post *models.Post, appends *[]*models.Append
 }
 
 func (this *PostRouter) loadComments(post *models.Post, comments *[]*models.Comment) {
-	qs := post.Comments()
-	if num, err := qs.RelatedSel("User").OrderBy("Id").All(comments); err == nil {
+	qs := post.Comments().Filter("Duplicated", false)
+	if _, err := qs.RelatedSel("User").OrderBy("Id").All(comments); err == nil {
 		this.Data["Comments"] = *comments
-		this.Data["CommentsNum"] = num
+		this.Data["CommentsNum"] = post.Replys
 	}
+}
+
+func (this *PostRouter) isDuplicatedComment(post *models.Post, message string) bool {
+    qs := post.Comments().Filter("Message", message).RelatedSel()
+    num, _ := qs.Count()
+    return num > 0
 }
 
 func (this *PostRouter) Single() {
@@ -458,6 +464,7 @@ func (this *PostRouter) SingleSubmit() {
 	}
 
 	comment := models.Comment{}
+    comment.Duplicated = this.isDuplicatedComment(&postMd, form.Message)
 	if err := form.SaveComment(&comment, &this.User, &postMd); err == nil {
 		this.JsStorage("deleteKey", "post/comment")
 		this.Redirect(postMd.Link(), 302)
