@@ -101,6 +101,7 @@ func (this *PostListRouter) Category() {
 		return
 	}
 
+	var posts []models.Post
 	pers := 25
 
 	qs := models.Posts().Filter("Category", &cat)
@@ -109,10 +110,22 @@ func (this *PostListRouter) Category() {
 	cnt, _ := models.CountObjects(qs)
 	pager := this.SetPaginator(pers, cnt)
 
-	qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+    if pager.Page() > 1 {
+        qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+        models.ListObjects(qs, &posts)
+    } else {
+        qsTop := models.Posts().Filter("Category", &cat).Filter("IsTop", true)
+        qsTop = this.postsFilter(qsTop).OrderBy("-Created").Limit(pers).RelatedSel()
+        var topposts []models.Post
+        models.ListObjects(qsTop, &topposts)
 
-	var posts []models.Post
-	models.ListObjects(qs, &posts)
+        qsNonTop := models.Posts().Filter("Category", &cat).Filter("IsTop", false)
+        qsNonTop = this.postsFilter(qsNonTop).OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+        var nontopposts []models.Post
+        models.ListObjects(qsNonTop, &nontopposts)
+
+        posts = append(topposts, nontopposts...)
+    }
 
 	this.Data["Posts"] = posts
 	this.Data["Category"] = &cat
@@ -239,6 +252,7 @@ func (this *PostListRouter) Topic() {
 			return
 		}
 
+		var posts []models.Post
 		pers := 25
 
 		qs := models.Posts().Filter("Topic", &topic)
@@ -247,10 +261,22 @@ func (this *PostListRouter) Topic() {
 		cnt, _ := models.CountObjects(qs)
 		pager := this.SetPaginator(pers, cnt)
 
-		qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+        if pager.Page() > 1 {
+            qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+            models.ListObjects(qs, &posts)
+        } else {
+            qsTop := models.Posts().Filter("Topic", &topic).Filter("IsTop", true)
+            qsTop = this.postsFilter(qsTop).OrderBy("-Created").Limit(pers).RelatedSel()
+            var topposts []models.Post
+            models.ListObjects(qsTop, &topposts)
 
-		var posts []models.Post
-		models.ListObjects(qs, &posts)
+            qsNonTop := models.Posts().Filter("Topic", &topic).Filter("IsTop", false)
+            qsNonTop = this.postsFilter(qsNonTop).OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+            var nontopposts []models.Post
+            models.ListObjects(qsNonTop, &nontopposts)
+
+            posts = append(topposts, nontopposts...)
+        }
 
 		this.Data["Posts"] = posts
 		this.Data["Topic"] = &topic
