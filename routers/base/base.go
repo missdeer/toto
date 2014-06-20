@@ -31,6 +31,8 @@ import (
 	"github.com/missdeer/KellyBackend/modules/models"
 	"github.com/missdeer/KellyBackend/modules/utils"
 	"github.com/missdeer/KellyBackend/setting"
+
+    "github.com/Shaked/gomobiledetect"
 )
 
 type NestPreparer interface {
@@ -43,6 +45,8 @@ type BaseRouter struct {
 	i18n.Locale
 	User    models.User
 	IsLogin bool
+    IsMobile bool
+    IsTablet bool
 }
 
 // Prepare implemented Prepare method for baseRouter.
@@ -54,6 +58,13 @@ func (this *BaseRouter) Prepare() {
 			return
 		}
 	}
+
+    // mobile detect
+    detect := gomobiledetect.NewMobileDetect(this.Ctx.Request, nil)
+    this.IsMobile = detect.IsMobile()
+    this.Data["IsMobile"] = this.IsMobile
+    this.IsTablet = detect.IsTablet() 
+    this.Data["IsTablet"] = this.IsTablet
 
 	// page start time
 	this.Data["PageStartTime"] = time.Now()
