@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"math/rand"
 	"net/url"
 	"time"
 
@@ -44,8 +45,14 @@ func boolicon(b bool) (s template.HTML) {
 }
 
 func timeLessThan(createdTime time.Time, limit int) bool {
-    var timeLimit = time.Since(createdTime).Minutes() < float64(limit)
-    return timeLimit
+	var timeLimit = time.Since(createdTime).Minutes() < float64(limit)
+	return timeLimit
+}
+
+func randomAdRecord() setting.AdRecord {
+	beego.Info("randomAdRecord()")
+	num := len(setting.Ads.Records)
+	return setting.Ads.Records[rand.Intn(num)]
 }
 
 func date(t time.Time) string {
@@ -120,6 +127,7 @@ func loginto(uris ...string) template.HTMLAttr {
 }
 
 func init() {
+	rand.Seed(time.Now().UnixNano())
 	// Register template functions.
 	beego.AddFuncMap("i18n", i18nHTML)
 	beego.AddFuncMap("boolicon", boolicon)
@@ -131,7 +139,8 @@ func init() {
 	beego.AddFuncMap("loadtimes", loadtimes)
 	beego.AddFuncMap("sum", sum)
 	beego.AddFuncMap("loginto", loginto)
-    beego.AddFuncMap("timeLessThan", timeLessThan)
+	beego.AddFuncMap("timeLessThan", timeLessThan)
+	beego.AddFuncMap("randomAdRecord", randomAdRecord)
 }
 
 func RenderTemplate(TplNames string, Data map[interface{}]interface{}) string {
