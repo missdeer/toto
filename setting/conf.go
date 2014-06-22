@@ -17,147 +17,146 @@
 package setting
 
 import (
-	"fmt"
-	"net/url"
-	"os"
-	"path/filepath"
-	"strings"
-	"time"
     "encoding/xml"
+    "fmt"
     "io/ioutil"
+    "net/url"
+    "os"
+    "path/filepath"
+    "strings"
+    "time"
 
-	"github.com/Unknwon/goconfig"
-	"github.com/howeyc/fsnotify"
+    "github.com/Unknwon/goconfig"
+    "github.com/howeyc/fsnotify"
 
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/cache"
-	"github.com/astaxie/beego/orm"
-	"github.com/astaxie/beego/utils/captcha"
-	"github.com/beego/compress"
-	"github.com/beego/i18n"
-	"github.com/beego/social-auth"
-	"github.com/beego/social-auth/apps"
+    "github.com/astaxie/beego"
+    "github.com/astaxie/beego/cache"
+    "github.com/astaxie/beego/orm"
+    "github.com/astaxie/beego/utils/captcha"
+    "github.com/beego/compress"
+    "github.com/beego/i18n"
+    "github.com/beego/social-auth"
+    "github.com/beego/social-auth/apps"
 )
 
 const (
-	APP_VER = "1.0.0.1"
+    APP_VER = "1.0.0.1"
 )
 
 type AdRecord struct {
     XMLName xml.Name `xml:"ad"`
-    Url string `xml:"url"`
-    Img string `xml:"img"`
-    Title string `xml:"description"`
+    Url     string   `xml:"url"`
+    Img     string   `xml:"img"`
+    Title   string   `xml:"description"`
 }
 
 type AdRecords struct {
-    XMLName xml.Name `xml:"yiiliads"`
+    XMLName xml.Name   `xml:"yiiliads"`
     Records []AdRecord `xml:"ad"`
 }
 
 var (
-	AppName             string
-	AppVer              string
-	AppHost             string
-	AppUrl              string
-	AppLogo             string
-	ImgBedUrl           string
-	QiniuAppKey         string
-	QiniuSecretKey      string
-	QiniuBucketName     string
-	EnforceRedirect     bool
-	AvatarURL           string
-	SecretKey           string
-	ORCAVerifyCode      string
-	IsProMode           bool
-	ActiveCodeLives     int
-	ResetPwdCodeLives   int
-	DateFormat          string
-	DateTimeFormat      string
-	DateTimeShortFormat string
-	TimeZone            string
-	RealtimeRenderMD    bool
-	ImageSizeSmall      int
-	ImageSizeMiddle     int
-	ImageLinkAlphabets  []byte
-	ImageXSend          bool
-	ImageXSendHeader    string
-	Langs               []string
+    AppName             string
+    AppVer              string
+    AppHost             string
+    AppUrl              string
+    AppLogo             string
+    ImgBedUrl           string
+    QiniuAppKey         string
+    QiniuSecretKey      string
+    QiniuBucketName     string
+    EnforceRedirect     bool
+    AvatarURL           string
+    SecretKey           string
+    ORCAVerifyCode      string
+    IsProMode           bool
+    ActiveCodeLives     int
+    ResetPwdCodeLives   int
+    DateFormat          string
+    DateTimeFormat      string
+    DateTimeShortFormat string
+    TimeZone            string
+    RealtimeRenderMD    bool
+    ImageSizeSmall      int
+    ImageSizeMiddle     int
+    ImageLinkAlphabets  []byte
+    ImageXSend          bool
+    ImageXSendHeader    string
+    Langs               []string
 
-	LoginRememberDays int
-	LoginMaxRetries   int
-	LoginFailedBlocks int
+    LoginRememberDays int
+    LoginMaxRetries   int
+    LoginFailedBlocks int
 
-	CookieRememberName string
-	CookieUserName     string
+    CookieRememberName string
+    CookieUserName     string
 
-	// search
-	SearchEnabled bool
-	NativeSearch  bool
+    // search
+    SearchEnabled bool
+    NativeSearch  bool
 
-	// sphinx search setting
-	SphinxEnabled bool
-	SphinxHost    string
-	SphinxIndex   string
-	SphinxMaxConn int
+    // sphinx search setting
+    SphinxEnabled bool
+    SphinxHost    string
+    SphinxIndex   string
+    SphinxMaxConn int
 
-	// mail setting
-	MailUser     string
-	MailFrom     string
-	MailHost     string
-	MailAuthUser string
-	MailAuthPass string
+    // mail setting
+    MailUser     string
+    MailFrom     string
+    MailHost     string
+    MailAuthUser string
+    MailAuthPass string
 
-    Ads          AdRecords
+    Ads AdRecords
 )
 
 var (
-	// OAuth
-	GithubClientId       string
-	GithubClientSecret   string
-	GoogleClientId       string
-	GoogleClientSecret   string
-	WeiboClientId        string
-	WeiboClientSecret    string
-	QQClientId           string
-	QQClientSecret       string
-	TwitterClientId      string
-	TwitterClientSecret  string
-	FacebookClientId     string
-	FacebookClientSecret string
-	FanfouClientId       string
-	FanfouClientSecret   string
-	SohuClientId         string
-	SohuClientSecret     string
-	NeteaseClientId      string
-	NeteaseClientSecret  string
+    // OAuth
+    GithubClientId       string
+    GithubClientSecret   string
+    GoogleClientId       string
+    GoogleClientSecret   string
+    WeiboClientId        string
+    WeiboClientSecret    string
+    QQClientId           string
+    QQClientSecret       string
+    TwitterClientId      string
+    TwitterClientSecret  string
+    FacebookClientId     string
+    FacebookClientSecret string
+    FanfouClientId       string
+    FanfouClientSecret   string
+    SohuClientId         string
+    SohuClientSecret     string
+    NeteaseClientId      string
+    NeteaseClientSecret  string
 )
 
 const (
-	LangEnUS = iota
-	LangZhCN
+    LangEnUS = iota
+    LangZhCN
 )
 
 var (
-	// Social Auth
-	GithubAuth *apps.Github
-	GoogleAuth *apps.Google
-	SocialAuth *social.SocialAuth
+    // Social Auth
+    GithubAuth *apps.Github
+    GoogleAuth *apps.Google
+    SocialAuth *social.SocialAuth
 )
 
 var (
-	Cfg     *goconfig.ConfigFile
-	Cache   cache.Cache
-	Captcha *captcha.Captcha
+    Cfg     *goconfig.ConfigFile
+    Cache   cache.Cache
+    Captcha *captcha.Captcha
 )
 
 var (
-	GlobalConfPath   = "conf/global/app.ini"
-	AppConfPath      = "conf/app.ini"
-	CompressConfPath = "conf/compress.json"
+    GlobalConfPath   = "conf/global/app.ini"
+    AppConfPath      = "conf/app.ini"
+    CompressConfPath = "conf/compress.json"
     AdsConfPath      = "conf/ads.xml"
 )
-
 
 func LoadAds() {
     fh, err := os.Open(AdsConfPath)
@@ -173,7 +172,8 @@ func LoadAds() {
         return
     }
 
-    err = xml.Unmarshal( adsxml, &Ads)
+    Ads.Records = []AdRecord{}
+    err = xml.Unmarshal(adsxml, &Ads)
     if err != nil {
         beego.Error(err)
         return
@@ -469,6 +469,13 @@ func configWatcher() {
                     reloadConfig()
                     beego.Info("Config Reloaded")
 
+                case ".xml":
+                    if checkEventTime(event.Name) {
+                        continue
+                    }
+
+                    LoadAds()
+                    beego.Info("Ads config reloaded")
                 case ".json":
                     if checkEventTime(event.Name) {
                         continue
