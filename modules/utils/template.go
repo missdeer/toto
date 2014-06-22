@@ -49,10 +49,11 @@ func timeLessThan(createdTime time.Time, limit int) bool {
 	return timeLimit
 }
 
-func randomAdRecord() setting.AdRecord {
-	beego.Info("randomAdRecord()")
-	num := len(setting.Ads.Records)
-	return setting.Ads.Records[rand.Intn(num)]
+func randomAdRecord() (s template.HTML) {
+	ad := setting.Ads.Records[rand.Intn(len(setting.Ads.Records))]
+	f := fmt.Sprintf(`<a target="_blank" href="%s" ><img src="%s" title="%s" alt="%s"></a>`, ad.Url, ad.Img, ad.Title, ad.Title)
+	s = template.HTML(f)
+	return
 }
 
 func date(t time.Time) string {
