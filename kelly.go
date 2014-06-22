@@ -44,6 +44,7 @@ func initialize() {
 	flag.Parse()
 
 	setting.LoadConfig()
+    setting.LoadAds()
 
 	if err := utils.InitSphinxPools(); err != nil {
 		beego.Error(fmt.Sprint("sphinx init pool", err))
