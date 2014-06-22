@@ -46,7 +46,7 @@ const (
 type AdRecord struct {
     XMLName xml.Name `xml:"ad"`
     Url     string   `xml:"url"`
-    Img     string   `xml:"img"`
+    Img     []string `xml:"img"`
     Title   string   `xml:"description"`
 }
 
@@ -180,7 +180,10 @@ func LoadAds() {
     }
 
     for _, ad := range Ads.Records {
-        fmt.Printf("url: %s, img: %s, title: %s\n", ad.Url, ad.Img, ad.Title)
+        fmt.Printf("url: %s, title: %s\n", ad.Url, ad.Title)
+        for _, img := range ad.Img {
+            fmt.Printf("img: %s\n", img)
+        }
     }
 }
 
