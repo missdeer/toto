@@ -182,7 +182,7 @@
 			if($.trim(q) !== ''){
 				var host = window.location.hostname + ":" + window.location.port;
 				//var url = 'http://www.google.com/search?q=' + 'site:' + host + '%20' +  $.trim(q);
-				var url = 'http://www.baidu.com/#wd=site%3Ayii.li%20' + $.trim(q);
+				var url = 'http://www.baidu.com/#wd=site%3A' + host + '%20' + $.trim(q);
 				window.open(url, "_blank");
 			}
 			return false;
