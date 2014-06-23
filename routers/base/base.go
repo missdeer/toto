@@ -556,7 +556,8 @@ func (this *BaseRouter) setLang() bool {
 
 	// 4. DefaucurLang language is English.
 	if len(lang) == 0 {
-		lang = "en-US"
+		//lang = "en-US"
+		lang = "zh-CN"
 		isNeedRedir = false
 	}
 
