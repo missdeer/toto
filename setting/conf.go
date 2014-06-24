@@ -72,6 +72,7 @@ var (
     IsProMode           bool
     ActiveCodeLives     int
     ResetPwdCodeLives   int
+    CategoryHideOnHome  int
     DateFormat          string
     DateTimeFormat      string
     DateTimeShortFormat string
@@ -108,7 +109,9 @@ var (
     MailAuthUser string
     MailAuthPass string
 
-    Ads AdRecords
+	// ads setting
+        Ads AdRecords
+
 )
 
 var (
@@ -319,7 +322,8 @@ func reloadConfig() {
     QiniuBucketName = Cfg.MustValue("app", "qiniu_bucketname", "kelly")
     AvatarURL = Cfg.MustValue("app", "avatar_url")
 
-    EnforceRedirect = Cfg.MustBool("app", "enforce_redirect")
+	CategoryHideOnHome = Cfg.MustInt("app", "category_hide_on_home", 0)
+	EnforceRedirect = Cfg.MustBool("app", "enforce_redirect")
 
     DateFormat = Cfg.MustValue("app", "date_format")
     DateTimeFormat = Cfg.MustValue("app", "datetime_format")
