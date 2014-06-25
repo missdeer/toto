@@ -50,10 +50,12 @@ func timeLessThan(createdTime time.Time, limit int) bool {
 }
 
 func randomAdRecord() (s template.HTML) {
-    ad := setting.Ads.Records[rand.Intn(len(setting.Ads.Records))]
-    img := ad.Img[rand.Intn(len(ad.Img))]
-    f := fmt.Sprintf(`<a target="_blank" href="%s" ><img src="%s" title="%s" alt="%s"></a>`, ad.Url, img, ad.Title, ad.Title)
-    s = template.HTML(f)
+    if len(setting.Ads.Records) > 0 {
+        ad := setting.Ads.Records[rand.Intn(len(setting.Ads.Records))]
+        img := ad.Img[rand.Intn(len(ad.Img))]
+        f := fmt.Sprintf(`<a target="_blank" href="%s" ><img src="%s" title="%s" alt="%s"></a>`, ad.Url, img, ad.Title, ad.Title)
+        s = template.HTML(f)
+    }
     return
 }
 
