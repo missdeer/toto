@@ -69,12 +69,12 @@ func (this *PostListRouter) Home() {
     postsModel := models.Posts()
 
 	var topposts []models.Post
-	qs := postsModel.Filter("IsTop", true).OrderBy("-Created").Limit(25).RelatedSel()
+	qs := postsModel.Exclude("category_id", setting.CategoryHideOnHome).Filter("IsTop", true).OrderBy("-Created").Limit(25).RelatedSel()
 	qs = this.postsFilter(qs)
 	models.ListObjects(qs, &topposts)
 
-    topCount := len(topposts)
-	qs2 := postsModel.Filter("IsTop", false).OrderBy("-Created").Limit(25 - topCount).RelatedSel()
+	topCount := len(topposts)
+	qs2 := postsModel.Exclude("category_id", setting.CategoryHideOnHome).Filter("IsTop", false).OrderBy("-Created").Limit(25 - topCount).RelatedSel()
 	qs2 = this.postsFilter(qs2)
 	var nontopposts []models.Post
 	models.ListObjects(qs2, &nontopposts)
@@ -159,7 +159,7 @@ func (this *PostListRouter) Navs() {
 
 	switch slug {
 	case "recent":
-		qs := models.Posts()
+		qs := models.Posts().Exclude("category_id", setting.CategoryHideOnHome)
 		qs = this.postsFilter(qs)
 
 		cnt, _ := models.CountObjects(qs)
