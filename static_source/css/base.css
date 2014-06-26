@@ -79,7 +79,7 @@ textarea.form-control {
   min-height: 100% !important;
   height: auto !important;
   height: 100%;
-  margin: 0 auto -240px;
+  margin: 0 auto -200px;
 }
 
 #wrapper .wrapper-push {
@@ -100,7 +100,7 @@ textarea.form-control {
 }
 
 #footer .footer-wrap {
-  padding: 20px 0;
+  padding: 20px 15px;
 }
 
 #footer .desc {
