@@ -17,57 +17,83 @@ package api
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"time"
 
 	"github.com/missdeer/KellyBackend/modules/models"
 )
 
 func (this *ApiRouter) PostToggle() {
-    result := map[string]interface{}{
-        "success": false,
-    }
+	result := map[string]interface{}{
+		"success": false,
+	}
 
-    defer func() {
-        this.Data["json"] = result
-        this.ServeJson()
-    }()
+	defer func() {
+		this.Data["json"] = result
+		this.ServeJson()
+	}()
 
-    if !this.IsAjax() {
-        return
-    }
+	if !this.IsAjax() {
+		return
+	}
 
-    action := this.GetString("action")
+	action := this.GetString("action")
 
-    if this.IsLogin {
+	if this.IsLogin {
 
-        switch action {
-        case "toggle-best":
-            id, _ := this.GetInt("post")
-            if id > 0 {
-                o := orm.NewOrm()
-                p := models.Post{ Id: int(id) }
-                o.Read(&p);
+		switch action {
+		case "toggle-best":
+			id, _ := this.GetInt("post")
+			if id > 0 {
+				o := orm.NewOrm()
+				p := models.Post{Id: int(id)}
+				o.Read(&p)
 
-                p.IsBest = !p.IsBest
-                if _, err := o.Update(&p); err != nil {
-                    beego.Error("PostCounterAdd ", err)
-                } else {
-                    result["success"] = true
-                }
-            }
-        case "toggle-top":
-            id, _ := this.GetInt("post")
-            if id > 0 {
-                o := orm.NewOrm()
-                p := models.Post{ Id: int(id) }
-                o.Read(&p);
+				p.IsBest = !p.IsBest
+				if _, err := o.Update(&p); err != nil {
+					beego.Error("PostCounterAdd ", err)
+				} else {
+					result["success"] = true
+				}
+				o = nil
+			}
+		case "toggle-top":
+			id, _ := this.GetInt("post")
+			if id > 0 {
+				o := orm.NewOrm()
+				p := models.Post{Id: int(id)}
+				o.Read(&p)
 
-                p.IsTop = !p.IsTop
-                if _, err := o.Update(&p); err != nil {
-                    beego.Error("PostCounterAdd ", err)
-                } else {
-                    result["success"] = true
-                }
-            }
-        }
-    }
+				p.IsTop = !p.IsTop
+				if _, err := o.Update(&p); err != nil {
+					beego.Error("PostCounterAdd ", err)
+				} else {
+					result["success"] = true
+				}
+				o = nil
+			}
+		}
+	}
+}
+
+func ClearTodayReplys() {
+	timer := time.NewTicker(1 * time.Minute)
+	for {
+		select {
+		case <-timer.C:
+			now := time.Now().UTC()
+			if now.Hour() == 16 && now.Minute() == 0 {
+				// clear it when it's 00:00 at GMT+8 (Asia/Shanghai) time zone
+				beego.Info("clear today replys of all posts")
+				o := orm.NewOrm()
+				_, err := o.QueryTable("post").Update(orm.Params{
+					"today_replys": 0,
+				})
+				if err != nil {
+					beego.Error("clear today replys error ", err)
+				}
+				o = nil
+			}
+		}
+	}
+	timer.Stop()
 }

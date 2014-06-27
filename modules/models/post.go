@@ -34,13 +34,14 @@ type Post struct {
 	ContentCache string    `orm:"type(text)"`
 	Browsers     int       `orm:"index"`
 	Replys       int       `orm:"index"`
+	TodayReplys  int       `orm:"index"`
 	Favorites    int       `orm:"index"`
 	LastReply    *User     `orm:"rel(fk);null"`
 	LastAuthor   *User     `orm:"rel(fk);null"`
 	Topic        *Topic    `orm:"rel(fk)"`
 	Lang         int       `orm:"index"`
 	IsBest       bool      `orm:"index"`
-    IsTop        bool      `orm:"index"`
+	IsTop        bool      `orm:"index"`
 	Category     *Category `orm:"rel(fk)"`
 	Created      time.Time `orm:"auto_now_add"`
 	Updated      time.Time `orm:"auto_now;index"`
@@ -95,7 +96,7 @@ func (m *Post) Comments() orm.QuerySeter {
 }
 
 func (m *Post) Appends() orm.QuerySeter {
-    return Appends().Filter("Post", m.Id)
+	return Appends().Filter("Post", m.Id)
 }
 
 func (m *Post) GetLang() string {
@@ -109,9 +110,9 @@ func Posts() orm.QuerySeter {
 // append content for post
 type AppendPost struct {
 	Id           int
-	Post         *Post  `orm:"rel(fk)"`
-	Message      string `orm:"type(text)"`
-	MessageCache string `orm:"type(text)"`
+	Post         *Post     `orm:"rel(fk)"`
+	Message      string    `orm:"type(text)"`
+	MessageCache string    `orm:"type(text)"`
 	Created      time.Time `orm:"auto_now_add;index"`
 }
 
@@ -168,7 +169,7 @@ type Comment struct {
 	MessageCache string `orm:"type(text)"`
 	Floor        int
 	Status       int
-    Duplicated   bool    `orm:"index"`
+	Duplicated   bool      `orm:"index"`
 	Created      time.Time `orm:"auto_now_add;index"`
 }
 

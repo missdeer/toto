@@ -44,7 +44,7 @@ func initialize() {
 	flag.Parse()
 
 	setting.LoadConfig()
-    setting.LoadAds()
+	setting.LoadAds()
 
 	if err := utils.InitSphinxPools(); err != nil {
 		beego.Error(fmt.Sprint("sphinx init pool", err))
@@ -100,9 +100,9 @@ func main() {
 	}
 
 	// Add Filters
-    beego.InsertFilter("/img/*", beego.BeforeRouter, attachment.ImageFilter)
+	beego.InsertFilter("/img/*", beego.BeforeRouter, attachment.ImageFilter)
 
-    beego.InsertFilter("/captcha/*", beego.BeforeRouter, setting.Captcha.Handler)
+	beego.InsertFilter("/captcha/*", beego.BeforeRouter, setting.Captcha.Handler)
 
 	// Register routers.
 	posts := new(post.PostListRouter)
@@ -151,8 +151,8 @@ func main() {
 	beego.Router("/login", login, "get:Get;post:Login")
 	beego.Router("/logout", login, "get:Logout")
 
-    //beego.InsertFilter("/login/*/access", beego.BeforeRouter, auth.OAuthAccess)
-    //beego.InsertFilter("/login/*", beego.BeforeRouter, auth.OAuthRedirect)
+	//beego.InsertFilter("/login/*/access", beego.BeforeRouter, auth.OAuthAccess)
+	//beego.InsertFilter("/login/*", beego.BeforeRouter, auth.OAuthRedirect)
 
 	socialR := new(auth.SocialAuthRouter)
 	beego.Router("/register/connect", socialR, "get:Connect;post:ConnectPost")
@@ -209,6 +209,7 @@ func main() {
 		beego.Router("/test/:tmpl(mail/.*)", new(base.TestRouter))
 	}
 
+	go api.ClearTodayReplys()
 	// For all unknown pages.
 	beego.Run()
 }

@@ -76,6 +76,13 @@ func PostReplysCount(post *models.Post) {
 	if err == nil {
 		post.Replys = int(cnt)
 		err = post.Update("Replys")
+
+		_, err := models.Posts().Filter("Id", post.Id).Update(orm.Params{
+			"TodayReplys": orm.ColValue(orm.Col_Add, 1),
+		})
+		if err != nil {
+			beego.Error("PostTodayReply ", err)
+		}
 	}
 	if err != nil {
 		beego.Error("PostReplysCount ", err)
