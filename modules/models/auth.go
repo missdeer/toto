@@ -57,7 +57,7 @@ type User struct {
 	Followers   int              ``
 	Following   int              ``
 	FavTopics   int              ``
-    Coins       int              ``
+	Coins       int              ``
 	IsAdmin     bool             `orm:"index"`
 	IsActive    bool             `orm:"index"`
 	IsForbid    bool             `orm:"index"`

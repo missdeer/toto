@@ -62,11 +62,11 @@ func (this *PostListRouter) Home() {
 	this.Data["IsHome"] = true
 	this.TplNames = "post/home.html"
 
-    var cats []models.Category
-    this.setCategories(&cats)
+	var cats []models.Category
+	this.setCategories(&cats)
 
 	var posts []models.Post
-    postsModel := models.Posts()
+	postsModel := models.Posts()
 
 	var topposts []models.Post
 	qs := postsModel.Exclude("category_id", setting.CategoryHideOnHome).Filter("IsTop", true).OrderBy("-Created").Limit(25).RelatedSel()
@@ -79,7 +79,7 @@ func (this *PostListRouter) Home() {
 	var nontopposts []models.Post
 	models.ListObjects(qs2, &nontopposts)
 
-    posts = append(topposts, nontopposts...)
+	posts = append(topposts, nontopposts...)
 
 	this.Data["Posts"] = posts
 
@@ -110,22 +110,22 @@ func (this *PostListRouter) Category() {
 	cnt, _ := models.CountObjects(qs)
 	pager := this.SetPaginator(pers, cnt)
 
-    if pager.Page() > 1 {
-        qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
-        models.ListObjects(qs, &posts)
-    } else {
-        qsTop := models.Posts().Filter("Category", &cat).Filter("IsTop", true)
-        qsTop = this.postsFilter(qsTop).OrderBy("-Created").Limit(pers).RelatedSel()
-        var topposts []models.Post
-        models.ListObjects(qsTop, &topposts)
+	if pager.Page() > 1 {
+		qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+		models.ListObjects(qs, &posts)
+	} else {
+		qsTop := models.Posts().Filter("Category", &cat).Filter("IsTop", true)
+		qsTop = this.postsFilter(qsTop).OrderBy("-Created").Limit(pers).RelatedSel()
+		var topposts []models.Post
+		models.ListObjects(qsTop, &topposts)
 
-        qsNonTop := models.Posts().Filter("Category", &cat).Filter("IsTop", false)
-        qsNonTop = this.postsFilter(qsNonTop).OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
-        var nontopposts []models.Post
-        models.ListObjects(qsNonTop, &nontopposts)
+		qsNonTop := models.Posts().Filter("Category", &cat).Filter("IsTop", false)
+		qsNonTop = this.postsFilter(qsNonTop).OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+		var nontopposts []models.Post
+		models.ListObjects(qsNonTop, &nontopposts)
 
-        posts = append(topposts, nontopposts...)
-    }
+		posts = append(topposts, nontopposts...)
+	}
 
 	this.Data["Posts"] = posts
 	this.Data["Category"] = &cat
@@ -261,22 +261,22 @@ func (this *PostListRouter) Topic() {
 		cnt, _ := models.CountObjects(qs)
 		pager := this.SetPaginator(pers, cnt)
 
-        if pager.Page() > 1 {
-            qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
-            models.ListObjects(qs, &posts)
-        } else {
-            qsTop := models.Posts().Filter("Topic", &topic).Filter("IsTop", true)
-            qsTop = this.postsFilter(qsTop).OrderBy("-Created").Limit(pers).RelatedSel()
-            var topposts []models.Post
-            models.ListObjects(qsTop, &topposts)
+		if pager.Page() > 1 {
+			qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+			models.ListObjects(qs, &posts)
+		} else {
+			qsTop := models.Posts().Filter("Topic", &topic).Filter("IsTop", true)
+			qsTop = this.postsFilter(qsTop).OrderBy("-Created").Limit(pers).RelatedSel()
+			var topposts []models.Post
+			models.ListObjects(qsTop, &topposts)
 
-            qsNonTop := models.Posts().Filter("Topic", &topic).Filter("IsTop", false)
-            qsNonTop = this.postsFilter(qsNonTop).OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
-            var nontopposts []models.Post
-            models.ListObjects(qsNonTop, &nontopposts)
+			qsNonTop := models.Posts().Filter("Topic", &topic).Filter("IsTop", false)
+			qsNonTop = this.postsFilter(qsNonTop).OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+			var nontopposts []models.Post
+			models.ListObjects(qsNonTop, &nontopposts)
 
-            posts = append(topposts, nontopposts...)
-        }
+			posts = append(topposts, nontopposts...)
+		}
 
 		this.Data["Posts"] = posts
 		this.Data["Topic"] = &topic
@@ -438,9 +438,9 @@ func (this *PostRouter) loadComments(post *models.Post, comments *[]*models.Comm
 }
 
 func (this *PostRouter) isDuplicatedComment(post *models.Post, message string) bool {
-    qs := post.Comments().Filter("Message", message).RelatedSel()
-    num, _ := qs.Count()
-    return num > 0
+	qs := post.Comments().Filter("Message", message).RelatedSel()
+	num, _ := qs.Count()
+	return num > 0
 }
 
 func (this *PostRouter) Single() {
@@ -490,7 +490,7 @@ func (this *PostRouter) SingleSubmit() {
 	}
 
 	comment := models.Comment{}
-    comment.Duplicated = this.isDuplicatedComment(&postMd, form.Message)
+	comment.Duplicated = this.isDuplicatedComment(&postMd, form.Message)
 	if err := form.SaveComment(&comment, &this.User, &postMd); err == nil {
 		this.JsStorage("deleteKey", "post/comment")
 		this.Redirect(postMd.Link(), 302)

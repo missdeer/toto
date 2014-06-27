@@ -135,7 +135,7 @@ func (form *PostForm) UpdatePost(post *models.Post, user *models.User) error {
 }
 
 func (form *PostForm) AppendPost(appendPost *models.AppendPost, user *models.User) error {
-    appendPost.MessageCache = utils.RenderMarkdown(form.Content)
+	appendPost.MessageCache = utils.RenderMarkdown(form.Content)
 	return appendPost.Insert()
 }
 

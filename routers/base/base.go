@@ -32,7 +32,7 @@ import (
 	"github.com/missdeer/KellyBackend/modules/utils"
 	"github.com/missdeer/KellyBackend/setting"
 
-    "github.com/Shaked/gomobiledetect"
+	"github.com/Shaked/gomobiledetect"
 )
 
 type NestPreparer interface {
@@ -43,10 +43,10 @@ type NestPreparer interface {
 type BaseRouter struct {
 	beego.Controller
 	i18n.Locale
-	User    models.User
-	IsLogin bool
-    IsMobile bool
-    IsTablet bool
+	User     models.User
+	IsLogin  bool
+	IsMobile bool
+	IsTablet bool
 }
 
 // Prepare implemented Prepare method for baseRouter.
@@ -59,12 +59,12 @@ func (this *BaseRouter) Prepare() {
 		}
 	}
 
-    // mobile detect
-    detect := gomobiledetect.NewMobileDetect(this.Ctx.Request, nil)
-    this.IsMobile = detect.IsMobile()
-    this.Data["IsMobile"] = this.IsMobile
-    this.IsTablet = detect.IsTablet() 
-    this.Data["IsTablet"] = this.IsTablet
+	// mobile detect
+	detect := gomobiledetect.NewMobileDetect(this.Ctx.Request, nil)
+	this.IsMobile = detect.IsMobile()
+	this.Data["IsMobile"] = this.IsMobile
+	this.IsTablet = detect.IsTablet()
+	this.Data["IsTablet"] = this.IsTablet
 
 	// page start time
 	this.Data["PageStartTime"] = time.Now()
@@ -105,7 +105,7 @@ func (this *BaseRouter) Prepare() {
 	this.Data["AppName"] = setting.AppName
 	this.Data["AppVer"] = setting.AppVer
 	this.Data["AppUrl"] = setting.AppUrl
-    this.Data["ImgBedUrl"] = setting.ImgBedUrl
+	this.Data["ImgBedUrl"] = setting.ImgBedUrl
 	this.Data["AppLogo"] = setting.AppLogo
 	this.Data["AvatarURL"] = setting.AvatarURL
 	this.Data["IsProMode"] = setting.IsProMode
@@ -442,9 +442,9 @@ func (this *BaseRouter) ValidFormSets(form interface{}, names ...string) bool {
 }
 
 func (this *BaseRouter) ValidAppendFormSets(form interface{}, names ...string) bool {
-    valid, errs := this.validAppendForm(form, names...)
-    this.setFormSets(form, errs, names...)
-    return valid
+	valid, errs := this.validAppendForm(form, names...)
+	this.setFormSets(form, errs, names...)
+	return valid
 }
 
 func (this *BaseRouter) SetFormSets(form interface{}, names ...string) *utils.FormSets {

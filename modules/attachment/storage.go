@@ -32,9 +32,9 @@ import (
 
 	"github.com/missdeer/KellyBackend/modules/models"
 	"github.com/missdeer/KellyBackend/modules/utils"
-    . "github.com/qiniu/api/conf"
-    "github.com/qiniu/api/rs"
-    qiniuio "github.com/qiniu/api/io" 
+	. "github.com/qiniu/api/conf"
+	qiniuio "github.com/qiniu/api/io"
+	"github.com/qiniu/api/rs"
 )
 
 func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, created time.Time) error {
@@ -107,22 +107,22 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 		return err
 	}
 
-    ACCESS_KEY = setting.QiniuAppKey
-    SECRET_KEY = setting.QiniuSecretKey
-    putPolicy := rs.PutPolicy {}
-    putPolicy.Scope = setting.QiniuBucketName
-    uptoken := putPolicy.Token(nil)
+	ACCESS_KEY = setting.QiniuAppKey
+	SECRET_KEY = setting.QiniuSecretKey
+	putPolicy := rs.PutPolicy{}
+	putPolicy.Scope = setting.QiniuBucketName
+	uptoken := putPolicy.Token(nil)
 
-    var ret qiniuio.PutRet
-    var extra = &qiniuio.PutExtra{}
+	var ret qiniuio.PutRet
+	var extra = &qiniuio.PutExtra{}
 
-    // get encoded file name as the key
-    var key = "upload" + m.LinkFull();
-    err = qiniuio.PutFile(nil, &ret, uptoken, key, fullPath, extra)
-    if err != nil {
-        fmt.Println("put file without key failed")
-        return err
-    }
+	// get encoded file name as the key
+	var key = "upload" + m.LinkFull()
+	err = qiniuio.PutFile(nil, &ret, uptoken, key, fullPath, extra)
+	if err != nil {
+		fmt.Println("put file without key failed")
+		return err
+	}
 
 	if ext != ".gif" {
 
@@ -131,13 +131,13 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 				os.RemoveAll(fullPath)
 				return err
 			}
-            savePath := GenImageFilePath(m, setting.ImageSizeSmall)
-            key = "upload" + m.LinkSmall()
-            if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
-                os.RemoveAll(savePath)
-                return err
-            }
-            os.RemoveAll(savePath)
+			savePath := GenImageFilePath(m, setting.ImageSizeSmall)
+			key = "upload" + m.LinkSmall()
+			if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
+				os.RemoveAll(savePath)
+				return err
+			}
+			os.RemoveAll(savePath)
 		}
 
 		if m.Width > setting.ImageSizeMiddle {
@@ -145,16 +145,16 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 				os.RemoveAll(fullPath)
 				return err
 			}
-            savePath := GenImageFilePath(m, setting.ImageSizeMiddle)
-            key = "upload" + m.LinkMiddle()
-            if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
-                os.RemoveAll(savePath)
-                return err
-            }
-            os.RemoveAll(savePath)
+			savePath := GenImageFilePath(m, setting.ImageSizeMiddle)
+			key = "upload" + m.LinkMiddle()
+			if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
+				os.RemoveAll(savePath)
+				return err
+			}
+			os.RemoveAll(savePath)
 		}
 	}
-    os.RemoveAll(fullPath)
+	os.RemoveAll(fullPath)
 
 	return nil
 }
