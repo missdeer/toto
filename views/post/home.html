@@ -50,6 +50,7 @@
     <div id="sidebar" class="col-md-4">
         {{template "post/component/ann.html" .}}
         {{template "post/component/sidebar.html" .}}	
+        {{template "post/component/todaytopten.html" dict "root" . "Posts" .TodayTopTen}}
         {{if not (or .IsMobile .IsTablet)}}
         {{template "post/component/adsense.html" .}}	
         {{template "post/component/followus-vert.html" .}}	
