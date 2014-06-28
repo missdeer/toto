@@ -1,0 +1,10 @@
+<div class="box">
+    <div class="cell first">{{.PaneTitle}}</div>
+	<div class="cell last">
+        <ul class="sidebar-list">
+        {{range .Posts}}
+        <li>    <a href="{{.Link}}">{{.Title}}</a></li>
+        {{end}}
+    </ul>
+	</div>
+</div>
