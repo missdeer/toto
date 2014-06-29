@@ -73,6 +73,6 @@ func (this *UploadRouter) Post() {
 }
 
 func ImageFilter(ctx *context.Context) {
-	url := setting.ImgBedUrl + "upload" + ctx.Request.RequestURI
+	url := setting.ImgBedUrl + "upload" + ctx.Request.RequestURI + "/yiili"
 	http.Redirect(ctx.ResponseWriter, ctx.Request, url, 302)
 }
