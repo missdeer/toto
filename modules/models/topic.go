@@ -33,6 +33,7 @@ type Topic struct {
 	NameZhCn  string    `orm:"size(30);unique"`
 	IntroZhCn string    `orm:"type(text)"`
 	Image     *Image    `orm:"rel(one);null"`
+	ImgUrl    string    `orm:"size(300)"`
 	Slug      string    `orm:"size(100);unique"`
 	Followers int       `orm:"index"`
 	Order     int       `orm:"index"`
