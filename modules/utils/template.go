@@ -117,9 +117,9 @@ func timesince(lang string, t time.Time) string {
 	}
 }
 
-func topicIntro(lang string, topicName string)  (s template.HTML) {
-    f := fmt.Sprintf(`topic.%s`, topicName)
-	return template.HTML(i18n.Tr(lang, f ))
+func topicIntro(lang string, topicName string) (s template.HTML) {
+	f := fmt.Sprintf(`topic.%s`, topicName)
+	return template.HTML(i18n.Tr(lang, f))
 }
 
 // create an login url with specify redirect to param

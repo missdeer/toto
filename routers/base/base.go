@@ -51,6 +51,9 @@ type BaseRouter struct {
 
 // Prepare implemented Prepare method for baseRouter.
 func (this *BaseRouter) Prepare() {
+	this.Ctx.Output.Header("Pragma", "public")
+	this.Ctx.Output.Header("Cache-Control", "max-age=0, must-revalidate")
+
 	if setting.EnforceRedirect {
 		// if the host not matching app settings then redirect to AppUrl
 		if this.Ctx.Request.Host != setting.AppHost {
