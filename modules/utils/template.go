@@ -119,8 +119,6 @@ func timesince(lang string, t time.Time) string {
 
 func topicIntro(lang string, topicName string)  (s template.HTML) {
     f := fmt.Sprintf(`topic.%s`, topicName)
-    fmt.Println(f)
-    fmt.Println(i18n.Tr(lang, f))
 	return template.HTML(i18n.Tr(lang, f ))
 }
 
