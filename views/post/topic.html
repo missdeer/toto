@@ -63,6 +63,7 @@
 	</div>
     <div id="sidebar" class="col-md-4">
         {{template "post/component/sidebar.html" .}}	
+        {{template "post/component/intro.html" .}}	
         {{if not (or .IsMobile .IsTablet)}}
         {{template "post/component/adsense.html" .}}	
         {{end}}

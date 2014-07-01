@@ -284,6 +284,7 @@ func (this *PostListRouter) Topic() {
             posts = append(topposts, nontopposts...)
         }
 
+        this.Data["Slug"] = slug
         this.Data["Posts"] = posts
         this.Data["Topic"] = &topic
         this.Data["IsTopic"] = true

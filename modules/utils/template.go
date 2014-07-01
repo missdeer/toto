@@ -117,6 +117,13 @@ func timesince(lang string, t time.Time) string {
 	}
 }
 
+func topicIntro(lang string, topicName string)  (s template.HTML) {
+    f := fmt.Sprintf(`topic.%s`, topicName)
+    fmt.Println(f)
+    fmt.Println(i18n.Tr(lang, f))
+	return template.HTML(i18n.Tr(lang, f ))
+}
+
 // create an login url with specify redirect to param
 func loginto(uris ...string) template.HTMLAttr {
 	var uri string
@@ -145,6 +152,7 @@ func init() {
 	beego.AddFuncMap("loginto", loginto)
 	beego.AddFuncMap("timeLessThan", timeLessThan)
 	beego.AddFuncMap("randomAdRecord", randomAdRecord)
+	beego.AddFuncMap("topicIntro", topicIntro)
 }
 
 func RenderTemplate(TplNames string, Data map[interface{}]interface{}) string {
