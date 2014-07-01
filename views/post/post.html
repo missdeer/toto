@@ -165,6 +165,9 @@
                 {{i18n .Lang "post.post_new_with_topic" (.Post.Topic.GetName .Lang)}}
             </a>
         </p>
+        {{if not (or .IsMobile .IsTablet)}}
+        {{template "post/component/googleadsense.html" .}}	
+        {{end}}
     </div>
 </div>
 {{if .User.IsAdmin}}
