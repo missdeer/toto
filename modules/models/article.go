@@ -79,7 +79,7 @@ func (m *Article) Link() string {
 	if len(uri) > 0 && uri[0] == '/' {
 		uri = uri[1:]
 	}
-	return fmt.Sprintf("%s%s", setting.AppUrl, uri)
+	return fmt.Sprintf("%sa/%s", setting.AppUrl, uri)
 }
 
 func (m *Article) GetTitle(lang string) string {
