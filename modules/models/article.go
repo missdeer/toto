@@ -104,7 +104,7 @@ func (m *Article) GetContentCache(lang string) string {
 		contentCache = m.ContentCache
 	}
 	if setting.RealtimeRenderMD {
-		return utils.RenderMarkdown(content)
+		return utils.Render(content)
 	} else {
 		return contentCache
 	}

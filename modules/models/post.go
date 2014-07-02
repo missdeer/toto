@@ -85,7 +85,7 @@ func (m *Post) Link() string {
 
 func (m *Post) GetContentCache() string {
 	if setting.RealtimeRenderMD {
-		return utils.RenderMarkdown(m.Content)
+		return utils.Render(m.Content)
 	} else {
 		return m.ContentCache
 	}
@@ -146,7 +146,7 @@ func (m *AppendPost) Delete() error {
 
 func (m *AppendPost) GetMessageCache() string {
 	if setting.RealtimeRenderMD {
-		return utils.RenderMarkdown(m.Message)
+		return utils.Render(m.Message)
 	} else {
 		return m.MessageCache
 	}
@@ -203,7 +203,7 @@ func (m *Comment) Delete() error {
 
 func (m *Comment) GetMessageCache() string {
 	if setting.RealtimeRenderMD {
-		return utils.RenderMarkdown(m.Message)
+		return utils.Render(m.Message)
 	} else {
 		return m.MessageCache
 	}

@@ -31,7 +31,7 @@ func (this *ApiRouter) Markdown() {
 		switch action {
 		case "preview":
 			content := this.GetString("content")
-			result["preview"] = utils.RenderMarkdown(content)
+			result["preview"] = utils.Render(content)
 			result["success"] = true
 		}
 		this.Data["json"] = result

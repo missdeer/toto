@@ -65,6 +65,6 @@ func (form *ArticleAdminForm) SetToArticle(article *models.Article) {
 	}
 	article.LastAuthor.Id = form.LastAuthor
 
-	article.ContentCache = utils.RenderMarkdown(article.Content)
-	article.ContentCacheZhCn = utils.RenderMarkdown(article.ContentZhCn)
+	article.ContentCache = utils.Render(article.Content)
+	article.ContentCacheZhCn = utils.Render(article.ContentZhCn)
 }

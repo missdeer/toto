@@ -94,7 +94,7 @@ func (form *PostForm) SavePost(post *models.Post, user *models.User) error {
 	post.User = user
 	post.LastReply = user
 	post.LastAuthor = user
-	post.ContentCache = utils.RenderMarkdown(form.Content)
+	post.ContentCache = utils.Render(form.Content)
 
 	// mentioned follow users
 	FilterMentions(user, post.ContentCache)
@@ -118,7 +118,7 @@ func (form *PostForm) UpdatePost(post *models.Post, user *models.User) error {
 	post.Topic.Id = form.Topic
 	for _, c := range changes {
 		if c == "Content" {
-			post.ContentCache = utils.RenderMarkdown(form.Content)
+			post.ContentCache = utils.Render(form.Content)
 			changes = append(changes, "ContentCache")
 		}
 	}
@@ -135,7 +135,7 @@ func (form *PostForm) UpdatePost(post *models.Post, user *models.User) error {
 }
 
 func (form *PostForm) AppendPost(appendPost *models.AppendPost, user *models.User) error {
-	appendPost.MessageCache = utils.RenderMarkdown(form.Content)
+	appendPost.MessageCache = utils.Render(form.Content)
 	return appendPost.Insert()
 }
 
@@ -247,7 +247,7 @@ func (form *PostAdminForm) SetToPost(post *models.Post) {
 	}
 	post.Category.Id = form.Category
 
-	post.ContentCache = utils.RenderMarkdown(post.Content)
+	post.ContentCache = utils.Render(post.Content)
 }
 
 type CommentForm struct {
@@ -256,7 +256,7 @@ type CommentForm struct {
 
 func (form *CommentForm) SaveComment(comment *models.Comment, user *models.User, post *models.Post) error {
 	comment.Message = form.Message
-	comment.MessageCache = utils.RenderMarkdown(form.Message)
+	comment.MessageCache = utils.Render(form.Message)
 	comment.User = user
 	comment.Post = post
 	if err := comment.Insert(); err == nil {
@@ -317,5 +317,5 @@ func (form *CommentAdminForm) SetToComment(comment *models.Comment) {
 	}
 	comment.Post.Id = form.Post
 
-	comment.MessageCache = utils.RenderMarkdown(comment.Message)
+	comment.MessageCache = utils.Render(comment.Message)
 }
