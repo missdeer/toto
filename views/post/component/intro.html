@@ -1,5 +1,5 @@
 <div class="box">
-	<div class="cell first">{{i18n .Lang "sidebar.topic_intro"}}</div>
+	<div class="cell first">{{.Topic.GetName .Lang}}</div>
 	<div class="cell last slim">
         {{topicIntro .Lang .Slug}}
 	</div>
