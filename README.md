@@ -1,12 +1,12 @@
-# WeTalk
+# KellyBackend
 
-An open source project for Gopher community.
+Yiili community which is a part of [Kelly project](https://github.com/missdeer/kelly), it is the server side, AKA backend, of the project. The source code is based on WeTalk project, thanks those guys for there great work.
 
 ### Usage
 
 ```
-go get -u github.com/beego/wetalk
-cd $GOPATH/src/github.com/beego/wetalk
+go get -u github.com/missdeer/KellyBackend
+cd $GOPATH/src/github.com/missdeer/KellyBackend
 ```
 
 I suggest you [update all Dependencies](#dependencies)
@@ -16,7 +16,7 @@ Copy `conf/global/app.ini` to `conf/app.ini` and edit it. All configure has comm
 The files in `conf/` can overwrite `conf/global/` in runtime.
 
 
-**Run WeTalk**
+**Run KellyBackend**
 
 ```
 bee run watchall
@@ -26,7 +26,7 @@ bee run watchall
 
 Contrib
 
-* Beego [https://github.com/astaxie/beego](https://github.com/astaxie/beego) (develop branch)
+* Beego [https://github.com/astaxie/beego](https://github.com/astaxie/beego) 
 * Social-Auth [https://github.com/beego/social-auth](https://github.com/beego/social-auth)
 * Compress [https://github.com/beego/compress](https://github.com/beego/compress)
 * i18n [https://github.com/beego/i18n](https://github.com/beego/i18n)
@@ -35,14 +35,6 @@ Contrib
 * fsnotify [https://github.com/howeyc/fsnotify](https://github.com/howeyc/fsnotify)
 * resize [https://github.com/nfnt/resize](https://github.com/nfnt/resize)
 * blackfriday [https://github.com/slene/blackfriday](https://github.com/slene/blackfriday)
-
-Plz Note: WeTalk always use Beego develop branch
-
-```
-go get -u github.com/astaxie/beego
-cd $GOPATH/src/github.com/astaxie/beego
-git checkout develop
-```
 
 Update all Dependencies
 
@@ -59,17 +51,13 @@ go get -u github.com/slene/blackfriday
 
 ### Static Files
 
-WeTalk use `Google Closure Compile` and `Yui Compressor` compress js and css files.
+KellyBackend use `Google Closure Compile` and `Yui Compressor` compress js and css files.
 
 So you could need Java Runtime. Or close this feature in code by yourself.
 
-### WeTalk in world
-
-[Go China Community](http://bbs.go-china.org/)
-
 ### Contact
 
-Maintain by [slene](https://github.com/slene)
+Maintain by [missdeer](http://minidump.info/)
 
 ## License
 
