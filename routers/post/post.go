@@ -18,6 +18,8 @@ import (
 	"fmt"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/bradfitz/gomemcache/memcache"
+	"github.com/garyburd/redigo/redis"
 
 	"github.com/missdeer/KellyBackend/modules/models"
 	"github.com/missdeer/KellyBackend/modules/post"
@@ -26,9 +28,22 @@ import (
 	"github.com/missdeer/KellyBackend/setting"
 )
 
+var mc *memcache.Client
+var rd redis.Conn
+
 // HomeRouter serves home page.
 type PostListRouter struct {
 	base.BaseRouter
+}
+
+func init() {
+	if setting.MemcachedEnabled {
+		mc = memcache.New(setting.MemcachedConn)
+	}
+	if setting.RedisEnabled {
+		rd, _ = redis.Dial("tcp", setting.RedisConn)
+	}
+    fmt.Println("initialize post package")
 }
 
 func (this *PostListRouter) setCategories(cats *[]models.Category) {
@@ -105,6 +120,20 @@ func (this *PostListRouter) Category() {
 	if err := cat.Read("Slug"); err != nil {
 		this.Abort("404")
 		return
+	}
+
+	if setting.MemcachedEnabled {
+		_, err := mc.Get("category-" + slug)
+		if err == nil {
+		}
+		// read from redis or database
+	}
+
+	if setting.RedisEnabled {
+		_, err := rd.Do("HMGET", "category-"+slug)
+		if err == nil {
+		}
+		// read from database
 	}
 
 	var posts []models.Post

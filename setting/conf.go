@@ -111,6 +111,14 @@ var (
 
 	// ads setting
 	Ads AdRecords
+
+	// memcached setting
+	MemcachedEnabled bool
+	MemcachedConn    string
+
+	// redis setting
+	RedisEnabled bool
+	RedisConn    string
 )
 
 var (
@@ -278,6 +286,14 @@ func LoadConfig() *goconfig.ConfigFile {
 		orm.RegisterDriver("sphinx", orm.DR_MySQL)
 	}
 
+	if MemcachedEnabled {
+		MemcachedConn = Cfg.MustValue("memcached", "conn", "127.0.0.1:11211")
+	}
+
+	if RedisEnabled {
+		RedisConn = Cfg.MustValue("redis", "conn", "127.0.0.1:6379")
+	}
+
 	social.DefaultAppUrl = AppUrl
 
 	// OAuth
@@ -387,6 +403,10 @@ func reloadConfig() {
 		SphinxEnabled = false
 		NativeSearch = false
 	}
+
+	// memcached, redis
+	MemcachedEnabled = Cfg.MustBool("memcached", "enabled")
+	RedisEnabled = Cfg.MustBool("redis", "enabled")
 
 	// OAuth
 	GithubClientId = Cfg.MustValue("oauth", "github_client_id", "your_client_id")
