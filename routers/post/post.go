@@ -180,8 +180,7 @@ category_from_redis_failed:
 	if setting.MemcachedEnabled {
 		buf := []byte(string(cnt))
 		key := fmt.Sprintf("category-%s-count", slug)
-		countCache := &memcache.Item{Key: key, Value: buf}
-		err := cache.Mc.Set(countCache)
+		err := cache.Mc.Set(&memcache.Item{Key: key, Value: buf})
 		if err != nil {
 			beego.Error("saving category count to memcached failed", err)
 		}
