@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"strconv"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -130,11 +131,9 @@ func (this *PostListRouter) Category() {
 	if setting.MemcachedEnabled {
 		key := fmt.Sprintf("category-%s-count", slug)
 		if category_posts_count, err := cache.Mc.Get(key); err == nil {
-			var buf bytes.Buffer
-			buf.Write(category_posts_count.Value)
-			decoder := gob.NewDecoder(&buf)
-			if err = decoder.Decode(&cnt); err != nil {
-				beego.Error("gob decoding from memcached failed")
+			cnt, err = strconv.ParseInt(string(category_posts_count.Value), 10, 64)
+			if err != nil {
+				beego.Error("strconv atoi failed", err)
 				goto category_from_memcached_failed
 			} else {
 				pager = this.SetPaginator(pers, cnt)
@@ -144,18 +143,20 @@ func (this *PostListRouter) Category() {
 			}
 		}
 
-		if category_posts, err := cache.Mc.Get(fmt.Sprintf("category-%s", slug)); err == nil {
+		key = fmt.Sprintf("category-%s", slug)
+		if category_posts, err := cache.Mc.Get(key); err == nil {
 			var buf bytes.Buffer
 			buf.Write(category_posts.Value)
 			decoder := gob.NewDecoder(&buf)
 			if err = decoder.Decode(&posts); err != nil {
-				beego.Error("gob decoding from memcached failed")
+				beego.Error("gob decoding category posts from memcached failed")
 				goto category_from_memcached_failed
 			} else {
-				beego.Info("got posts from memcached")
 				this.Data["Posts"] = posts
 				return
 			}
+		} else {
+			beego.Error("getting category posts from memcached failed ", err)
 		}
 		// read from redis or database
 	}
@@ -178,7 +179,7 @@ category_from_redis_failed:
 	cnt, _ = models.CountObjects(qs)
 	pager = this.SetPaginator(pers, cnt)
 	if setting.MemcachedEnabled {
-		buf := []byte(string(cnt))
+		buf := []byte(strconv.FormatInt(cnt, 10))
 		key := fmt.Sprintf("category-%s-count", slug)
 		err := cache.Mc.Set(&memcache.Item{Key: key, Value: buf})
 		if err != nil {
@@ -208,12 +209,15 @@ category_from_redis_failed:
 		if setting.MemcachedEnabled {
 			var buf bytes.Buffer
 			encoder := gob.NewEncoder(&buf)
-			if err := encoder.Encode(&posts); err != nil {
-				PostsCache := &memcache.Item{Key: fmt.Sprintf("category-%s", slug), Value: buf.Bytes()}
+			if err := encoder.Encode(&posts); err == nil {
+				key := fmt.Sprintf("category-%s", slug)
+				PostsCache := &memcache.Item{Key: key, Value: buf.Bytes()}
 				err = cache.Mc.Set(PostsCache)
 				if err != nil {
-					beego.Error("saving category posts to memcached failed")
+					beego.Error("saving category posts to memcached failed ", err)
 				}
+			} else {
+				beego.Error("encoding posts to gob failed ", err)
 			}
 		}
 
