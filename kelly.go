@@ -23,6 +23,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/beego/social-auth"
 
+	"github.com/missdeer/KellyBackend/cache"
 	"github.com/missdeer/KellyBackend/modules/utils"
 	"github.com/missdeer/KellyBackend/routers/admin"
 	"github.com/missdeer/KellyBackend/routers/api"
@@ -208,6 +209,8 @@ func main() {
 	if beego.RunMode == "dev" {
 		beego.Router("/test/:tmpl(mail/.*)", new(base.TestRouter))
 	}
+
+	cache.Init()
 
 	go api.ClearTodayReplys()
 	// For all unknown pages.
