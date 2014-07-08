@@ -204,51 +204,46 @@ func (this *PostListRouter) Category() {
 	pers := 25
 	var cnt int64
 	var pager *utils.Paginator
+	var err error
+	succeed := false
 
 	if setting.MemcachedEnabled {
+		var category_posts_count *memcache.Item
 		key := fmt.Sprintf("category-%s-count", slug)
-		if category_posts_count, err := cache.Mc.Get(key); err == nil {
+		if category_posts_count, err = cache.Mc.Get(key); err == nil {
 			cnt, err = strconv.ParseInt(string(category_posts_count.Value), 10, 64)
-			if err != nil {
-				beego.Error("strconv atoi failed", err)
-				goto category_from_memcached_failed
-			} else {
+			if err == nil {
 				pager = this.SetPaginator(pers, cnt)
-				if pager.Page() != 1 {
-					goto category_from_memcached_failed
+				if pager.Page() == 1 {
+					succeed = true
 				}
 			}
 		}
 
-		key = fmt.Sprintf("category-%s", slug)
-		if category_posts, err := cache.Mc.Get(key); err == nil {
-			var buf bytes.Buffer
-			buf.Write(category_posts.Value)
-			decoder := gob.NewDecoder(&buf)
-			if err = decoder.Decode(&posts); err != nil {
-				beego.Error("gob decoding category posts from memcached failed")
-				goto category_from_memcached_failed
-			} else {
-				this.Data["Posts"] = posts
-				return
+		if succeed == true {
+			succeed = false
+			var category_posts *memcache.Item
+			key = fmt.Sprintf("category-%s", slug)
+			if category_posts, err = cache.Mc.Get(key); err == nil {
+				var buf bytes.Buffer
+				buf.Write(category_posts.Value)
+				decoder := gob.NewDecoder(&buf)
+				if err = decoder.Decode(&posts); err == nil {
+					this.Data["Posts"] = posts
+					return
+				}
 			}
-		} else {
-			beego.Error("getting category posts from memcached failed ", err)
 		}
+		beego.Error("getting category posts from memcached failed. ", err)
 		// read from redis or database
 	}
 
-category_from_memcached_failed:
-
-	if setting.RedisEnabled {
+	if succeed == false && setting.RedisEnabled {
 		_, err := cache.Rd.Do("GET", "category-"+slug)
 		if err == nil {
 		}
-		goto category_from_redis_failed
 		// read from database
 	}
-
-category_from_redis_failed:
 
 	qs := models.Posts().Filter("Category", &cat)
 	qs = this.postsFilter(qs)
@@ -258,10 +253,7 @@ category_from_redis_failed:
 	if setting.MemcachedEnabled {
 		buf := []byte(strconv.FormatInt(cnt, 10))
 		key := fmt.Sprintf("category-%s-count", slug)
-		err := cache.Mc.Set(&memcache.Item{Key: key, Value: buf})
-		if err != nil {
-			beego.Error("saving category count to memcached failed", err)
-		}
+		err = cache.Mc.Set(&memcache.Item{Key: key, Value: buf})
 	}
 
 	if setting.RedisEnabled {
@@ -286,15 +278,14 @@ category_from_redis_failed:
 		if setting.MemcachedEnabled {
 			var buf bytes.Buffer
 			encoder := gob.NewEncoder(&buf)
-			if err := encoder.Encode(&posts); err == nil {
+			if err = encoder.Encode(&posts); err == nil {
 				key := fmt.Sprintf("category-%s", slug)
 				PostsCache := &memcache.Item{Key: key, Value: buf.Bytes()}
 				err = cache.Mc.Set(PostsCache)
-				if err != nil {
-					beego.Error("saving category posts to memcached failed ", err)
-				}
-			} else {
-				beego.Error("encoding posts to gob failed ", err)
+			}
+
+			if err != nil {
+				beego.Error("saving category posts to memcached failed. ", err)
 			}
 		}
 
