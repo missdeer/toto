@@ -80,26 +80,30 @@ func (this *PostListRouter) Home() {
 			buf.Write(home_topics.Value)
 			decoder := gob.NewDecoder(&buf)
 			if err = decoder.Decode(&topics); err != nil {
-				beego.Error("gob decoding home topics from memcached failed")
-				post.ListTopics(&topics)
+				beego.Error("gob decoding home topics from memcached failed", err)
+			} else {
+				goto got_home_topics_from_memcached
 			}
 		} else {
 			beego.Error("getting home topics from memcached failed ", err)
-			post.ListTopics(&topics)
-
-			var buf bytes.Buffer
-			encoder := gob.NewEncoder(&buf)
-			if err := encoder.Encode(&topics); err == nil {
-				TopicsCache := &memcache.Item{Key: "home-topics", Value: buf.Bytes()}
-				err = cache.Mc.Set(TopicsCache)
-				if err != nil {
-					beego.Error("saving home topics to memcached failed ", err)
-				}
-			} else {
-				beego.Error("encoding home topics to gob failed ", err)
-			}
 		}
 	}
+
+	post.ListTopics(&topics)
+	if setting.MemcachedEnabled {
+		var buf bytes.Buffer
+		encoder := gob.NewEncoder(&buf)
+		if err := encoder.Encode(&topics); err == nil {
+			TopicsCache := &memcache.Item{Key: "home-topics", Value: buf.Bytes()}
+			err = cache.Mc.Set(TopicsCache)
+			if err != nil {
+				beego.Error("saving home topics to memcached failed ", err)
+			}
+		} else {
+			beego.Error("encoding home topics to gob failed ", err)
+		}
+	}
+got_home_topics_from_memcached:
 	this.Data["Topics"] = topics
 
 	var posts []models.Post
