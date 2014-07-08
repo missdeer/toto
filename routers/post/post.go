@@ -409,14 +409,66 @@ func (this *PostListRouter) Topic() {
 			return
 		}
 
+		this.Data["Slug"] = slug
+		this.Data["Topic"] = &topic
+		this.Data["IsTopic"] = true
+
+		HasFavorite := false
+		if this.IsLogin {
+			HasFavorite = models.FollowTopics().Filter("User", &this.User).Filter("Topic", &topic).Exist()
+		}
+		this.Data["HasFavorite"] = HasFavorite
+
 		var posts []models.Post
 		pers := 25
+		var cnt int64
+		var pager *utils.Paginator
+		var err error
+		succeed := false
+
+		if setting.MemcachedEnabled {
+			var topic_posts_count *memcache.Item
+			key := fmt.Sprintf("topic-%s-count", slug)
+			if topic_posts_count, err = cache.Mc.Get(key); err == nil {
+				cnt, err = strconv.ParseInt(string(topic_posts_count.Value), 10, 64)
+				if err == nil {
+					pager = this.SetPaginator(pers, cnt)
+					if pager.Page() == 1 {
+						succeed = true
+					}
+				}
+			}
+
+			if succeed == true {
+				succeed = false
+				var topic_posts *memcache.Item
+				key = fmt.Sprintf("topic-%s", slug)
+				if topic_posts, err = cache.Mc.Get(key); err == nil {
+					var buf bytes.Buffer
+					buf.Write(topic_posts.Value)
+					decoder := gob.NewDecoder(&buf)
+					if err = decoder.Decode(&posts); err == nil {
+						this.Data["Posts"] = posts
+						return
+					}
+				}
+			}
+			beego.Error("getting topic posts from memcached failed. ", err)
+		}
 
 		qs := models.Posts().Filter("Topic", &topic)
 		qs = this.postsFilter(qs)
 
-		cnt, _ := models.CountObjects(qs)
-		pager := this.SetPaginator(pers, cnt)
+		cnt, _ = models.CountObjects(qs)
+		pager = this.SetPaginator(pers, cnt)
+		if setting.MemcachedEnabled {
+			buf := []byte(strconv.FormatInt(cnt, 10))
+			key := fmt.Sprintf("topic-%s-count", slug)
+			err = cache.Mc.Set(&memcache.Item{Key: key, Value: buf})
+		}
+
+		if setting.RedisEnabled {
+		}
 
 		if pager.Page() > 1 {
 			qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
@@ -433,18 +485,23 @@ func (this *PostListRouter) Topic() {
 			models.ListObjects(qsNonTop, &nontopposts)
 
 			posts = append(topposts, nontopposts...)
+
+			if setting.MemcachedEnabled {
+				var buf bytes.Buffer
+				encoder := gob.NewEncoder(&buf)
+				if err = encoder.Encode(&posts); err == nil {
+					key := fmt.Sprintf("topic-%s", slug)
+					PostsCache := &memcache.Item{Key: key, Value: buf.Bytes()}
+					err = cache.Mc.Set(PostsCache)
+				}
+
+				if err != nil {
+					beego.Error("saving topic posts to memcached failed. ", err)
+				}
+			}
 		}
 
-		this.Data["Slug"] = slug
 		this.Data["Posts"] = posts
-		this.Data["Topic"] = &topic
-		this.Data["IsTopic"] = true
-
-		HasFavorite := false
-		if this.IsLogin {
-			HasFavorite = models.FollowTopics().Filter("User", &this.User).Filter("Topic", &topic).Exist()
-		}
-		this.Data["HasFavorite"] = HasFavorite
 	}
 }
 
