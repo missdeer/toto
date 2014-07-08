@@ -84,8 +84,20 @@ func (this *PostListRouter) Home() {
 				post.ListTopics(&topics)
 			}
 		} else {
-			beego.Error("getting home posts from memcached failed ", err)
+			beego.Error("getting home topics from memcached failed ", err)
 			post.ListTopics(&topics)
+
+			var buf bytes.Buffer
+			encoder := gob.NewEncoder(&buf)
+			if err := encoder.Encode(&topics); err == nil {
+				TopicsCache := &memcache.Item{Key: "home-topics", Value: buf.Bytes()}
+				err = cache.Mc.Set(TopicsCache)
+				if err != nil {
+					beego.Error("saving home topics to memcached failed ", err)
+				}
+			} else {
+				beego.Error("encoding home topics to gob failed ", err)
+			}
 		}
 	}
 	this.Data["Topics"] = topics
@@ -99,10 +111,9 @@ func (this *PostListRouter) Home() {
 			buf.Write(home_posts.Value)
 			decoder := gob.NewDecoder(&buf)
 			if err = decoder.Decode(&posts); err != nil {
-				beego.Error("gob decoding home posts from memcached failed")
+				beego.Error("gob decoding home posts from memcached failed", err)
 				goto home_posts_from_memcached_failed
 			} else {
-				beego.Info("got home posts from memcached")
 				this.Data["Posts"] = posts
 			}
 		} else {
@@ -114,10 +125,9 @@ func (this *PostListRouter) Home() {
 			buf.Write(today_topten_posts.Value)
 			decoder := gob.NewDecoder(&buf)
 			if err = decoder.Decode(&todayTopTen); err != nil {
-				beego.Error("gob decoding home posts from memcached failed")
+				beego.Error("gob decoding today top ten posts from memcached failed. ", err)
 				goto home_posts_from_memcached_failed
 			} else {
-				beego.Info("got today top ten posts from memcache")
 				this.Data["TodayTopTen"] = todayTopTen
 				return
 			}
@@ -168,15 +178,16 @@ home_posts_from_memcached_failed:
 			beego.Error("encoding home to gob failed ", err)
 		}
 
-		buf.Reset()
-		if err := encoder.Encode(&todayTopTen); err == nil {
-			PostsCache := &memcache.Item{Key: "today-topten-posts", Value: buf.Bytes()}
-			err = cache.Mc.Set(PostsCache)
+		var bufTopTen bytes.Buffer
+		encoderTopTen := gob.NewEncoder(&bufTopTen)
+		if err := encoderTopTen.Encode(&todayTopTen); err == nil {
+			TopTenPostsCache := &memcache.Item{Key: "today-topten-posts", Value: bufTopTen.Bytes()}
+			err = cache.Mc.Set(TopTenPostsCache)
 			if err != nil {
-				beego.Error("saving home posts to memcached failed ", err)
+				beego.Error("saving today topten posts to memcached failed ", err)
 			}
 		} else {
-			beego.Error("encoding home to gob failed ", err)
+			beego.Error("encoding today topten  to gob failed ", err)
 		}
 	}
 }
