@@ -172,7 +172,6 @@ func LoadAds() {
 	fh, err := os.Open(AdsConfPath)
 	if err != nil {
 		beego.Error(err)
-		fh.Close()
 		return
 	}
 	defer fh.Close()
@@ -189,12 +188,12 @@ func LoadAds() {
 		return
 	}
 
-	for _, ad := range Ads.Records {
-		fmt.Printf("url: %s, title: %s\n", ad.Url, ad.Title)
-		for _, img := range ad.Img {
-			fmt.Printf("img: %s\n", img)
-		}
-	}
+	//for _, ad := range Ads.Records {
+	//	fmt.Printf("url: %s, title: %s\n", ad.Url, ad.Title)
+	//	for _, img := range ad.Img {
+	//		fmt.Printf("img: %s\n", img)
+	//	}
+	//}
 }
 
 // LoadConfig loads configuration file.
