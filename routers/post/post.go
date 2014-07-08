@@ -71,7 +71,67 @@ func (this *PostListRouter) Home() {
 	var cats []models.Category
 	this.setCategories(&cats)
 
+	this.Data["CategorySlug"] = "hot"
+
+	var topics []models.Topic
+	if setting.MemcachedEnabled {
+		if home_topics, err := cache.Mc.Get("home-topics"); err == nil {
+			var buf bytes.Buffer
+			buf.Write(home_topics.Value)
+			decoder := gob.NewDecoder(&buf)
+			if err = decoder.Decode(&topics); err != nil {
+				beego.Error("gob decoding home topics from memcached failed")
+				post.ListTopics(&topics)
+			}
+		} else {
+			beego.Error("getting home posts from memcached failed ", err)
+			post.ListTopics(&topics)
+		}
+	}
+	this.Data["Topics"] = topics
+
 	var posts []models.Post
+	var todayTopTen []models.Post
+
+	if setting.MemcachedEnabled {
+		if home_posts, err := cache.Mc.Get("home-posts"); err == nil {
+			var buf bytes.Buffer
+			buf.Write(home_posts.Value)
+			decoder := gob.NewDecoder(&buf)
+			if err = decoder.Decode(&posts); err != nil {
+				beego.Error("gob decoding home posts from memcached failed")
+				goto home_posts_from_memcached_failed
+			} else {
+				beego.Info("got home posts from memcached")
+				this.Data["Posts"] = posts
+			}
+		} else {
+			beego.Error("getting home posts from memcached failed ", err)
+		}
+
+		if today_topten_posts, err := cache.Mc.Get("today-topten-posts"); err == nil {
+			var buf bytes.Buffer
+			buf.Write(today_topten_posts.Value)
+			decoder := gob.NewDecoder(&buf)
+			if err = decoder.Decode(&todayTopTen); err != nil {
+				beego.Error("gob decoding home posts from memcached failed")
+				goto home_posts_from_memcached_failed
+			} else {
+				beego.Info("got today top ten posts from memcache")
+				this.Data["TodayTopTen"] = todayTopTen
+				return
+			}
+		} else {
+			beego.Error("getting home posts from memcached failed ", err)
+		}
+	}
+
+home_posts_from_memcached_failed:
+
+	if setting.RedisEnabled {
+
+	}
+
 	postsModel := models.Posts()
 
 	var topposts []models.Post
@@ -87,7 +147,6 @@ func (this *PostListRouter) Home() {
 
 	posts = append(topposts, nontopposts...)
 
-	var todayTopTen []models.Post
 	qsTopTen := postsModel.Exclude("today_replys", 0).OrderBy("-TodayReplys").Limit(10).RelatedSel()
 	qsTopTen = this.postsFilter(qsTopTen)
 	models.ListObjects(qsTopTen, &todayTopTen)
@@ -95,11 +154,31 @@ func (this *PostListRouter) Home() {
 	this.Data["Posts"] = posts
 	this.Data["TodayTopTen"] = todayTopTen
 
-	this.Data["CategorySlug"] = "hot"
+	if setting.MemcachedEnabled {
+		var buf bytes.Buffer
+		encoder := gob.NewEncoder(&buf)
 
-	var topics []models.Topic
-	post.ListTopics(&topics)
-	this.Data["Topics"] = topics
+		if err := encoder.Encode(&posts); err == nil {
+			PostsCache := &memcache.Item{Key: "home-posts", Value: buf.Bytes()}
+			err = cache.Mc.Set(PostsCache)
+			if err != nil {
+				beego.Error("saving home posts to memcached failed ", err)
+			}
+		} else {
+			beego.Error("encoding home to gob failed ", err)
+		}
+
+		buf.Reset()
+		if err := encoder.Encode(&todayTopTen); err == nil {
+			PostsCache := &memcache.Item{Key: "today-topten-posts", Value: buf.Bytes()}
+			err = cache.Mc.Set(PostsCache)
+			if err != nil {
+				beego.Error("saving home posts to memcached failed ", err)
+			}
+		} else {
+			beego.Error("encoding home to gob failed ", err)
+		}
+	}
 }
 
 // Get implemented Get method for HomeRouter.
