@@ -313,47 +313,165 @@ func (this *PostListRouter) Navs() {
 	pers := 25
 
 	var posts []models.Post
+	var cnt int64
+	var pager *utils.Paginator
+	var err error
+	succeed := false
 
 	switch slug {
 	case "recent":
-		qs := models.Posts().Exclude("category_id", setting.CategoryHideOnHome)
-		qs = this.postsFilter(qs)
+		if setting.MemcachedEnabled {
+			var recent_posts_count *memcache.Item
+			if recent_posts_count, err = cache.Mc.Get("recent-posts-count"); err == nil {
+				cnt, err = strconv.ParseInt(string(recent_posts_count.Value), 10, 64)
+				if err == nil {
+					pager = this.SetPaginator(pers, cnt)
+					if pager.Page() == 1 {
+						succeed = true
+					}
+				}
+			}
 
-		cnt, _ := models.CountObjects(qs)
-		pager := this.SetPaginator(pers, cnt)
+			if succeed == true {
+				succeed = false
+				var recent_posts *memcache.Item
+				if recent_posts, err = cache.Mc.Get("recent-posts"); err == nil {
+					var buf bytes.Buffer
+					buf.Write(recent_posts.Value)
+					decoder := gob.NewDecoder(&buf)
+					if err = decoder.Decode(&posts); err == nil {
+						break
+					}
+				}
+			}
+		}
 
-		qs = qs.OrderBy("-Updated").Limit(pers, pager.Offset()).RelatedSel()
+		if succeed == false {
+			qs := models.Posts().Exclude("category_id", setting.CategoryHideOnHome)
+			qs = this.postsFilter(qs)
 
-		models.ListObjects(qs, &posts)
+			cnt, _ = models.CountObjects(qs)
+			pager = this.SetPaginator(pers, cnt)
 
+			qs = qs.OrderBy("-Updated").Limit(pers, pager.Offset()).RelatedSel()
+
+			models.ListObjects(qs, &posts)
+
+			if setting.MemcachedEnabled {
+				buf := []byte(strconv.FormatInt(cnt, 10))
+				err = cache.Mc.Set(&memcache.Item{Key: "recent-posts-count", Value: buf})
+
+				var bufPosts bytes.Buffer
+				encoder := gob.NewEncoder(&bufPosts)
+				if err = encoder.Encode(&posts); err == nil {
+					err = cache.Mc.Set(&memcache.Item{Key: "recent-posts", Value: bufPosts.Bytes()})
+				}
+			}
+		}
 		var cats []models.Category
 		this.setCategories(&cats)
 
 	case "best":
-		qs := models.Posts().Filter("IsBest", true)
-		qs = this.postsFilter(qs)
+		if setting.MemcachedEnabled {
+			var best_posts_count *memcache.Item
+			if best_posts_count, err = cache.Mc.Get("best-posts-count"); err == nil {
+				cnt, err = strconv.ParseInt(string(best_posts_count.Value), 10, 64)
+				if err == nil {
+					pager = this.SetPaginator(pers, cnt)
+					if pager.Page() == 1 {
+						succeed = true
+					}
+				}
+			}
 
-		cnt, _ := models.CountObjects(qs)
-		pager := this.SetPaginator(pers, cnt)
+			if succeed == true {
+				succeed = false
+				var best_posts *memcache.Item
+				if best_posts, err = cache.Mc.Get("best-posts"); err == nil {
+					var buf bytes.Buffer
+					buf.Write(best_posts.Value)
+					decoder := gob.NewDecoder(&buf)
+					if err = decoder.Decode(&posts); err == nil {
+						break
+					}
+				}
+			}
+		}
 
-		qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+		if succeed == false {
+			qs := models.Posts().Filter("IsBest", true)
+			qs = this.postsFilter(qs)
 
-		models.ListObjects(qs, &posts)
+			cnt, _ := models.CountObjects(qs)
+			pager := this.SetPaginator(pers, cnt)
 
+			qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+
+			models.ListObjects(qs, &posts)
+
+			if setting.MemcachedEnabled {
+				buf := []byte(strconv.FormatInt(cnt, 10))
+				err = cache.Mc.Set(&memcache.Item{Key: "best-posts-count", Value: buf})
+
+				var bufPosts bytes.Buffer
+				encoder := gob.NewEncoder(&bufPosts)
+				if err = encoder.Encode(&posts); err == nil {
+					err = cache.Mc.Set(&memcache.Item{Key: "best-posts", Value: bufPosts.Bytes()})
+				}
+			}
+		}
 		var cats []models.Category
 		this.setCategories(&cats)
 
 	case "cold":
-		qs := models.Posts().Filter("Replys", 0)
-		qs = this.postsFilter(qs)
+		if setting.MemcachedEnabled {
+			var cold_posts_count *memcache.Item
+			if cold_posts_count, err = cache.Mc.Get("cold-posts-count"); err == nil {
+				cnt, err = strconv.ParseInt(string(cold_posts_count.Value), 10, 64)
+				if err == nil {
+					pager = this.SetPaginator(pers, cnt)
+					if pager.Page() == 1 {
+						succeed = true
+					}
+				}
+			}
 
-		cnt, _ := models.CountObjects(qs)
-		pager := this.SetPaginator(pers, cnt)
+			if succeed == true {
+				succeed = false
+				var cold_posts *memcache.Item
+				if cold_posts, err = cache.Mc.Get("cold-posts"); err == nil {
+					var buf bytes.Buffer
+					buf.Write(cold_posts.Value)
+					decoder := gob.NewDecoder(&buf)
+					if err = decoder.Decode(&posts); err == nil {
+						break
+					}
+				}
+			}
+		}
 
-		qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+		if succeed == false {
+			qs := models.Posts().Filter("Replys", 0)
+			qs = this.postsFilter(qs)
 
-		models.ListObjects(qs, &posts)
+			cnt, _ := models.CountObjects(qs)
+			pager := this.SetPaginator(pers, cnt)
 
+			qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+
+			models.ListObjects(qs, &posts)
+
+			if setting.MemcachedEnabled {
+				buf := []byte(strconv.FormatInt(cnt, 10))
+				err = cache.Mc.Set(&memcache.Item{Key: "cold-posts-count", Value: buf})
+
+				var bufPosts bytes.Buffer
+				encoder := gob.NewEncoder(&bufPosts)
+				if err = encoder.Encode(&posts); err == nil {
+					err = cache.Mc.Set(&memcache.Item{Key: "cold-posts", Value: bufPosts.Bytes()})
+				}
+			}
+		}
 		var cats []models.Category
 		this.setCategories(&cats)
 
