@@ -14,15 +14,11 @@ import (
 func GetInt64(key string) (ret int64, err error) {
 	var val *memcache.Item
 	if val, err = cache.Mc.Get(key); err != nil {
-		return
+		return err
 	}
 
 	ret, err = strconv.ParseInt(string(val.Value), 10, 64)
-	if err != nil {
-		return
-	}
-
-	return
+	return err
 }
 
 func SetInt64(key string, val int64) (err error) {
@@ -34,15 +30,13 @@ func SetInt64(key string, val int64) (err error) {
 func GetPosts(key string, posts *[]models.Post) (err error) {
 	var p *memcache.Item
 	if p, err = cache.Mc.Get(key); err != nil {
-		return
+		return err
 	}
 
 	var buf bytes.Buffer
 	buf.Write(p.Value)
 	decoder := gob.NewDecoder(&buf)
-	if err = decoder.Decode(posts); err != nil {
-		return
-	}
+	err = decoder.Decode(posts)
 	return err
 }
 
@@ -50,7 +44,7 @@ func SetPosts(key string, posts *[]models.Post) (err error) {
 	var buf bytes.Buffer
 	encoder := gob.NewEncoder(&buf)
 	if err = encoder.Encode(posts); err != nil {
-		return
+		return err
 	}
 	PostsCache := &memcache.Item{Key: key, Value: buf.Bytes()}
 	err = cache.Mc.Set(PostsCache)
@@ -60,15 +54,13 @@ func SetPosts(key string, posts *[]models.Post) (err error) {
 func GetTopics(key string, topics *[]models.Topic) (err error) {
 	var t *memcache.Item
 	if t, err = cache.Mc.Get(key); err != nil {
-		return
+		return err
 	}
 
 	var buf bytes.Buffer
 	buf.Write(t.Value)
 	decoder := gob.NewDecoder(&buf)
-	if err = decoder.Decode(&topics); err != nil {
-		return
-	}
+	err = decoder.Decode(&topics)
 	return err
 }
 
@@ -76,7 +68,7 @@ func SetTopics(key string, topics *[]models.Topic) (err error) {
 	var buf bytes.Buffer
 	encoder := gob.NewEncoder(&buf)
 	if err = encoder.Encode(&topics); err != nil {
-		return
+		return err
 	}
 
 	TopicsCache := &memcache.Item{Key: key, Value: buf.Bytes()}
@@ -87,23 +79,21 @@ func SetTopics(key string, topics *[]models.Topic) (err error) {
 func GetCategories(key string, categories *[]models.Category) (err error) {
 	var c *memcache.Item
 	if c, err = cache.Mc.Get(key); err != nil {
-		return
+		return err
 	}
 
 	var buf bytes.Buffer
 	buf.Write(c.Value)
 	decoder := gob.NewDecoder(&buf)
-	if err = decoder.Decode(&categories); err != nil {
-		return
-	}
+	err = decoder.Decode(&categories)
 	return err
 }
 
 func SetCategories(key string, categories *[]models.Category) (err error) {
 	var buf bytes.Buffer
-    encoder := gob.NewEncoder(&buf)
+	encoder := gob.NewEncoder(&buf)
 	if err = encoder.Encode(&categories); err != nil {
-		return
+		return err
 	}
 	err = cache.Mc.Set(&memcache.Item{Key: key, Value: buf.Bytes()})
 	return err
