@@ -801,13 +801,13 @@ func (this *PostRouter) NewSubmit() {
 			cache.Mc.Delete("recent-category")
 			cache.Mc.Delete("home-posts")
 			cache.Mc.Delete("today-topten-posts")
-			categoryCountKey := fmt.Sprintf(`category-%s-count`, postMd.Category.Slug)
+			categoryCountKey := fmt.Sprintf(`category-%s-count`, post.Category.Slug)
 			cache.Mc.Delete(categoryCountKey)
-			categoryKey := fmt.Sprintf(`category-%s`, postMd.Category.Slug)
+			categoryKey := fmt.Sprintf(`category-%s`, post.Category.Slug)
 			cache.Mc.Delete(categoryKey)
-			topicCountKey := fmt.Sprintf(`topic-%s-count`, postMd.Topic.Slug)
+			topicCountKey := fmt.Sprintf(`topic-%s-count`, post.Topic.Slug)
 			cache.Mc.Delete(topicCountKey)
-			topicKey := fmt.Sprintf(`topic-%s`, postMd.Topic.Slug)
+			topicKey := fmt.Sprintf(`topic-%s`, post.Topic.Slug)
 			cache.Mc.Delete(topicKey)
 		}
 	}
