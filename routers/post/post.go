@@ -831,6 +831,13 @@ func (this *PostRouter) SingleSubmit() {
 
 		post.PostReplysCount(&postMd)
 	}
+	// update cold posts cache
+	if postMd.Replys == 1 {
+		if setting.MemcachedEnabled {
+			cache.Mc.Delete("cold-posts-count")
+			cache.Mc.Delete("cold-posts")
+		}
+	}
 }
 
 func (this *PostRouter) Edit() {
@@ -875,6 +882,21 @@ func (this *PostRouter) EditSubmit() {
 	if err := form.UpdatePost(&postMd, &this.User); err == nil {
 		this.JsStorage("deleteKey", "post/edit")
 		this.Redirect(postMd.Link(), 302)
+	}
+	// update recent/home/category/topics posts cache
+	if setting.MemcachedEnabled {
+		cache.Mc.Delete("recent-posts-count")
+		cache.Mc.Delete("recent-posts")
+		cache.Mc.Delete("home-posts")
+		cache.Mc.Delete("today-topten-posts")
+		categoryCountKey := fmt.Sprintf(`category-%s-count`, postMd.Category.Slug)
+		cache.Mc.Delete(categoryCountKey)
+		categoryKey := fmt.Sprintf(`category-%s`, postMd.Category.Slug)
+		cache.Mc.Delete(categoryKey)
+		topicCountKey := fmt.Sprintf(`topic-%s-count`, postMd.Topic.Slug)
+		cache.Mc.Delete(topicCountKey)
+		topicKey := fmt.Sprintf(`topic-%s`, postMd.Topic.Slug)
+		cache.Mc.Delete(topicKey)
 	}
 }
 

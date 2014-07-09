@@ -15,11 +15,14 @@
 package api
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"time"
 
+	"github.com/missdeer/KellyBackend/cache"
 	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/KellyBackend/setting"
 )
 
 func (this *ApiRouter) PostToggle() {
@@ -53,6 +56,22 @@ func (this *ApiRouter) PostToggle() {
 					beego.Error("PostCounterAdd ", err)
 				} else {
 					result["success"] = true
+					// update home/recent/category/topic/best posts cache
+					if setting.MemcachedEnabled {
+						cache.Mc.Delete("recent-posts-count")
+						cache.Mc.Delete("recent-posts")
+						cache.Mc.Delete("home-posts")
+						cache.Mc.Delete("best-posts-count")
+						cache.Mc.Delete("best-posts")
+						categoryCountKey := fmt.Sprintf(`category-%s-count`, p.Category.Slug)
+						cache.Mc.Delete(categoryCountKey)
+						categoryKey := fmt.Sprintf(`category-%s`, p.Category.Slug)
+						cache.Mc.Delete(categoryKey)
+						topicCountKey := fmt.Sprintf(`topic-%s-count`, p.Topic.Slug)
+						cache.Mc.Delete(topicCountKey)
+						topicKey := fmt.Sprintf(`topic-%s`, p.Topic.Slug)
+						cache.Mc.Delete(topicKey)
+					}
 				}
 				o = nil
 			}
@@ -68,6 +87,20 @@ func (this *ApiRouter) PostToggle() {
 					beego.Error("PostCounterAdd ", err)
 				} else {
 					result["success"] = true
+					// update home/recent/category/topic posts cache
+					if setting.MemcachedEnabled {
+						cache.Mc.Delete("recent-posts-count")
+						cache.Mc.Delete("recent-posts")
+						cache.Mc.Delete("home-posts")
+						categoryCountKey := fmt.Sprintf(`category-%s-count`, p.Category.Slug)
+						cache.Mc.Delete(categoryCountKey)
+						categoryKey := fmt.Sprintf(`category-%s`, p.Category.Slug)
+						cache.Mc.Delete(categoryKey)
+						topicCountKey := fmt.Sprintf(`topic-%s-count`, p.Topic.Slug)
+						cache.Mc.Delete(topicCountKey)
+						topicKey := fmt.Sprintf(`topic-%s`, p.Topic.Slug)
+						cache.Mc.Delete(topicKey)
+					}
 				}
 				o = nil
 			}
