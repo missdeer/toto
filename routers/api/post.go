@@ -60,9 +60,11 @@ func (this *ApiRouter) PostToggle() {
 					if setting.MemcachedEnabled {
 						cache.Mc.Delete("recent-posts-count")
 						cache.Mc.Delete("recent-posts")
+						cache.Mc.Delete("recent-category")
 						cache.Mc.Delete("home-posts")
 						cache.Mc.Delete("best-posts-count")
 						cache.Mc.Delete("best-posts")
+						cache.Mc.Delete("best-category")
 						categoryCountKey := fmt.Sprintf(`category-%s-count`, p.Category.Slug)
 						cache.Mc.Delete(categoryCountKey)
 						categoryKey := fmt.Sprintf(`category-%s`, p.Category.Slug)
@@ -91,6 +93,7 @@ func (this *ApiRouter) PostToggle() {
 					if setting.MemcachedEnabled {
 						cache.Mc.Delete("recent-posts-count")
 						cache.Mc.Delete("recent-posts")
+						cache.Mc.Delete("recent-category")
 						cache.Mc.Delete("home-posts")
 						categoryCountKey := fmt.Sprintf(`category-%s-count`, p.Category.Slug)
 						cache.Mc.Delete(categoryCountKey)

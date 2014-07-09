@@ -793,6 +793,23 @@ func (this *PostRouter) NewSubmit() {
 
 		this.JsStorage("deleteKey", "post/new")
 		this.Redirect(post.Link(), 302)
+
+		// update recent/home/category/topics posts cache
+		if setting.MemcachedEnabled {
+			cache.Mc.Delete("recent-posts-count")
+			cache.Mc.Delete("recent-posts")
+			cache.Mc.Delete("recent-category")
+			cache.Mc.Delete("home-posts")
+			cache.Mc.Delete("today-topten-posts")
+			categoryCountKey := fmt.Sprintf(`category-%s-count`, postMd.Category.Slug)
+			cache.Mc.Delete(categoryCountKey)
+			categoryKey := fmt.Sprintf(`category-%s`, postMd.Category.Slug)
+			cache.Mc.Delete(categoryKey)
+			topicCountKey := fmt.Sprintf(`topic-%s-count`, postMd.Topic.Slug)
+			cache.Mc.Delete(topicCountKey)
+			topicKey := fmt.Sprintf(`topic-%s`, postMd.Topic.Slug)
+			cache.Mc.Delete(topicKey)
+		}
 	}
 }
 
@@ -898,6 +915,7 @@ func (this *PostRouter) SingleSubmit() {
 		if setting.MemcachedEnabled {
 			cache.Mc.Delete("cold-posts-count")
 			cache.Mc.Delete("cold-posts")
+			cache.Mc.Delete("cold-category")
 		}
 	}
 }
@@ -949,6 +967,7 @@ func (this *PostRouter) EditSubmit() {
 	if setting.MemcachedEnabled {
 		cache.Mc.Delete("recent-posts-count")
 		cache.Mc.Delete("recent-posts")
+		cache.Mc.Delete("recent-category")
 		cache.Mc.Delete("home-posts")
 		cache.Mc.Delete("today-topten-posts")
 		categoryCountKey := fmt.Sprintf(`category-%s-count`, postMd.Category.Slug)
