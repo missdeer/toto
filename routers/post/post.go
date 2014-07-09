@@ -313,6 +313,7 @@ func (this *PostListRouter) Navs() {
 	pers := 25
 
 	var posts []models.Post
+	var cats []models.Category
 	var cnt int64
 	var pager *utils.Paginator
 	var err error
@@ -340,6 +341,21 @@ func (this *PostListRouter) Navs() {
 					buf.Write(recent_posts.Value)
 					decoder := gob.NewDecoder(&buf)
 					if err = decoder.Decode(&posts); err == nil {
+						succeed = true
+					}
+				}
+			}
+
+			if succeed == true {
+				succeed = false
+				var recent_category *memcache.Item
+				if recent_category, err = cache.Mc.Get("recent-category"); err == nil {
+					var buf bytes.Buffer
+					buf.Write(recent_category.Value)
+					decoder := gob.NewDecoder(&buf)
+					if err = decoder.Decode(&cats); err == nil {
+						succeed = true
+						this.Data["Categories"] = cats
 						break
 					}
 				}
@@ -357,6 +373,8 @@ func (this *PostListRouter) Navs() {
 
 			models.ListObjects(qs, &posts)
 
+			this.setCategories(&cats)
+
 			if setting.MemcachedEnabled {
 				buf := []byte(strconv.FormatInt(cnt, 10))
 				err = cache.Mc.Set(&memcache.Item{Key: "recent-posts-count", Value: buf})
@@ -366,10 +384,14 @@ func (this *PostListRouter) Navs() {
 				if err = encoder.Encode(&posts); err == nil {
 					err = cache.Mc.Set(&memcache.Item{Key: "recent-posts", Value: bufPosts.Bytes()})
 				}
+
+				var bufCategory bytes.Buffer
+				encoder = gob.NewEncoder(&bufCategory)
+				if err = encoder.Encode(&cats); err == nil {
+					err = cache.Mc.Set(&memcache.Item{Key: "recent-category", Value: bufCategory.Bytes()})
+				}
 			}
 		}
-		var cats []models.Category
-		this.setCategories(&cats)
 
 	case "best":
 		if setting.MemcachedEnabled {
@@ -392,6 +414,21 @@ func (this *PostListRouter) Navs() {
 					buf.Write(best_posts.Value)
 					decoder := gob.NewDecoder(&buf)
 					if err = decoder.Decode(&posts); err == nil {
+						succeed = true
+					}
+				}
+			}
+
+			if succeed == true {
+				succeed = false
+				var best_category *memcache.Item
+				if best_category, err = cache.Mc.Get("best-category"); err == nil {
+					var buf bytes.Buffer
+					buf.Write(best_category.Value)
+					decoder := gob.NewDecoder(&buf)
+					if err = decoder.Decode(&cats); err == nil {
+						succeed = true
+						this.Data["Categories"] = cats
 						break
 					}
 				}
@@ -408,6 +445,7 @@ func (this *PostListRouter) Navs() {
 			qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
 
 			models.ListObjects(qs, &posts)
+			this.setCategories(&cats)
 
 			if setting.MemcachedEnabled {
 				buf := []byte(strconv.FormatInt(cnt, 10))
@@ -418,10 +456,14 @@ func (this *PostListRouter) Navs() {
 				if err = encoder.Encode(&posts); err == nil {
 					err = cache.Mc.Set(&memcache.Item{Key: "best-posts", Value: bufPosts.Bytes()})
 				}
+
+				var bufCategory bytes.Buffer
+				encoder = gob.NewEncoder(&bufCategory)
+				if err = encoder.Encode(&cats); err == nil {
+					err = cache.Mc.Set(&memcache.Item{Key: "best-category", Value: bufCategory.Bytes()})
+				}
 			}
 		}
-		var cats []models.Category
-		this.setCategories(&cats)
 
 	case "cold":
 		if setting.MemcachedEnabled {
@@ -444,6 +486,21 @@ func (this *PostListRouter) Navs() {
 					buf.Write(cold_posts.Value)
 					decoder := gob.NewDecoder(&buf)
 					if err = decoder.Decode(&posts); err == nil {
+						succeed = true
+					}
+				}
+			}
+
+			if succeed == true {
+				succeed = false
+				var cold_category *memcache.Item
+				if cold_category, err = cache.Mc.Get("code-category"); err == nil {
+					var buf bytes.Buffer
+					buf.Write(cold_category.Value)
+					decoder := gob.NewDecoder(&buf)
+					if err = decoder.Decode(&cats); err == nil {
+						succeed = true
+						this.Data["Categories"] = cats
 						break
 					}
 				}
@@ -460,6 +517,7 @@ func (this *PostListRouter) Navs() {
 			qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
 
 			models.ListObjects(qs, &posts)
+			this.setCategories(&cats)
 
 			if setting.MemcachedEnabled {
 				buf := []byte(strconv.FormatInt(cnt, 10))
@@ -470,10 +528,14 @@ func (this *PostListRouter) Navs() {
 				if err = encoder.Encode(&posts); err == nil {
 					err = cache.Mc.Set(&memcache.Item{Key: "cold-posts", Value: bufPosts.Bytes()})
 				}
+
+				var bufCategory bytes.Buffer
+				encoder = gob.NewEncoder(&bufCategory)
+				if err = encoder.Encode(&cats); err == nil {
+					err = cache.Mc.Set(&memcache.Item{Key: "cold-category", Value: bufCategory.Bytes()})
+				}
 			}
 		}
-		var cats []models.Category
-		this.setCategories(&cats)
 
 	case "favs":
 		var topicIds orm.ParamsList
