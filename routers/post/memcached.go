@@ -14,11 +14,11 @@ import (
 func GetInt64(key string) (ret int64, err error) {
 	var val *memcache.Item
 	if val, err = cache.Mc.Get(key); err != nil {
-		return err
+		return 0, err
 	}
 
 	ret, err = strconv.ParseInt(string(val.Value), 10, 64)
-	return err
+	return ret, err
 }
 
 func SetInt64(key string, val int64) (err error) {
