@@ -74,6 +74,23 @@ func (this *ApiRouter) PostToggle() {
 						topicKey := fmt.Sprintf(`topic-%s`, p.Topic.Slug)
 						cache.Mc.Delete(topicKey)
 					}
+					if setting.RedisEnabled {
+						cache.Rd.Do("DEL", "recent-posts-count")
+						cache.Rd.Do("DEL", "recent-posts")
+						cache.Rd.Do("DEL", "recent-category")
+						cache.Rd.Do("DEL", "home-posts")
+						cache.Rd.Do("DEL", "best-posts-count")
+						cache.Rd.Do("DEL", "best-posts")
+						cache.Rd.Do("DEL", "best-category")
+						categoryCountKey := fmt.Sprintf(`category-%s-count`, p.Category.Slug)
+						cache.Rd.Do("DEL", categoryCountKey)
+						categoryKey := fmt.Sprintf(`category-%s`, p.Category.Slug)
+						cache.Rd.Do("DEL", categoryKey)
+						topicCountKey := fmt.Sprintf(`topic-%s-count`, p.Topic.Slug)
+						cache.Rd.Do("DEL", topicCountKey)
+						topicKey := fmt.Sprintf(`topic-%s`, p.Topic.Slug)
+						cache.Rd.Do("DEL", topicKey)
+					}
 				}
 				o = nil
 			}
@@ -103,6 +120,20 @@ func (this *ApiRouter) PostToggle() {
 						cache.Mc.Delete(topicCountKey)
 						topicKey := fmt.Sprintf(`topic-%s`, p.Topic.Slug)
 						cache.Mc.Delete(topicKey)
+					}
+					if setting.RedisEnabled {
+						cache.Rd.Do("DEL", "recent-posts-count")
+						cache.Rd.Do("DEL", "recent-posts")
+						cache.Rd.Do("DEL", "recent-category")
+						cache.Rd.Do("DEL", "home-posts")
+						categoryCountKey := fmt.Sprintf(`category-%s-count`, p.Category.Slug)
+						cache.Rd.Do("DEL", categoryCountKey)
+						categoryKey := fmt.Sprintf(`category-%s`, p.Category.Slug)
+						cache.Rd.Do("DEL", categoryKey)
+						topicCountKey := fmt.Sprintf(`topic-%s-count`, p.Topic.Slug)
+						cache.Rd.Do("DEL", topicCountKey)
+						topicKey := fmt.Sprintf(`topic-%s`, p.Topic.Slug)
+						cache.Rd.Do("DEL", topicKey)
 					}
 				}
 				o = nil

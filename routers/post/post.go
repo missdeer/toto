@@ -72,22 +72,31 @@ func (this *PostListRouter) Home() {
 	// get topics
 	var topics []models.Topic
 	if setting.MemcachedEnabled {
-		if err := GetTopics("home-topics", &topics); err != nil {
+		if err := MemcachedGetTopics("home-topics", &topics); err != nil {
 			beego.Error("get home topics from memcache failed. ", err)
 			post.ListTopics(&topics)
-			SetTopics("home-topics", &topics)
+			MemcachedSetTopics("home-topics", &topics)
 		}
-	} else {
-		post.ListTopics(&topics)
 	}
 
+	if setting.RedisEnabled {
+		if err := RedisGetTopics("home-topics", &topics); err != nil {
+			beego.Error("get home topics from redis failed. ", err)
+			post.ListTopics(&topics)
+			RedisSetTopics("home-topics", &topics)
+		}
+	}
+
+	if len(topics) == 0 {
+		post.ListTopics(&topics)
+	}
 	this.Data["Topics"] = topics
 
 	// get posts
 	var posts []models.Post
 	var todayTopTen []models.Post
 	if setting.MemcachedEnabled {
-		if GetPosts("home-posts", &posts) == nil && GetPosts("today-topten-posts", &todayTopTen) == nil {
+		if MemcachedGetPosts("home-posts", &posts) == nil && MemcachedGetPosts("today-topten-posts", &todayTopTen) == nil {
 			this.Data["Posts"] = posts
 			this.Data["TodayTopTen"] = todayTopTen
 			return
@@ -95,9 +104,14 @@ func (this *PostListRouter) Home() {
 	}
 
 	if setting.RedisEnabled {
-
+		if RedisGetPosts("home-posts", &posts) == nil && RedisGetPosts("today-topten-posts", &todayTopTen) == nil {
+			this.Data["Posts"] = posts
+			this.Data["TodayTopTen"] = todayTopTen
+			return
+		}
 	}
 
+	beego.Info("Get posts from database")
 	postsModel := models.Posts()
 
 	var topposts []models.Post
@@ -121,8 +135,13 @@ func (this *PostListRouter) Home() {
 	this.Data["TodayTopTen"] = todayTopTen
 
 	if setting.MemcachedEnabled {
-		SetPosts("home-posts", &posts)
-		SetPosts("today-topten-posts", &todayTopTen)
+		MemcachedSetPosts("home-posts", &posts)
+		MemcachedSetPosts("today-topten-posts", &todayTopTen)
+	}
+
+	if setting.RedisEnabled {
+		RedisSetPosts("home-posts", &posts)
+		RedisSetPosts("today-topten-posts", &todayTopTen)
 	}
 }
 
@@ -155,11 +174,11 @@ func (this *PostListRouter) Category() {
 
 	if setting.MemcachedEnabled {
 		key := fmt.Sprintf("category-%s-count", slug)
-		if cnt, err = GetInt64(key); err == nil {
+		if cnt, err = MemcachedGetInt64(key); err == nil {
 			pager = this.SetPaginator(pers, cnt)
 			if pager.Page() == 1 {
 				key = fmt.Sprintf("category-%s", slug)
-				if GetPosts(key, &posts) == nil {
+				if MemcachedGetPosts(key, &posts) == nil {
 					this.Data["Posts"] = posts
 					return
 				}
@@ -168,6 +187,17 @@ func (this *PostListRouter) Category() {
 	}
 
 	if setting.RedisEnabled {
+		key := fmt.Sprintf("category-%s-count", slug)
+		if cnt, err = RedisGetInt64(key); err == nil {
+			pager = this.SetPaginator(pers, cnt)
+			if pager.Page() == 1 {
+				key = fmt.Sprintf("category-%s", slug)
+				if RedisGetPosts(key, &posts) == nil {
+					this.Data["Posts"] = posts
+					return
+				}
+			}
+		}
 	}
 
 	qs := models.Posts().Filter("Category", &cat)
@@ -177,10 +207,12 @@ func (this *PostListRouter) Category() {
 	pager = this.SetPaginator(pers, cnt)
 	if setting.MemcachedEnabled {
 		key := fmt.Sprintf("category-%s-count", slug)
-		SetInt64(key, cnt)
+		MemcachedSetInt64(key, cnt)
 	}
 
 	if setting.RedisEnabled {
+		key := fmt.Sprintf("category-%s-count", slug)
+		RedisSetInt64(key, cnt)
 	}
 
 	if pager.Page() > 1 {
@@ -201,10 +233,12 @@ func (this *PostListRouter) Category() {
 
 		if setting.MemcachedEnabled {
 			key := fmt.Sprintf("category-%s", slug)
-			SetPosts(key, &posts)
+			MemcachedSetPosts(key, &posts)
 		}
 
 		if setting.RedisEnabled {
+			key := fmt.Sprintf("category-%s", slug)
+			RedisSetPosts(key, &posts)
 		}
 	}
 
@@ -236,10 +270,10 @@ func (this *PostListRouter) Navs() {
 	switch slug {
 	case "recent":
 		if setting.MemcachedEnabled {
-			if cnt, err = GetInt64("recent-posts-count"); err == nil {
+			if cnt, err = MemcachedGetInt64("recent-posts-count"); err == nil {
 				pager = this.SetPaginator(pers, cnt)
 				if pager.Page() == 1 {
-					if GetPosts("recent-posts", &posts) == nil && GetCategories("recent-category", &cats) == nil {
+					if MemcachedGetPosts("recent-posts", &posts) == nil && MemcachedGetCategories("recent-category", &cats) == nil {
 						this.Data["Categories"] = cats
 						break
 					}
@@ -247,6 +281,17 @@ func (this *PostListRouter) Navs() {
 			}
 		}
 
+		if setting.RedisEnabled {
+			if cnt, err = RedisGetInt64("recent-posts-count"); err == nil {
+				pager = this.SetPaginator(pers, cnt)
+				if pager.Page() == 1 {
+					if RedisGetPosts("recent-posts", &posts) == nil && RedisGetCategories("recent-category", &cats) == nil {
+						this.Data["Categories"] = cats
+						break
+					}
+				}
+			}
+		}
 		qs := models.Posts().Exclude("category_id", setting.CategoryHideOnHome)
 		qs = this.postsFilter(qs)
 
@@ -260,17 +305,34 @@ func (this *PostListRouter) Navs() {
 		this.setCategories(&cats)
 
 		if setting.MemcachedEnabled {
-			SetInt64("recent-posts-count", cnt)
-			SetPosts("recent-posts", &posts)
-			SetCategories("recent-category", &cats)
+			MemcachedSetInt64("recent-posts-count", cnt)
+			MemcachedSetPosts("recent-posts", &posts)
+			MemcachedSetCategories("recent-category", &cats)
 		}
 
+		if setting.RedisEnabled {
+			RedisSetInt64("recent-posts-count", cnt)
+			RedisSetPosts("recent-posts", &posts)
+			RedisSetCategories("recent-category", &cats)
+		}
 	case "best":
 		if setting.MemcachedEnabled {
-			if cnt, err = GetInt64("best-posts-count"); err == nil {
+			if cnt, err = MemcachedGetInt64("best-posts-count"); err == nil {
 				pager = this.SetPaginator(pers, cnt)
 				if pager.Page() == 1 {
-					if GetPosts("best-posts", &posts) == nil && GetCategories("best-category", &cats) == nil {
+					if MemcachedGetPosts("best-posts", &posts) == nil && MemcachedGetCategories("best-category", &cats) == nil {
+						this.Data["Categories"] = cats
+						break
+					}
+				}
+			}
+		}
+
+		if setting.RedisEnabled {
+			if cnt, err = RedisGetInt64("best-posts-count"); err == nil {
+				pager = this.SetPaginator(pers, cnt)
+				if pager.Page() == 1 {
+					if RedisGetPosts("best-posts", &posts) == nil && RedisGetCategories("best-category", &cats) == nil {
 						this.Data["Categories"] = cats
 						break
 					}
@@ -290,17 +352,22 @@ func (this *PostListRouter) Navs() {
 		this.setCategories(&cats)
 
 		if setting.MemcachedEnabled {
-			SetInt64("best-posts-count", cnt)
-			SetPosts("best-posts", &posts)
-			SetCategories("best-category", &cats)
+			MemcachedSetInt64("best-posts-count", cnt)
+			MemcachedSetPosts("best-posts", &posts)
+			MemcachedSetCategories("best-category", &cats)
 		}
 
+		if setting.RedisEnabled {
+			RedisSetInt64("best-posts-count", cnt)
+			RedisSetPosts("best-posts", &posts)
+			RedisSetCategories("best-category", &cats)
+		}
 	case "cold":
 		if setting.MemcachedEnabled {
-			if cnt, err = GetInt64("cold-posts-count"); err == nil {
+			if cnt, err = MemcachedGetInt64("cold-posts-count"); err == nil {
 				pager = this.SetPaginator(pers, cnt)
 				if pager.Page() == 1 {
-					if GetPosts("cold-posts", &posts) == nil && GetCategories("cold-category", &cats) == nil {
+					if MemcachedGetPosts("cold-posts", &posts) == nil && MemcachedGetCategories("cold-category", &cats) == nil {
 						this.Data["Categories"] = cats
 						break
 					}
@@ -308,6 +375,17 @@ func (this *PostListRouter) Navs() {
 			}
 		}
 
+		if setting.RedisEnabled {
+			if cnt, err = RedisGetInt64("cold-posts-count"); err == nil {
+				pager = this.SetPaginator(pers, cnt)
+				if pager.Page() == 1 {
+					if RedisGetPosts("cold-posts", &posts) == nil && RedisGetCategories("cold-category", &cats) == nil {
+						this.Data["Categories"] = cats
+						break
+					}
+				}
+			}
+		}
 		qs := models.Posts().Filter("Replys", 0)
 		qs = this.postsFilter(qs)
 
@@ -320,11 +398,16 @@ func (this *PostListRouter) Navs() {
 		this.setCategories(&cats)
 
 		if setting.MemcachedEnabled {
-			SetInt64("cold-posts-count", cnt)
-			SetPosts("cold-posts", &posts)
-			SetCategories("cold-category", &cats)
+			MemcachedSetInt64("cold-posts-count", cnt)
+			MemcachedSetPosts("cold-posts", &posts)
+			MemcachedSetCategories("cold-category", &cats)
 		}
 
+		if setting.RedisEnabled {
+			RedisSetInt64("cold-posts-count", cnt)
+			RedisSetPosts("cold-posts", &posts)
+			RedisSetCategories("cold-category", &cats)
+		}
 	case "favs":
 		var topicIds orm.ParamsList
 		nums, _ := models.FollowTopics().Filter("User", &this.User.Id).OrderBy("-Created").ValuesFlat(&topicIds, "Topic")
@@ -395,11 +478,11 @@ func (this *PostListRouter) Topic() {
 
 		if setting.MemcachedEnabled {
 			key := fmt.Sprintf("topic-%s-count", slug)
-			if cnt, err = GetInt64(key); err == nil {
+			if cnt, err = MemcachedGetInt64(key); err == nil {
 				pager = this.SetPaginator(pers, cnt)
 				if pager.Page() == 1 {
 					key = fmt.Sprintf("topic-%s", slug)
-					if GetPosts(key, &posts) == nil {
+					if MemcachedGetPosts(key, &posts) == nil {
 						this.Data["Posts"] = posts
 						return
 					}
@@ -407,6 +490,19 @@ func (this *PostListRouter) Topic() {
 			}
 		}
 
+		if setting.RedisEnabled {
+			key := fmt.Sprintf("topic-%s-count", slug)
+			if cnt, err = RedisGetInt64(key); err == nil {
+				pager = this.SetPaginator(pers, cnt)
+				if pager.Page() == 1 {
+					key = fmt.Sprintf("topic-%s", slug)
+					if RedisGetPosts(key, &posts) == nil {
+						this.Data["Posts"] = posts
+						return
+					}
+				}
+			}
+		}
 		qs := models.Posts().Filter("Topic", &topic)
 		qs = this.postsFilter(qs)
 
@@ -414,10 +510,12 @@ func (this *PostListRouter) Topic() {
 		pager = this.SetPaginator(pers, cnt)
 		if setting.MemcachedEnabled {
 			key := fmt.Sprintf("topic-%s-count", slug)
-			SetInt64(key, cnt)
+			MemcachedSetInt64(key, cnt)
 		}
 
 		if setting.RedisEnabled {
+			key := fmt.Sprintf("topic-%s-count", slug)
+			RedisSetInt64(key, cnt)
 		}
 
 		if pager.Page() > 1 {
@@ -438,7 +536,11 @@ func (this *PostListRouter) Topic() {
 
 			if setting.MemcachedEnabled {
 				key := fmt.Sprintf("topic-%s", slug)
-				SetPosts(key, &posts)
+				MemcachedSetPosts(key, &posts)
+			}
+			if setting.RedisEnabled {
+				key := fmt.Sprintf("topic-%s", slug)
+				RedisSetPosts(key, &posts)
 			}
 		}
 
@@ -571,6 +673,22 @@ func (this *PostRouter) NewSubmit() {
 			topicKey := fmt.Sprintf(`topic-%s`, post.Topic.Slug)
 			cache.Mc.Delete(topicKey)
 		}
+
+		if setting.RedisEnabled {
+			cache.Rd.Do("DEL", "recent-posts-count")
+			cache.Rd.Do("DEL", "recent-posts")
+			cache.Rd.Do("DEL", "recent-category")
+			cache.Rd.Do("DEL", "home-posts")
+			cache.Rd.Do("DEL", "today-topten-posts")
+			categoryCountKey := fmt.Sprintf(`category-%s-count`, post.Category.Slug)
+			cache.Rd.Do("DEL", categoryCountKey)
+			categoryKey := fmt.Sprintf(`category-%s`, post.Category.Slug)
+			cache.Rd.Do("DEL", categoryKey)
+			topicCountKey := fmt.Sprintf(`topic-%s-count`, post.Topic.Slug)
+			cache.Rd.Do("DEL", topicCountKey)
+			topicKey := fmt.Sprintf(`topic-%s`, post.Topic.Slug)
+			cache.Rd.Do("DEL", topicKey)
+		}
 	}
 }
 
@@ -678,6 +796,11 @@ func (this *PostRouter) SingleSubmit() {
 			cache.Mc.Delete("cold-posts")
 			cache.Mc.Delete("cold-category")
 		}
+		if setting.RedisEnabled {
+			cache.Rd.Do("DEL", "cold-posts-count")
+			cache.Rd.Do("DEL", "cold-posts")
+			cache.Rd.Do("DEL", "cold-category")
+		}
 	}
 }
 
@@ -739,6 +862,21 @@ func (this *PostRouter) EditSubmit() {
 		cache.Mc.Delete(topicCountKey)
 		topicKey := fmt.Sprintf(`topic-%s`, postMd.Topic.Slug)
 		cache.Mc.Delete(topicKey)
+	}
+	if setting.RedisEnabled {
+		cache.Rd.Do("DEL", "recent-posts-count")
+		cache.Rd.Do("DEL", "recent-posts")
+		cache.Rd.Do("DEL", "recent-category")
+		cache.Rd.Do("DEL", "home-posts")
+		cache.Rd.Do("DEL", "today-topten-posts")
+		categoryCountKey := fmt.Sprintf(`category-%s-count`, postMd.Category.Slug)
+		cache.Rd.Do("DEL", categoryCountKey)
+		categoryKey := fmt.Sprintf(`category-%s`, postMd.Category.Slug)
+		cache.Rd.Do("DEL", categoryKey)
+		topicCountKey := fmt.Sprintf(`topic-%s-count`, postMd.Topic.Slug)
+		cache.Rd.Do("DEL", topicCountKey)
+		topicKey := fmt.Sprintf(`topic-%s`, postMd.Topic.Slug)
+		cache.Rd.Do("DEL", topicKey)
 	}
 }
 
