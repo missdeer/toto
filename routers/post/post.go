@@ -15,14 +15,10 @@
 package post
 
 import (
-	"bytes"
-	"encoding/gob"
 	"fmt"
-	"strconv"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"github.com/bradfitz/gomemcache/memcache"
 
 	"github.com/missdeer/KellyBackend/cache"
 	"github.com/missdeer/KellyBackend/modules/models"
@@ -73,67 +69,29 @@ func (this *PostListRouter) Home() {
 
 	this.Data["CategorySlug"] = "hot"
 
-	var err error
-	var succeed bool = false
-
 	// get topics
 	var topics []models.Topic
 	if setting.MemcachedEnabled {
-		var home_topics *memcache.Item
-		if home_topics, err = cache.Mc.Get("home-topics"); err == nil {
-			var buf bytes.Buffer
-			buf.Write(home_topics.Value)
-			decoder := gob.NewDecoder(&buf)
-			if err = decoder.Decode(&topics); err == nil {
-				succeed = true
-			}
+		if err := GetTopics("home-topics", &topics); err != nil {
+			beego.Error("get home topics from memcache failed. ", err)
+			post.ListTopics(&topics)
+			SetTopics("home-topics", &topics)
 		}
+	} else {
+		post.ListTopics(&topics)
 	}
 
-	if succeed == false {
-		beego.Error("get home topics from memcache failed. ", err)
-		post.ListTopics(&topics)
-		if setting.MemcachedEnabled {
-			var buf bytes.Buffer
-			encoder := gob.NewEncoder(&buf)
-			if err = encoder.Encode(&topics); err == nil {
-				TopicsCache := &memcache.Item{Key: "home-topics", Value: buf.Bytes()}
-				err = cache.Mc.Set(TopicsCache)
-			}
-		}
-	}
 	this.Data["Topics"] = topics
 
 	// get posts
 	var posts []models.Post
 	var todayTopTen []models.Post
-	succeed = false
 	if setting.MemcachedEnabled {
-		var home_posts *memcache.Item
-		if home_posts, err = cache.Mc.Get("home-posts"); err == nil {
-			var buf bytes.Buffer
-			buf.Write(home_posts.Value)
-			decoder := gob.NewDecoder(&buf)
-			if err = decoder.Decode(&posts); err == nil {
-				this.Data["Posts"] = posts
-				succeed = true
-			}
+		if GetPosts("home-posts", &posts) == nil && GetPosts("today-topten-posts", &todayTopTen) == nil {
+			this.Data["Posts"] = posts
+			this.Data["TodayTopTen"] = todayTopTen
+			return
 		}
-
-		if succeed == true {
-			succeed = false
-			var today_topten_posts *memcache.Item
-			if today_topten_posts, err = cache.Mc.Get("today-topten-posts"); err == nil {
-				var buf bytes.Buffer
-				buf.Write(today_topten_posts.Value)
-				decoder := gob.NewDecoder(&buf)
-				if err = decoder.Decode(&todayTopTen); err == nil {
-					this.Data["TodayTopTen"] = todayTopTen
-					return
-				}
-			}
-		}
-		beego.Error("getting home/today topten posts from memcache failed. ", err)
 	}
 
 	if setting.RedisEnabled {
@@ -163,19 +121,8 @@ func (this *PostListRouter) Home() {
 	this.Data["TodayTopTen"] = todayTopTen
 
 	if setting.MemcachedEnabled {
-		var buf bytes.Buffer
-		encoder := gob.NewEncoder(&buf)
-		if err = encoder.Encode(&posts); err == nil {
-			PostsCache := &memcache.Item{Key: "home-posts", Value: buf.Bytes()}
-			err = cache.Mc.Set(PostsCache)
-		}
-
-		var bufTopTen bytes.Buffer
-		encoderTopTen := gob.NewEncoder(&bufTopTen)
-		if err = encoderTopTen.Encode(&todayTopTen); err == nil {
-			TopTenPostsCache := &memcache.Item{Key: "today-topten-posts", Value: bufTopTen.Bytes()}
-			err = cache.Mc.Set(TopTenPostsCache)
-		}
+		SetPosts("home-posts", &posts)
+		SetPosts("today-topten-posts", &todayTopTen)
 	}
 }
 
@@ -205,44 +152,22 @@ func (this *PostListRouter) Category() {
 	var cnt int64
 	var pager *utils.Paginator
 	var err error
-	succeed := false
 
 	if setting.MemcachedEnabled {
-		var category_posts_count *memcache.Item
 		key := fmt.Sprintf("category-%s-count", slug)
-		if category_posts_count, err = cache.Mc.Get(key); err == nil {
-			cnt, err = strconv.ParseInt(string(category_posts_count.Value), 10, 64)
-			if err == nil {
-				pager = this.SetPaginator(pers, cnt)
-				if pager.Page() == 1 {
-					succeed = true
-				}
-			}
-		}
-
-		if succeed == true {
-			succeed = false
-			var category_posts *memcache.Item
-			key = fmt.Sprintf("category-%s", slug)
-			if category_posts, err = cache.Mc.Get(key); err == nil {
-				var buf bytes.Buffer
-				buf.Write(category_posts.Value)
-				decoder := gob.NewDecoder(&buf)
-				if err = decoder.Decode(&posts); err == nil {
+		if cnt, err = GetInt64(key); err == nil {
+			pager = this.SetPaginator(pers, cnt)
+			if pager.Page() == 1 {
+				key = fmt.Sprintf("category-%s", slug)
+				if GetPosts(key, &posts) == nil {
 					this.Data["Posts"] = posts
 					return
 				}
 			}
 		}
-		beego.Error("getting category posts from memcached failed. ", err)
-		// read from redis or database
 	}
 
-	if succeed == false && setting.RedisEnabled {
-		_, err := cache.Rd.Do("GET", "category-"+slug)
-		if err == nil {
-		}
-		// read from database
+	if setting.RedisEnabled {
 	}
 
 	qs := models.Posts().Filter("Category", &cat)
@@ -251,9 +176,8 @@ func (this *PostListRouter) Category() {
 	cnt, _ = models.CountObjects(qs)
 	pager = this.SetPaginator(pers, cnt)
 	if setting.MemcachedEnabled {
-		buf := []byte(strconv.FormatInt(cnt, 10))
 		key := fmt.Sprintf("category-%s-count", slug)
-		err = cache.Mc.Set(&memcache.Item{Key: key, Value: buf})
+		SetInt64(key, cnt)
 	}
 
 	if setting.RedisEnabled {
@@ -276,17 +200,8 @@ func (this *PostListRouter) Category() {
 		posts = append(topposts, nontopposts...)
 
 		if setting.MemcachedEnabled {
-			var buf bytes.Buffer
-			encoder := gob.NewEncoder(&buf)
-			if err = encoder.Encode(&posts); err == nil {
-				key := fmt.Sprintf("category-%s", slug)
-				PostsCache := &memcache.Item{Key: key, Value: buf.Bytes()}
-				err = cache.Mc.Set(PostsCache)
-			}
-
-			if err != nil {
-				beego.Error("saving category posts to memcached failed. ", err)
-			}
+			key := fmt.Sprintf("category-%s", slug)
+			SetPosts(key, &posts)
 		}
 
 		if setting.RedisEnabled {
@@ -317,44 +232,14 @@ func (this *PostListRouter) Navs() {
 	var cnt int64
 	var pager *utils.Paginator
 	var err error
-	succeed := false
 
 	switch slug {
 	case "recent":
 		if setting.MemcachedEnabled {
-			var recent_posts_count *memcache.Item
-			if recent_posts_count, err = cache.Mc.Get("recent-posts-count"); err == nil {
-				cnt, err = strconv.ParseInt(string(recent_posts_count.Value), 10, 64)
-				if err == nil {
-					pager = this.SetPaginator(pers, cnt)
-					if pager.Page() == 1 {
-						succeed = true
-					}
-				}
-			}
-
-			if succeed == true {
-				succeed = false
-				var recent_posts *memcache.Item
-				if recent_posts, err = cache.Mc.Get("recent-posts"); err == nil {
-					var buf bytes.Buffer
-					buf.Write(recent_posts.Value)
-					decoder := gob.NewDecoder(&buf)
-					if err = decoder.Decode(&posts); err == nil {
-						succeed = true
-					}
-				}
-			}
-
-			if succeed == true {
-				succeed = false
-				var recent_category *memcache.Item
-				if recent_category, err = cache.Mc.Get("recent-category"); err == nil {
-					var buf bytes.Buffer
-					buf.Write(recent_category.Value)
-					decoder := gob.NewDecoder(&buf)
-					if err = decoder.Decode(&cats); err == nil {
-						succeed = true
+			if cnt, err = GetInt64("recent-posts-count"); err == nil {
+				pager = this.SetPaginator(pers, cnt)
+				if pager.Page() == 1 {
+					if GetPosts("recent-posts", &posts) == nil && GetCategories("recent-category", &cats) == nil {
 						this.Data["Categories"] = cats
 						break
 					}
@@ -362,72 +247,30 @@ func (this *PostListRouter) Navs() {
 			}
 		}
 
-		if succeed == false {
-			qs := models.Posts().Exclude("category_id", setting.CategoryHideOnHome)
-			qs = this.postsFilter(qs)
+		qs := models.Posts().Exclude("category_id", setting.CategoryHideOnHome)
+		qs = this.postsFilter(qs)
 
-			cnt, _ = models.CountObjects(qs)
-			pager = this.SetPaginator(pers, cnt)
+		cnt, _ = models.CountObjects(qs)
+		pager = this.SetPaginator(pers, cnt)
 
-			qs = qs.OrderBy("-Updated").Limit(pers, pager.Offset()).RelatedSel()
+		qs = qs.OrderBy("-Updated").Limit(pers, pager.Offset()).RelatedSel()
 
-			models.ListObjects(qs, &posts)
+		models.ListObjects(qs, &posts)
 
-			this.setCategories(&cats)
+		this.setCategories(&cats)
 
-			if setting.MemcachedEnabled {
-				buf := []byte(strconv.FormatInt(cnt, 10))
-				err = cache.Mc.Set(&memcache.Item{Key: "recent-posts-count", Value: buf})
-
-				var bufPosts bytes.Buffer
-				encoder := gob.NewEncoder(&bufPosts)
-				if err = encoder.Encode(&posts); err == nil {
-					err = cache.Mc.Set(&memcache.Item{Key: "recent-posts", Value: bufPosts.Bytes()})
-				}
-
-				var bufCategory bytes.Buffer
-				encoder = gob.NewEncoder(&bufCategory)
-				if err = encoder.Encode(&cats); err == nil {
-					err = cache.Mc.Set(&memcache.Item{Key: "recent-category", Value: bufCategory.Bytes()})
-				}
-			}
+		if setting.MemcachedEnabled {
+			SetInt64("recent-posts-count", cnt)
+			SetPosts("recent-posts", &posts)
+			SetCategories("recent-category", &cats)
 		}
 
 	case "best":
 		if setting.MemcachedEnabled {
-			var best_posts_count *memcache.Item
-			if best_posts_count, err = cache.Mc.Get("best-posts-count"); err == nil {
-				cnt, err = strconv.ParseInt(string(best_posts_count.Value), 10, 64)
-				if err == nil {
-					pager = this.SetPaginator(pers, cnt)
-					if pager.Page() == 1 {
-						succeed = true
-					}
-				}
-			}
-
-			if succeed == true {
-				succeed = false
-				var best_posts *memcache.Item
-				if best_posts, err = cache.Mc.Get("best-posts"); err == nil {
-					var buf bytes.Buffer
-					buf.Write(best_posts.Value)
-					decoder := gob.NewDecoder(&buf)
-					if err = decoder.Decode(&posts); err == nil {
-						succeed = true
-					}
-				}
-			}
-
-			if succeed == true {
-				succeed = false
-				var best_category *memcache.Item
-				if best_category, err = cache.Mc.Get("best-category"); err == nil {
-					var buf bytes.Buffer
-					buf.Write(best_category.Value)
-					decoder := gob.NewDecoder(&buf)
-					if err = decoder.Decode(&cats); err == nil {
-						succeed = true
+			if cnt, err = GetInt64("best-posts-count"); err == nil {
+				pager = this.SetPaginator(pers, cnt)
+				if pager.Page() == 1 {
+					if GetPosts("best-posts", &posts) == nil && GetCategories("best-category", &cats) == nil {
 						this.Data["Categories"] = cats
 						break
 					}
@@ -435,71 +278,29 @@ func (this *PostListRouter) Navs() {
 			}
 		}
 
-		if succeed == false {
-			qs := models.Posts().Filter("IsBest", true)
-			qs = this.postsFilter(qs)
+		qs := models.Posts().Filter("IsBest", true)
+		qs = this.postsFilter(qs)
 
-			cnt, _ := models.CountObjects(qs)
-			pager := this.SetPaginator(pers, cnt)
+		cnt, _ := models.CountObjects(qs)
+		pager := this.SetPaginator(pers, cnt)
 
-			qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+		qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
 
-			models.ListObjects(qs, &posts)
-			this.setCategories(&cats)
+		models.ListObjects(qs, &posts)
+		this.setCategories(&cats)
 
-			if setting.MemcachedEnabled {
-				buf := []byte(strconv.FormatInt(cnt, 10))
-				err = cache.Mc.Set(&memcache.Item{Key: "best-posts-count", Value: buf})
-
-				var bufPosts bytes.Buffer
-				encoder := gob.NewEncoder(&bufPosts)
-				if err = encoder.Encode(&posts); err == nil {
-					err = cache.Mc.Set(&memcache.Item{Key: "best-posts", Value: bufPosts.Bytes()})
-				}
-
-				var bufCategory bytes.Buffer
-				encoder = gob.NewEncoder(&bufCategory)
-				if err = encoder.Encode(&cats); err == nil {
-					err = cache.Mc.Set(&memcache.Item{Key: "best-category", Value: bufCategory.Bytes()})
-				}
-			}
+		if setting.MemcachedEnabled {
+			SetInt64("best-posts-count", cnt)
+			SetPosts("best-posts", &posts)
+			SetCategories("best-category", &cats)
 		}
 
 	case "cold":
 		if setting.MemcachedEnabled {
-			var cold_posts_count *memcache.Item
-			if cold_posts_count, err = cache.Mc.Get("cold-posts-count"); err == nil {
-				cnt, err = strconv.ParseInt(string(cold_posts_count.Value), 10, 64)
-				if err == nil {
-					pager = this.SetPaginator(pers, cnt)
-					if pager.Page() == 1 {
-						succeed = true
-					}
-				}
-			}
-
-			if succeed == true {
-				succeed = false
-				var cold_posts *memcache.Item
-				if cold_posts, err = cache.Mc.Get("cold-posts"); err == nil {
-					var buf bytes.Buffer
-					buf.Write(cold_posts.Value)
-					decoder := gob.NewDecoder(&buf)
-					if err = decoder.Decode(&posts); err == nil {
-						succeed = true
-					}
-				}
-			}
-
-			if succeed == true {
-				succeed = false
-				var cold_category *memcache.Item
-				if cold_category, err = cache.Mc.Get("code-category"); err == nil {
-					var buf bytes.Buffer
-					buf.Write(cold_category.Value)
-					decoder := gob.NewDecoder(&buf)
-					if err = decoder.Decode(&cats); err == nil {
-						succeed = true
+			if cnt, err = GetInt64("cold-posts-count"); err == nil {
+				pager = this.SetPaginator(pers, cnt)
+				if pager.Page() == 1 {
+					if GetPosts("cold-posts", &posts) == nil && GetCategories("cold-category", &cats) == nil {
 						this.Data["Categories"] = cats
 						break
 					}
@@ -507,34 +308,21 @@ func (this *PostListRouter) Navs() {
 			}
 		}
 
-		if succeed == false {
-			qs := models.Posts().Filter("Replys", 0)
-			qs = this.postsFilter(qs)
+		qs := models.Posts().Filter("Replys", 0)
+		qs = this.postsFilter(qs)
 
-			cnt, _ := models.CountObjects(qs)
-			pager := this.SetPaginator(pers, cnt)
+		cnt, _ := models.CountObjects(qs)
+		pager := this.SetPaginator(pers, cnt)
 
-			qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
+		qs = qs.OrderBy("-Created").Limit(pers, pager.Offset()).RelatedSel()
 
-			models.ListObjects(qs, &posts)
-			this.setCategories(&cats)
+		models.ListObjects(qs, &posts)
+		this.setCategories(&cats)
 
-			if setting.MemcachedEnabled {
-				buf := []byte(strconv.FormatInt(cnt, 10))
-				err = cache.Mc.Set(&memcache.Item{Key: "cold-posts-count", Value: buf})
-
-				var bufPosts bytes.Buffer
-				encoder := gob.NewEncoder(&bufPosts)
-				if err = encoder.Encode(&posts); err == nil {
-					err = cache.Mc.Set(&memcache.Item{Key: "cold-posts", Value: bufPosts.Bytes()})
-				}
-
-				var bufCategory bytes.Buffer
-				encoder = gob.NewEncoder(&bufCategory)
-				if err = encoder.Encode(&cats); err == nil {
-					err = cache.Mc.Set(&memcache.Item{Key: "cold-category", Value: bufCategory.Bytes()})
-				}
-			}
+		if setting.MemcachedEnabled {
+			SetInt64("cold-posts-count", cnt)
+			SetPosts("cold-posts", &posts)
+			SetCategories("cold-category", &cats)
 		}
 
 	case "favs":
@@ -604,36 +392,19 @@ func (this *PostListRouter) Topic() {
 		var cnt int64
 		var pager *utils.Paginator
 		var err error
-		succeed := false
 
 		if setting.MemcachedEnabled {
-			var topic_posts_count *memcache.Item
 			key := fmt.Sprintf("topic-%s-count", slug)
-			if topic_posts_count, err = cache.Mc.Get(key); err == nil {
-				cnt, err = strconv.ParseInt(string(topic_posts_count.Value), 10, 64)
-				if err == nil {
-					pager = this.SetPaginator(pers, cnt)
-					if pager.Page() == 1 {
-						succeed = true
-					}
-				}
-			}
-
-			if succeed == true {
-				succeed = false
-				var topic_posts *memcache.Item
-				key = fmt.Sprintf("topic-%s", slug)
-				if topic_posts, err = cache.Mc.Get(key); err == nil {
-					var buf bytes.Buffer
-					buf.Write(topic_posts.Value)
-					decoder := gob.NewDecoder(&buf)
-					if err = decoder.Decode(&posts); err == nil {
+			if cnt, err = GetInt64(key); err == nil {
+				pager = this.SetPaginator(pers, cnt)
+				if pager.Page() == 1 {
+					key = fmt.Sprintf("topic-%s", slug)
+					if GetPosts(key, &posts) == nil {
 						this.Data["Posts"] = posts
 						return
 					}
 				}
 			}
-			beego.Error("getting topic posts from memcached failed. ", err)
 		}
 
 		qs := models.Posts().Filter("Topic", &topic)
@@ -642,9 +413,8 @@ func (this *PostListRouter) Topic() {
 		cnt, _ = models.CountObjects(qs)
 		pager = this.SetPaginator(pers, cnt)
 		if setting.MemcachedEnabled {
-			buf := []byte(strconv.FormatInt(cnt, 10))
 			key := fmt.Sprintf("topic-%s-count", slug)
-			err = cache.Mc.Set(&memcache.Item{Key: key, Value: buf})
+			SetInt64(key, cnt)
 		}
 
 		if setting.RedisEnabled {
@@ -667,17 +437,8 @@ func (this *PostListRouter) Topic() {
 			posts = append(topposts, nontopposts...)
 
 			if setting.MemcachedEnabled {
-				var buf bytes.Buffer
-				encoder := gob.NewEncoder(&buf)
-				if err = encoder.Encode(&posts); err == nil {
-					key := fmt.Sprintf("topic-%s", slug)
-					PostsCache := &memcache.Item{Key: key, Value: buf.Bytes()}
-					err = cache.Mc.Set(PostsCache)
-				}
-
-				if err != nil {
-					beego.Error("saving topic posts to memcached failed. ", err)
-				}
+				key := fmt.Sprintf("topic-%s", slug)
+				SetPosts(key, &posts)
 			}
 		}
 
