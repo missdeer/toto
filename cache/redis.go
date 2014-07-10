@@ -1,4 +1,4 @@
-package post
+package cache
 
 import (
 	"bytes"
@@ -6,22 +6,21 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 
-	"github.com/missdeer/KellyBackend/cache"
 	"github.com/missdeer/KellyBackend/modules/models"
 )
 
 func RedisGetInt64(key string) (ret int64, err error) {
-	ret, err = redis.Int64(cache.Rd.Do("GET", key))
+	ret, err = redis.Int64(Rd.Do("GET", key))
 	return ret, err
 }
 
 func RedisSetInt64(key string, val int64) (err error) {
-	_, err = cache.Rd.Do("SET", key, val)
+	_, err = Rd.Do("SET", key, val)
 	return err
 }
 
 func RedisGetPosts(key string, posts *[]models.Post) (err error) {
-	p, err := redis.Bytes(cache.Rd.Do("GET", key))
+	p, err := redis.Bytes(Rd.Do("GET", key))
 	if err != nil {
 		return err
 	}
@@ -40,12 +39,12 @@ func RedisSetPosts(key string, posts *[]models.Post) (err error) {
 		return err
 	}
 
-	_, err = cache.Rd.Do("SET", key, buf.Bytes())
+	_, err = Rd.Do("SET", key, buf.Bytes())
 	return err
 }
 
 func RedisGetTopics(key string, topics *[]models.Topic) (err error) {
-	t, err := redis.Bytes(cache.Rd.Do("GET", key))
+	t, err := redis.Bytes(Rd.Do("GET", key))
 	if err != nil {
 		return err
 	}
@@ -64,12 +63,12 @@ func RedisSetTopics(key string, topics *[]models.Topic) (err error) {
 		return err
 	}
 
-	_, err = cache.Rd.Do("SET", key, buf.Bytes())
+	_, err = Rd.Do("SET", key, buf.Bytes())
 	return err
 }
 
 func RedisGetCategories(key string, categories *[]models.Category) (err error) {
-	c, err := redis.Bytes(cache.Rd.Do("GET", key))
+	c, err := redis.Bytes(Rd.Do("GET", key))
 	if err != nil {
 		return err
 	}
@@ -87,6 +86,6 @@ func RedisSetCategories(key string, categories *[]models.Category) (err error) {
 	if err = encoder.Encode(&categories); err != nil {
 		return err
 	}
-	_, err = cache.Rd.Do("SET", key, buf.Bytes())
+	_, err = Rd.Do("SET", key, buf.Bytes())
 	return err
 }
