@@ -22,14 +22,22 @@
 			<a target="_blank" href="http://misskerisdream.t.sohu.com"><img width="14" height="14" src="{{.ImgBedUrl}}static/img/snsicon/32-sohuweibo.png">搜狐微博</a>
 			</p>
 
+            <!--
 			<strong>{{i18n .Lang "language_choice"}}: </strong>
+            -->
 		    <div class="btn-group dropup">
+                <!--
 			    <button type="button" class="btn btn-default btn-md dropdown-toggle" data-toggle="dropdown">{{i18n .Lang .Lang}} <i class="caret"></i></button>
 			    <ul class="dropdown-menu">
 			    	{{range .Langs}}
 			    		<li><a href="javascript::" data-lang="{{.}}" class="lang-changed">{{i18n $.Lang .}}</a></li>
 			    	{{end}}
 			    </ul>
+                -->
+                <a target="_blank" href="https://www.linode.com/?r=80d8c1369fb612167247bb0514afb26c25960fe4"><img src="http://kelly.qiniudn.com/logo/linode.png"></a>
+                <a target="_blank" href="http://https://portal.qiniu.com/signup?code=3lhd0f8r89h02"><img src="http://kelly.qiniudn.com/logo/qiniu.png"></a>
+                <a target="_blank" href="http://orca.io"><img src="http://kelly.qiniudn.com/logo/orca.png"></a>
+                <a target="_blank" href="http://www.upyun.com"><img src="http://kelly.qiniudn.com/logo/upyun90x45.png"></a>
 		    </div>
 		</div>
 		<input type="hidden" name="_once" value="{{.once_token}}" style="display:none;" />
