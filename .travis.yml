@@ -6,9 +6,6 @@ go:
 env:
   - TRAVIS="yes"
 install:
-  - go get github.com/missdeer/KellyBackend/cache
-  - go get github.com/missdeer/KellyBackend/modules
-  - go get github.com/missdeer/KellyBackend/routers
   - go get github.com/missdeer/KellyBackend/setting
 script:
   - go get -u -v && go build -d -v .
