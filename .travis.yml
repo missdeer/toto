@@ -8,4 +8,4 @@ env:
 install:
   - go get github.com/missdeer/KellyBackend/setting
 script:
-  - go get -u -v && go build -d -v .
+  - go get -u -v && go build  .
