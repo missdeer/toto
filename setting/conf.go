@@ -62,9 +62,11 @@ var (
 	AppUrl              string
 	AppLogo             string
 	ImgBedUrl           string
+	QiniuEnabled        bool
 	QiniuAppKey         string
 	QiniuSecretKey      string
 	QiniuBucketName     string
+	UpYunEnabled        bool
 	UpYunUsername       string
 	UpYunPassword       string
 	UpYunBucketName     string
@@ -334,12 +336,18 @@ func reloadConfig() {
 	AppUrl = Cfg.MustValue("app", "app_url", "http://127.0.0.1:8092/")
 	AppLogo = Cfg.MustValue("app", "app_logo", "http://kelly.qiniudn.com/static/img/logo.png")
 	ImgBedUrl = Cfg.MustValue("app", "imgbed_url", "http://kelly.qiniudn.com/")
-	QiniuAppKey = Cfg.MustValue("app", "qiniu_appkey", "")
-	QiniuSecretKey = Cfg.MustValue("app", "qiniu_secretkey", "")
-	QiniuBucketName = Cfg.MustValue("app", "qiniu_bucketname", "")
-	UpYunUsername = Cfg.MustValue("app", "upyun_username", "")
-	UpYunPassword = Cfg.MustValue("app", "upyun_password", "")
-	UpYunBucketName = Cfg.MustValue("app", "upyun_bucketname", "")
+	QiniuEnabled = Cfg.MustBool("app", "qiniu_enabled", true)
+	if QiniuEnabled {
+		QiniuAppKey = Cfg.MustValue("app", "qiniu_appkey", "")
+		QiniuSecretKey = Cfg.MustValue("app", "qiniu_secretkey", "")
+		QiniuBucketName = Cfg.MustValue("app", "qiniu_bucketname", "")
+	}
+	UpYunEnabled = Cfg.MustBool("app", "upyun_enabled", false)
+	if UpYunEnabled {
+		UpYunUsername = Cfg.MustValue("app", "upyun_username", "")
+		UpYunPassword = Cfg.MustValue("app", "upyun_password", "")
+		UpYunBucketName = Cfg.MustValue("app", "upyun_bucketname", "")
+	}
 	AvatarURL = Cfg.MustValue("app", "avatar_url")
 
 	CategoryHideOnHome = Cfg.MustInt("app", "category_hide_on_home", 0)

@@ -102,34 +102,40 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 	} else {
 		file = f
 	}
+	defer file.Close()
 
 	if _, err := io.Copy(file, r); err != nil {
 		os.RemoveAll(fullPath)
 		return err
 	}
 
-	ACCESS_KEY = setting.QiniuAppKey
-	SECRET_KEY = setting.QiniuSecretKey
-	putPolicy := rs.PutPolicy{}
-	putPolicy.Scope = setting.QiniuBucketName
-	uptoken := putPolicy.Token(nil)
-
-	var ret qiniuio.PutRet
-	var extra = &qiniuio.PutExtra{}
-
-	// get encoded file name as the key
 	var key = "upload" + m.LinkFull()
-	err = qiniuio.PutFile(nil, &ret, uptoken, key, fullPath, extra)
-	if err != nil {
-		beego.Error("putting file without key to Qiniu failed", err)
-		return err
+	if setting.QiniuEnabled {
+		ACCESS_KEY = setting.QiniuAppKey
+		SECRET_KEY = setting.QiniuSecretKey
+		putPolicy := rs.PutPolicy{}
+		putPolicy.Scope = setting.QiniuBucketName
+		uptoken := putPolicy.Token(nil)
+
+		var ret qiniuio.PutRet
+		var extra = &qiniuio.PutExtra{}
+
+		// get encoded file name as the key
+		err = qiniuio.PutFile(nil, &ret, uptoken, key, fullPath, extra)
+		if err != nil {
+			beego.Error("putting file without key to Qiniu failed", err)
+			return err
+		}
 	}
 
-	upyunio := upyun.NewUpYun(setting.UpYunUsername, setting.UpYunPassword, setting.UpYunBucketName)
-	err = upyunio.WriteFile(key, file, true)
-	if err != nil {
-		beego.Error("writing file to UpYun failed", err)
-		return err
+	var upyunio *upyun.UpYun
+	if setting.UpYunEnabled {
+		upyunio = upyun.NewUpYun(setting.UpYunUsername, setting.UpYunPassword, setting.UpYunBucketName)
+		err = upyunio.WriteFile(key, file, true)
+		if err != nil {
+			beego.Error("writing file to UpYun failed", err)
+			return err
+		}
 	}
 
 	if ext != ".gif" {
@@ -141,10 +147,35 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 			}
 			savePath := GenImageFilePath(m, setting.ImageSizeSmall)
 			key = "upload" + m.LinkSmall()
-			if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
-				os.RemoveAll(savePath)
-				return err
+			if setting.QiniuEnabled {
+				putPolicy := rs.PutPolicy{}
+				putPolicy.Scope = setting.QiniuBucketName
+				uptoken := putPolicy.Token(nil)
+
+				var ret qiniuio.PutRet
+				var extra = &qiniuio.PutExtra{}
+
+				if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
+					os.RemoveAll(savePath)
+					return err
+				}
 			}
+
+			if setting.UpYunEnabled {
+				f, err := os.OpenFile(savePath, os.O_RDONLY, 0644)
+				if err != nil {
+					beego.Error("opening locat saved path failed ", err)
+					return err
+				}
+				defer f.Close()
+				err = upyunio.WriteFile(key, f, true)
+				if err != nil {
+					beego.Error("writing file to UpYun failed", err)
+					os.RemoveAll(savePath)
+					return err
+				}
+			}
+
 			os.RemoveAll(savePath)
 		}
 
@@ -155,9 +186,33 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 			}
 			savePath := GenImageFilePath(m, setting.ImageSizeMiddle)
 			key = "upload" + m.LinkMiddle()
-			if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
-				os.RemoveAll(savePath)
-				return err
+			if setting.QiniuEnabled {
+				putPolicy := rs.PutPolicy{}
+				putPolicy.Scope = setting.QiniuBucketName
+				uptoken := putPolicy.Token(nil)
+
+				var ret qiniuio.PutRet
+				var extra = &qiniuio.PutExtra{}
+
+				if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
+					os.RemoveAll(savePath)
+					return err
+				}
+			}
+
+			if setting.UpYunEnabled {
+				f, err := os.OpenFile(savePath, os.O_RDONLY, 0644)
+				if err != nil {
+					beego.Error("opening locat saved path failed ", err)
+					return err
+				}
+				defer f.Close()
+				err = upyunio.WriteFile(key, f, true)
+				if err != nil {
+					beego.Error("writing file to UpYun failed", err)
+					os.RemoveAll(savePath)
+					return err
+				}
 			}
 			os.RemoveAll(savePath)
 		}
