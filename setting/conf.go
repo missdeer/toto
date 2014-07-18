@@ -63,10 +63,12 @@ var (
 	AppLogo             string
 	ImgBedUrl           string
 	QiniuEnabled        bool
+	QiniuUrl            string
 	QiniuAppKey         string
 	QiniuSecretKey      string
 	QiniuBucketName     string
 	UpYunEnabled        bool
+	UpYunUrl            string
 	UpYunUsername       string
 	UpYunPassword       string
 	UpYunBucketName     string
@@ -329,21 +331,23 @@ func LoadConfig() *goconfig.ConfigFile {
 }
 
 func reloadConfig() {
-	AppName = Cfg.MustValue("app", "app_name", "Yiili Community")
+	AppName = Cfg.MustValue("app", "app_name", "")
 	beego.AppName = AppName
 
 	AppHost = Cfg.MustValue("app", "app_host", "127.0.0.1:8092")
 	AppUrl = Cfg.MustValue("app", "app_url", "http://127.0.0.1:8092/")
-	AppLogo = Cfg.MustValue("app", "app_logo", "http://kelly.qiniudn.com/static/img/logo.png")
-	ImgBedUrl = Cfg.MustValue("app", "imgbed_url", "http://kelly.qiniudn.com/")
+	AppLogo = Cfg.MustValue("app", "app_logo", "")
+	ImgBedUrl = Cfg.MustValue("app", "imgbed_url", "")
 	QiniuEnabled = Cfg.MustBool("app", "qiniu_enabled", true)
 	if QiniuEnabled {
+		QiniuUrl = Cfg.MustValue("app", "qiniu_url", "")
 		QiniuAppKey = Cfg.MustValue("app", "qiniu_appkey", "")
 		QiniuSecretKey = Cfg.MustValue("app", "qiniu_secretkey", "")
 		QiniuBucketName = Cfg.MustValue("app", "qiniu_bucketname", "")
 	}
 	UpYunEnabled = Cfg.MustBool("app", "upyun_enabled", false)
 	if UpYunEnabled {
+		UpYunUrl = Cfg.MustValue("app", "upyun_url", "")
 		UpYunUsername = Cfg.MustValue("app", "upyun_username", "")
 		UpYunPassword = Cfg.MustValue("app", "upyun_password", "")
 		UpYunBucketName = Cfg.MustValue("app", "upyun_bucketname", "")

@@ -73,6 +73,25 @@ func (this *UploadRouter) Post() {
 }
 
 func ImageFilter(ctx *context.Context) {
-	url := setting.ImgBedUrl + "upload" + ctx.Request.RequestURI
-	http.Redirect(ctx.ResponseWriter, ctx.Request, url, 302)
+	if setting.QiniuEnabled && setting.UpYunEnabled {
+		if time.Now().UnixNano()%2 == 0 {
+			url := setting.QiniuUrl + "upload" + ctx.Request.RequestURI
+			http.Redirect(ctx.ResponseWriter, ctx.Request, url, 302)
+		} else {
+			url := setting.UpYunUrl + "upload" + ctx.Request.RequestURI
+			http.Redirect(ctx.ResponseWriter, ctx.Request, url, 302)
+		}
+		return
+	}
+
+	if setting.QiniuEnabled {
+		url := setting.QiniuUrl + "upload" + ctx.Request.RequestURI
+		http.Redirect(ctx.ResponseWriter, ctx.Request, url, 302)
+		return
+	}
+
+	if setting.UpYunEnabled {
+		url := setting.UpYunUrl + "upload" + ctx.Request.RequestURI
+		http.Redirect(ctx.ResponseWriter, ctx.Request, url, 302)
+	}
 }
