@@ -32,6 +32,7 @@ import (
 
 	"github.com/missdeer/KellyBackend/modules/models"
 	"github.com/missdeer/KellyBackend/modules/utils"
+	"github.com/missdeer/KellyBackend/upyun"
 	. "github.com/qiniu/api/conf"
 	qiniuio "github.com/qiniu/api/io"
 	"github.com/qiniu/api/rs"
@@ -120,7 +121,14 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 	var key = "upload" + m.LinkFull()
 	err = qiniuio.PutFile(nil, &ret, uptoken, key, fullPath, extra)
 	if err != nil {
-		fmt.Println("put file without key failed")
+		beego.Error("putting file without key to Qiniu failed", err)
+		return err
+	}
+
+	upyunio := upyun.NewUpYun(setting.UpYunUsername, setting.UpYunPassword, setting.UpYunBucketName)
+	err = upyunio.WriteFile(key, file, true)
+	if err != nil {
+		beego.Error("writing file to UpYun failed", err)
 		return err
 	}
 

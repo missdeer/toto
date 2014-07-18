@@ -2,8 +2,8 @@ package upyun
 
 import (
 	"bytes"
-    "errors"
 	"crypto/md5"
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -15,18 +15,18 @@ import (
 )
 
 type UpYun struct {
-	httpClient  *http.Client
-	trans       *http.Transport
-	bucketName  string
-	userName    string
-	passWord    string
-	apiDomain   string
-	contentMd5  string
-	fileSecret  string
-	tmpHeaders  map[string]string
+	httpClient *http.Client
+	trans      *http.Transport
+	bucketName string
+	userName   string
+	passWord   string
+	apiDomain  string
+	contentMd5 string
+	fileSecret string
+	tmpHeaders map[string]string
 
-	TimeOut     int
-	Debug       bool
+	TimeOut int
+	Debug   bool
 }
 
 /**
@@ -54,15 +54,15 @@ func (u *UpYun) Version() string {
 }
 
 /**
- * 切换 API 接口的域名
- * @param domain {
- 默认 v0.api.upyun.com 自动识别,
-     v1.api.upyun.com 电信,
-     v2.api.upyun.com 联通,
-     v3.api.upyun.com 移动
- }
- * return 无
- */
+* 切换 API 接口的域名
+* @param domain {
+默认 v0.api.upyun.com 自动识别,
+    v1.api.upyun.com 电信,
+    v2.api.upyun.com 联通,
+    v3.api.upyun.com 移动
+}
+* return 无
+*/
 func (u *UpYun) SetApiDomain(domain string) {
 	u.apiDomain = domain
 }
@@ -121,19 +121,19 @@ func (u *UpYun) sign(method, uri, date string, length int64) string {
  * return 请求返回字符串，失败返回""(打开debug状态下遇到错误将中止程序执行)
  */
 func (u *UpYun) httpAction(method, uri string, headers map[string]string,
-        inFile, outFile *os.File) (string, error) {
+	inFile, outFile *os.File) (string, error) {
 	uri = "/" + u.bucketName + uri
 	url := "http://" + u.apiDomain + uri
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-        if u.Debug {
-            fmt.Println("%v", err)
-            panic("http.NewRequest failed: " + err.Error())
-        }
-        return "", err
+		if u.Debug {
+			fmt.Println("%v", err)
+			panic("http.NewRequest failed: " + err.Error())
+		}
+		return "", err
 	}
 
-    for k, v := range(headers) {
+	for k, v := range headers {
 		req.Header.Add(k, v)
 	}
 
@@ -172,41 +172,41 @@ func (u *UpYun) httpAction(method, uri string, headers map[string]string,
 		fmt.Println(req)
 	}
 	resp, err := u.httpClient.Do(req)
-    if err != nil {
-        if u.Debug {
-            fmt.Println(resp.Status, err)
-            panic("httpClient.Do failed: " + resp.Status + err.Error())
-        }
-        return "", err
-    }
+	if err != nil {
+		if u.Debug {
+			fmt.Println(resp.Status, err)
+			panic("httpClient.Do failed: " + resp.Status + err.Error())
+		}
+		return "", err
+	}
 
 	rc := resp.StatusCode
 	if rc == 200 {
-        u.tmpHeaders = make(map[string]string)
-        for k, v := range resp.Header {
-            if strings.Contains(k, "x-upyun") {
-                u.tmpHeaders[k] = v[0]
-            }
-        }
+		u.tmpHeaders = make(map[string]string)
+		for k, v := range resp.Header {
+			if strings.Contains(k, "x-upyun") {
+				u.tmpHeaders[k] = v[0]
+			}
+		}
 
-        if method == "GET" && outFile != nil {
-            _, err := io.Copy(outFile, resp.Body)
-            if err != nil {
-                if u.Debug {
-                    fmt.Printf("%v %v\n", rc, err)
-                    panic("write output file failed: ")
-                }
-                return "", err
-            }
-            return "", nil
-        }
+		if method == "GET" && outFile != nil {
+			_, err := io.Copy(outFile, resp.Body)
+			if err != nil {
+				if u.Debug {
+					fmt.Printf("%v %v\n", rc, err)
+					panic("write output file failed: ")
+				}
+				return "", err
+			}
+			return "", nil
+		}
 
-        buf := bytes.NewBuffer(make([]byte, 0, 8192))
-        buf.ReadFrom(resp.Body)
-        return buf.String(), nil
+		buf := bytes.NewBuffer(make([]byte, 0, 8192))
+		buf.ReadFrom(resp.Body)
+		return buf.String(), nil
 	}
 
-    return "", errors.New(resp.Status)
+	return "", errors.New(resp.Status)
 }
 
 /**
@@ -249,13 +249,13 @@ func (u *UpYun) SetFileSecret(str string) {
  * return error
  */
 func (u *UpYun) WriteFile(filePath string, inFile *os.File, autoMkdir bool) error {
-    var headers map[string]string
-    if autoMkdir {
-        headers = make(map[string]string)
-        headers["Mkdir"] = "true"
-    }
+	var headers map[string]string
+	if autoMkdir {
+		headers = make(map[string]string)
+		headers["Mkdir"] = "true"
+	}
 	_, err := u.httpAction("PUT", filePath, headers, inFile, nil)
-    return err
+	return err
 }
 
 /**
@@ -278,7 +278,7 @@ func (u *UpYun) GetWritedFileInfo(key string) string {
  */
 func (u *UpYun) ReadFile(file string, outFile *os.File) error {
 	_, err := u.httpAction("GET", file, nil, nil, outFile)
-    return err
+	return err
 }
 
 /**
@@ -294,17 +294,17 @@ func (u *UpYun) GetFileInfo(file string) map[string]string {
 	if u.tmpHeaders == nil {
 		return nil
 	}
-    m := make(map[string]string)
-    if v, ok := u.tmpHeaders["x-upyun-file-type"]; ok {
-        m["type"] = v
-    }
-    if v, ok := u.tmpHeaders["x-upyun-file-size"]; ok {
-        m["size"] = v
+	m := make(map[string]string)
+	if v, ok := u.tmpHeaders["x-upyun-file-type"]; ok {
+		m["type"] = v
 	}
-    if v, ok := u.tmpHeaders["x-upyun-file-date"]; ok {
+	if v, ok := u.tmpHeaders["x-upyun-file-size"]; ok {
+		m["size"] = v
+	}
+	if v, ok := u.tmpHeaders["x-upyun-file-date"]; ok {
 		m["date"] = v
-    }
-    return m
+	}
+	return m
 }
 
 type DirInfo struct {
@@ -340,9 +340,9 @@ func (u *UpYun) ReadDir(path string) ([]*DirInfo, error) {
 			}
 			d.Time, _ = strconv.ParseInt(rid[3], 10, 64)
 		}
-        if len(rid) > 2 {
+		if len(rid) > 2 {
 			d.Size, _ = strconv.ParseInt(rid[2], 10, 64)
-        }
+		}
 		dirs = append(dirs, d)
 	}
 	return dirs, nil
@@ -365,12 +365,12 @@ func (u *UpYun) DeleteFile(file string) error {
  * return error
  */
 func (u *UpYun) MkDir(path string, autoMkdir bool) error {
-    var headers map[string]string
-    headers = make(map[string]string)
-    headers["Folder"] = "true"
-    if autoMkdir {
-        headers["Mkdir"] = "true"
-    }
+	var headers map[string]string
+	headers = make(map[string]string)
+	headers["Folder"] = "true"
+	if autoMkdir {
+		headers["Mkdir"] = "true"
+	}
 	_, err := u.httpAction("PUT", path, headers, nil, nil)
 	return err
 }
@@ -409,13 +409,13 @@ func FileMd5(name string) string {
 	defer f.Close()
 
 	h := md5.New()
-    io.Copy(h, f)
+	io.Copy(h, f)
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
 func timeoutDialer(timeout int) func(string, string) (net.Conn, error) {
 	return func(netw, addr string) (c net.Conn, err error) {
-        delta := time.Duration(timeout) * time.Second
+		delta := time.Duration(timeout) * time.Second
 		c, err = net.DialTimeout(netw, addr, delta)
 		if err != nil {
 			return nil, err
