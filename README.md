@@ -1,6 +1,7 @@
 # KellyBackend
 
 [![Build Status](https://secure.travis-ci.org/missdeer/KellyBackend.png)](https://travis-ci.org/missdeer/KellyBackend)
+[![Total views](https://sourcegraph.com/api/repos/github.com/missdeer/KellyBackend/counters/views.png)](https://sourcegraph.com/github.com/missdeer/KellyBackend)
 
 Yiili community which is a part of [Kelly project](https://github.com/missdeer/kelly), it is the server side, AKA backend, of the project. The source code is based on WeTalk project, thanks those guys for there great work.
 
