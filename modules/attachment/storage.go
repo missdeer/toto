@@ -24,6 +24,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/nfnt/resize"
@@ -37,6 +38,48 @@ import (
 	qiniuio "github.com/qiniu/api/io"
 	"github.com/qiniu/api/rs"
 )
+
+func uploadToQiniu(imageLocalPath string, imageRemotePath string, wg *sync.WaitGroup, result chan error) {
+	defer wg.Done()
+	if setting.QiniuEnabled {
+		putPolicy := rs.PutPolicy{}
+		putPolicy.Scope = setting.QiniuBucketName
+		uptoken := putPolicy.Token(nil)
+
+		var ret qiniuio.PutRet
+		var extra = &qiniuio.PutExtra{}
+
+		// get encoded file name as the key
+		err := qiniuio.PutFile(nil, &ret, uptoken, imageRemotePath, imageLocalPath, extra)
+		if err != nil {
+			beego.Error("putting file without key to Qiniu failed: ", err)
+		}
+		result <- err
+	} else {
+		result <- nil
+	}
+}
+
+func uploadToUpyun(imageLocalPath string, imageRemotePath string, wg *sync.WaitGroup, result chan error) {
+	defer wg.Done()
+	if setting.UpYunEnabled {
+		var upyunio *upyun.UpYun
+		upyunio = upyun.NewUpYun(setting.UpYunBucketName, setting.UpYunUsername, setting.UpYunPassword)
+		f, err := os.OpenFile(imageLocalPath, os.O_RDONLY, 0644)
+		if err != nil {
+			beego.Error("opening local saved path failed: ", err)
+			return
+		}
+		defer f.Close()
+		err = upyunio.WriteFile(imageRemotePath, f, true)
+		if err != nil {
+			beego.Error("writing file to UpYun failed: ", err)
+		}
+		result <- err
+	} else {
+		result <- nil
+	}
+}
 
 func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, created time.Time) error {
 	var ext string
@@ -92,6 +135,7 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 	os.MkdirAll(path, 0755)
 
 	fullPath := GenImageFilePath(m, 0)
+	var smallPath, middlePath string
 	if _, err := r.Seek(0, 0); err != nil {
 		return err
 	}
@@ -110,122 +154,86 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 	}
 
 	var key = "upload" + m.LinkFull()
-	if setting.QiniuEnabled {
-		ACCESS_KEY = setting.QiniuAppKey
-		SECRET_KEY = setting.QiniuSecretKey
-		putPolicy := rs.PutPolicy{}
-		putPolicy.Scope = setting.QiniuBucketName
-		uptoken := putPolicy.Token(nil)
 
-		var ret qiniuio.PutRet
-		var extra = &qiniuio.PutExtra{}
+	var wg sync.WaitGroup
+	qiniuFull := make(chan error)
+	qiniuSmall := make(chan error)
+	qiniuMiddle := make(chan error)
+	upyunFull := make(chan error)
+	upyunSmall := make(chan error)
+	upyunMiddle := make(chan error)
 
-		// get encoded file name as the key
-		err = qiniuio.PutFile(nil, &ret, uptoken, key, fullPath, extra)
-		if err != nil {
-			beego.Error("putting file without key to Qiniu failed: ", err)
-			return err
-		}
-	}
-
-	var upyunio *upyun.UpYun
-	if setting.UpYunEnabled {
-		upyunio = upyun.NewUpYun(setting.UpYunBucketName, setting.UpYunUsername, setting.UpYunPassword)
-		f, err := os.OpenFile(fullPath, os.O_RDONLY, 0644)
-		if err != nil {
-			beego.Error("opening local saved path failed: ", err)
-			return err
-		}
-		defer f.Close()
-		err = upyunio.WriteFile("/"+key, f, true)
-		if err != nil {
-			beego.Error("writing file to UpYun failed: ", err)
-			return err
-		}
-	}
+	ACCESS_KEY = setting.QiniuAppKey
+	SECRET_KEY = setting.QiniuSecretKey
+	wg.Add(1)
+	go uploadToQiniu(fullPath, key, &wg, qiniuFull)
+	wg.Add(1)
+	go uploadToUpyun(fullPath, "/"+key, &wg, upyunFull)
 
 	if ext != ".gif" {
-
 		if m.Width > setting.ImageSizeSmall {
 			if err := ImageResize(m, img, setting.ImageSizeSmall); err != nil {
+				wg.Wait()
 				os.RemoveAll(fullPath)
 				return err
 			}
-			savePath := GenImageFilePath(m, setting.ImageSizeSmall)
+			smallPath = GenImageFilePath(m, setting.ImageSizeSmall)
 			key = "upload" + m.LinkSmall()
-			if setting.QiniuEnabled {
-				putPolicy := rs.PutPolicy{}
-				putPolicy.Scope = setting.QiniuBucketName
-				uptoken := putPolicy.Token(nil)
-
-				var ret qiniuio.PutRet
-				var extra = &qiniuio.PutExtra{}
-
-				if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
-					os.RemoveAll(savePath)
-					return err
-				}
-			}
-
-			if setting.UpYunEnabled {
-				f, err := os.OpenFile(savePath, os.O_RDONLY, 0644)
-				if err != nil {
-					beego.Error("opening local saved path failed ", err)
-					return err
-				}
-				defer f.Close()
-				err = upyunio.WriteFile("/"+key, f, true)
-				if err != nil {
-					beego.Error("writing file to UpYun failed", err)
-					os.RemoveAll(savePath)
-					return err
-				}
-			}
-
-			os.RemoveAll(savePath)
+			wg.Add(1)
+			go uploadToQiniu(smallPath, key, &wg, qiniuSmall)
+			wg.Add(1)
+			go uploadToUpyun(smallPath, "/"+key, &wg, upyunSmall)
 		}
 
 		if m.Width > setting.ImageSizeMiddle {
 			if err := ImageResize(m, img, setting.ImageSizeMiddle); err != nil {
+				wg.Wait()
 				os.RemoveAll(fullPath)
+				os.RemoveAll(smallPath)
 				return err
 			}
-			savePath := GenImageFilePath(m, setting.ImageSizeMiddle)
+			middlePath = GenImageFilePath(m, setting.ImageSizeMiddle)
 			key = "upload" + m.LinkMiddle()
-			if setting.QiniuEnabled {
-				putPolicy := rs.PutPolicy{}
-				putPolicy.Scope = setting.QiniuBucketName
-				uptoken := putPolicy.Token(nil)
-
-				var ret qiniuio.PutRet
-				var extra = &qiniuio.PutExtra{}
-
-				if err = qiniuio.PutFile(nil, &ret, uptoken, key, savePath, extra); err != nil {
-					os.RemoveAll(savePath)
-					return err
-				}
-			}
-
-			if setting.UpYunEnabled {
-				f, err := os.OpenFile(savePath, os.O_RDONLY, 0644)
-				if err != nil {
-					beego.Error("opening local saved path failed ", err)
-					return err
-				}
-				defer f.Close()
-				err = upyunio.WriteFile("/"+key, f, true)
-				if err != nil {
-					beego.Error("writing file to UpYun failed", err)
-					os.RemoveAll(savePath)
-					return err
-				}
-			}
-			os.RemoveAll(savePath)
+			wg.Add(1)
+			go uploadToQiniu(middlePath, key, &wg, qiniuMiddle)
+			wg.Add(1)
+			go uploadToUpyun(middlePath, "/"+key, &wg, upyunMiddle)
 		}
 	}
+	wg.Wait()
 	os.RemoveAll(fullPath)
+	var result error = nil
+	qiniuErr, upyunErr := <-qiniuFull, <-upyunFull
+	if qiniuErr != nil {
+		result = qiniuErr
+	}
+	if upyunErr != nil {
+		result = upyunErr
+	}
+	if len(smallPath) > 0 {
+		os.RemoveAll(smallPath)
+		qiniuErr, upyunErr = <-qiniuSmall, <-upyunSmall
+		if qiniuErr != nil {
+			result = qiniuErr
+		}
+		if upyunErr != nil {
+			result = upyunErr
+		}
 
-	return nil
+	}
+	if len(middlePath) > 0 {
+		os.RemoveAll(middlePath)
+		qiniuErr, upyunErr = <-qiniuMiddle, <-upyunMiddle
+		if qiniuErr != nil {
+			result = qiniuErr
+		}
+		if upyunErr != nil {
+			result = upyunErr
+		}
+
+	}
+
+	return result
 }
 
 func ImageResize(img *models.Image, im image.Image, width int) error {
