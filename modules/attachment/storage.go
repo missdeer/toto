@@ -42,6 +42,7 @@ import (
 func uploadToQiniu(imageLocalPath string, imageRemotePath string, wg *sync.WaitGroup, result chan error) {
 	defer wg.Done()
 	if setting.QiniuEnabled {
+		beego.Info("start uploading to qiniu ", imageLocalPath)
 		putPolicy := rs.PutPolicy{}
 		putPolicy.Scope = setting.QiniuBucketName
 		uptoken := putPolicy.Token(nil)
@@ -58,11 +59,13 @@ func uploadToQiniu(imageLocalPath string, imageRemotePath string, wg *sync.WaitG
 	} else {
 		result <- nil
 	}
+	beego.Info("uploaded to qiniu ", imageRemotePath)
 }
 
 func uploadToUpyun(imageLocalPath string, imageRemotePath string, wg *sync.WaitGroup, result chan error) {
 	defer wg.Done()
 	if setting.UpYunEnabled {
+		beego.Info("start uploading to upyun ", imageLocalPath)
 		var upyunio *upyun.UpYun
 		upyunio = upyun.NewUpYun(setting.UpYunBucketName, setting.UpYunUsername, setting.UpYunPassword)
 		f, err := os.OpenFile(imageLocalPath, os.O_RDONLY, 0644)
@@ -79,6 +82,7 @@ func uploadToUpyun(imageLocalPath string, imageRemotePath string, wg *sync.WaitG
 	} else {
 		result <- nil
 	}
+	beego.Info("uploaded to upyun ", imageRemotePath)
 }
 
 func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, created time.Time) error {
@@ -169,10 +173,18 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 	go uploadToQiniu(fullPath, key, &wg, qiniuFull)
 	wg.Add(1)
 	go uploadToUpyun(fullPath, "/"+key, &wg, upyunFull)
+	var result error = nil
 
 	if ext != ".gif" {
 		if m.Width > setting.ImageSizeSmall {
 			if err := ImageResize(m, img, setting.ImageSizeSmall); err != nil {
+				qiniuErr, upyunErr := <-qiniuFull, <-upyunFull
+				if qiniuErr != nil {
+					result = qiniuErr
+				}
+				if upyunErr != nil {
+					result = upyunErr
+				}
 				wg.Wait()
 				os.RemoveAll(fullPath)
 				return err
@@ -187,6 +199,23 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 
 		if m.Width > setting.ImageSizeMiddle {
 			if err := ImageResize(m, img, setting.ImageSizeMiddle); err != nil {
+				qiniuErr, upyunErr := <-qiniuFull, <-upyunFull
+				if qiniuErr != nil {
+					result = qiniuErr
+				}
+				if upyunErr != nil {
+					result = upyunErr
+				}
+				if len(smallPath) > 0 {
+					qiniuErr, upyunErr = <-qiniuSmall, <-upyunSmall
+					if qiniuErr != nil {
+						result = qiniuErr
+					}
+					if upyunErr != nil {
+						result = upyunErr
+					}
+				}
+
 				wg.Wait()
 				os.RemoveAll(fullPath)
 				os.RemoveAll(smallPath)
@@ -200,9 +229,6 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 			go uploadToUpyun(middlePath, "/"+key, &wg, upyunMiddle)
 		}
 	}
-	wg.Wait()
-	os.RemoveAll(fullPath)
-	var result error = nil
 	qiniuErr, upyunErr := <-qiniuFull, <-upyunFull
 	if qiniuErr != nil {
 		result = qiniuErr
@@ -210,8 +236,8 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 	if upyunErr != nil {
 		result = upyunErr
 	}
+	os.RemoveAll(fullPath)
 	if len(smallPath) > 0 {
-		os.RemoveAll(smallPath)
 		qiniuErr, upyunErr = <-qiniuSmall, <-upyunSmall
 		if qiniuErr != nil {
 			result = qiniuErr
@@ -219,10 +245,10 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 		if upyunErr != nil {
 			result = upyunErr
 		}
-
+		os.RemoveAll(smallPath)
 	}
+
 	if len(middlePath) > 0 {
-		os.RemoveAll(middlePath)
 		qiniuErr, upyunErr = <-qiniuMiddle, <-upyunMiddle
 		if qiniuErr != nil {
 			result = qiniuErr
@@ -231,8 +257,10 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 			result = upyunErr
 		}
 
+		os.RemoveAll(middlePath)
 	}
 
+	wg.Wait()
 	return result
 }
 
