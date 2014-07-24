@@ -194,12 +194,6 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 			go uploadToUpyun(middlePath, "/"+key, uploadChannels)
 		}
 	}
-	for i := 0; i < 2; i++ {
-		if err := <-uploadChannels; err != nil {
-			result = err
-		}
-	}
-	os.RemoveAll(fullPath)
 	if len(smallPath) > 0 {
 		for i := 0; i < 2; i++ {
 			if err := <-uploadChannels; err != nil {
@@ -208,6 +202,12 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 		}
 		os.RemoveAll(smallPath)
 	}
+	for i := 0; i < 2; i++ {
+		if err := <-uploadChannels; err != nil {
+			result = err
+		}
+	}
+	os.RemoveAll(fullPath)
 
 	if len(middlePath) > 0 {
 		for i := 0; i < 2; i++ {
