@@ -156,75 +156,64 @@ func SaveImage(m *models.Image, r io.ReadSeeker, mime string, filename string, c
 
 	var key = "upload" + m.LinkFull()
 
-	qiniuFull := make(chan error)
-	qiniuSmall := make(chan error)
-	qiniuMiddle := make(chan error)
-	upyunFull := make(chan error)
-	upyunSmall := make(chan error)
-	upyunMiddle := make(chan error)
+	uploadChannels := make(chan error, 6)
 
 	ACCESS_KEY = setting.QiniuAppKey
 	SECRET_KEY = setting.QiniuSecretKey
-	go uploadToQiniu(fullPath, key, qiniuFull)
-	go uploadToUpyun(fullPath, "/"+key, upyunFull)
+	go uploadToQiniu(fullPath, key, uploadChannels)
+	go uploadToUpyun(fullPath, "/"+key, uploadChannels)
 	var result error = nil
 
 	if ext != ".gif" {
 		if m.Width > setting.ImageSizeSmall {
 			if err := ImageResize(m, img, setting.ImageSizeSmall); err != nil {
-				<-qiniuFull
-				<-upyunFull
+				<-uploadChannels
+				<-uploadChannels
 				os.RemoveAll(fullPath)
 				return err
 			}
 			smallPath = GenImageFilePath(m, setting.ImageSizeSmall)
 			key = "upload" + m.LinkSmall()
-			go uploadToQiniu(smallPath, key, qiniuSmall)
-			go uploadToUpyun(smallPath, "/"+key, upyunSmall)
+			go uploadToQiniu(smallPath, key, uploadChannels)
+			go uploadToUpyun(smallPath, "/"+key, uploadChannels)
 		}
 
 		if m.Width > setting.ImageSizeMiddle {
 			if err := ImageResize(m, img, setting.ImageSizeMiddle); err != nil {
-				<-qiniuFull
-				<-upyunFull
-				<-qiniuSmall
-				<-upyunSmall
+				<-uploadChannels
+				<-uploadChannels
+				<-uploadChannels
+				<-uploadChannels
 				os.RemoveAll(fullPath)
 				os.RemoveAll(smallPath)
 				return err
 			}
 			middlePath = GenImageFilePath(m, setting.ImageSizeMiddle)
 			key = "upload" + m.LinkMiddle()
-			go uploadToQiniu(middlePath, key, qiniuMiddle)
-			go uploadToUpyun(middlePath, "/"+key, upyunMiddle)
+			go uploadToQiniu(middlePath, key, uploadChannels)
+			go uploadToUpyun(middlePath, "/"+key, uploadChannels)
 		}
 	}
-	qiniuErr, upyunErr := <-qiniuFull, <-upyunFull
-	if qiniuErr != nil {
-		result = qiniuErr
-	}
-	if upyunErr != nil {
-		result = upyunErr
+	for i := 0; i < 2; i++ {
+		if err := <-uploadChannels; err != nil {
+			result = err
+		}
 	}
 	os.RemoveAll(fullPath)
 	if len(smallPath) > 0 {
-		qiniuErr, upyunErr = <-qiniuSmall, <-upyunSmall
-		if qiniuErr != nil {
-			result = qiniuErr
-		}
-		if upyunErr != nil {
-			result = upyunErr
+		for i := 0; i < 2; i++ {
+			if err := <-uploadChannels; err != nil {
+				result = err
+			}
 		}
 		os.RemoveAll(smallPath)
 	}
 
 	if len(middlePath) > 0 {
-		qiniuErr, upyunErr = <-qiniuMiddle, <-upyunMiddle
-		if qiniuErr != nil {
-			result = qiniuErr
-		}
-		if upyunErr != nil {
-			result = upyunErr
+		for i := 0; i < 2; i++ {
+			if err := <-uploadChannels; err != nil {
+				result = err
+			}
 		}
 		os.RemoveAll(middlePath)
 	}
