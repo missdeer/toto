@@ -4,7 +4,8 @@ html, body {
 
 body {
   background-color: #eaeaea;
-  background-image: url('/static/img/bg.gif');
+  background-image: url('http://kelly.qiniudn.com/bg/1.jpg');
+  background-attachment: fixed;
 }
 
 body,
@@ -93,10 +94,10 @@ textarea.form-control {
 
 /* footer */
 #footer {
-  background: #fff;
-  -webkit-box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);;
-  margin-top: 65px;
+  #background: #fff;
+  #-webkit-box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+  #box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);;
+  margin-top: auto;
 }
 
 #footer .footer-wrap {
