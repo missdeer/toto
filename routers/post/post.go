@@ -657,6 +657,20 @@ func (this *PostRouter) NewSubmit() {
 		this.JsStorage("deleteKey", "post/new")
 		this.Redirect(post.Link(), 302)
 
+		if len(post.Category.Slug) == 0 {
+			cate := models.Category{Id: form.Category}
+			cate.Read("Id")
+			post.Category.Slug = cate.Slug
+			beego.Info("category slug:", post.Category.Slug)
+		}
+
+		if len(post.Topic.Slug) == 0 {
+			topic := models.Topic{Id: form.Topic}
+			topic.Read("Id")
+			post.Topic.Slug = topic.Slug
+			beego.Info("topic slug:", post.Topic.Slug)
+		}
+
 		// update recent/home/category/topics posts cache
 		if setting.MemcachedEnabled {
 			cache.Mc.Delete("recent-posts-count")
@@ -664,6 +678,33 @@ func (this *PostRouter) NewSubmit() {
 			cache.Mc.Delete("recent-category")
 			cache.Mc.Delete("home-posts")
 			cache.Mc.Delete("today-topten-posts")
+
+			if len(post.Category.Slug) == 0 {
+				key := fmt.Sprintf(`category-slug-%d`, form.Category)
+				if s, e := cache.MemcachedGetString(key); e != nil {
+					cate := models.Category{Id: form.Category}
+					cate.Read("Id")
+					cache.MemcachedSetString(key, &cate.Slug)
+					post.Category.Slug = cate.Slug
+				} else {
+					post.Category.Slug = s
+				}
+				beego.Info("category slug:", post.Category.Slug)
+			}
+
+			if len(post.Topic.Slug) == 0 {
+				key := fmt.Sprintf(`topic-slug-%d`, form.Topic)
+				if s, e := cache.MemcachedGetString(key); e != nil {
+					topic := models.Topic{Id: form.Topic}
+					topic.Read("Id")
+					cache.MemcachedSetString(key, &topic.Slug)
+					post.Topic.Slug = topic.Slug
+				} else {
+					post.Topic.Slug = s
+				}
+				beego.Info("topic slug:", post.Topic.Slug)
+			}
+
 			categoryCountKey := fmt.Sprintf(`category-%s-count`, post.Category.Slug)
 			cache.Mc.Delete(categoryCountKey)
 			categoryKey := fmt.Sprintf(`category-%s`, post.Category.Slug)
@@ -680,6 +721,33 @@ func (this *PostRouter) NewSubmit() {
 			cache.Rd.Do("DEL", "recent-category")
 			cache.Rd.Do("DEL", "home-posts")
 			cache.Rd.Do("DEL", "today-topten-posts")
+
+			if len(post.Category.Slug) == 0 {
+				key := fmt.Sprintf(`category-slug-%d`, form.Category)
+				if s, e := cache.RedisGetString(key); e != nil {
+					cate := models.Category{Id: form.Category}
+					cate.Read("Id")
+					cache.RedisSetString(key, &cate.Slug)
+					post.Category.Slug = cate.Slug
+				} else {
+					post.Category.Slug = s
+				}
+				beego.Info("category slug:", post.Category.Slug)
+			}
+
+			if len(post.Topic.Slug) == 0 {
+				key := fmt.Sprintf(`topic-slug-%d`, form.Topic)
+				if s, e := cache.RedisGetString(key); e != nil {
+					topic := models.Topic{Id: form.Topic}
+					topic.Read("Id")
+					cache.RedisSetString(key, &topic.Slug)
+					post.Topic.Slug = topic.Slug
+				} else {
+					post.Topic.Slug = s
+				}
+				beego.Info("topic slug:", post.Topic.Slug)
+			}
+
 			categoryCountKey := fmt.Sprintf(`category-%s-count`, post.Category.Slug)
 			cache.Rd.Do("DEL", categoryCountKey)
 			categoryKey := fmt.Sprintf(`category-%s`, post.Category.Slug)

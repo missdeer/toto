@@ -26,6 +26,20 @@ func MemcachedSetInt64(key string, val int64) (err error) {
 	return err
 }
 
+func MemcachedGetString(key string) (ret string, err error) {
+	var val *memcache.Item
+	if val, err = Mc.Get(key); err != nil {
+		return
+	}
+	return string(val.Value), nil
+}
+
+func MemcachedSetString(key string, val *string) (err error) {
+	buf := []byte(*val)
+	err = Mc.Set(&memcache.Item{Key: key, Value: buf})
+	return err
+}
+
 func MemcachedGetPosts(key string, posts *[]models.Post) (err error) {
 	var p *memcache.Item
 	if p, err = Mc.Get(key); err != nil {

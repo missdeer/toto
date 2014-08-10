@@ -19,6 +19,16 @@ func RedisSetInt64(key string, val int64) (err error) {
 	return err
 }
 
+func RedisGetString(key string) (ret string, err error) {
+	ret, err = redis.String(Rd.Do("GET", key))
+	return ret, err
+}
+
+func RedisSetString(key string, val *string) (err error) {
+	_, err = Rd.Do("SET", key, *val)
+	return err
+}
+
 func RedisGetPosts(key string, posts *[]models.Post) (err error) {
 	p, err := redis.Bytes(Rd.Do("GET", key))
 	if err != nil {
