@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
+	"net/url"
 	"regexp"
 )
 
@@ -11,8 +13,12 @@ func Render(content string) string {
 		content)
 	//matched, err := regexp.MatchString(`(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?`, content)
 	if err == nil && matched {
-		beego.Info("only a URL, use Readability renderer")
-		return RenderReadability(content)
+		u, err := url.Parse(content)
+		if err != nil {
+			beego.Error("parsing URL failed")
+		}
+		s := fmt.Sprintf(`以下内容由系统自动提取自<a href="%s" target='_blank'>%s</a>，点击该链接可访问原文，所有权利归原文出处所有。<hr/>`, content, u.Host)
+		return s + RenderReadability(content)
 	} else {
 		return RenderMarkdown(content)
 	}
