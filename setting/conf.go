@@ -72,6 +72,8 @@ var (
 	UpYunUsername       string
 	UpYunPassword       string
 	UpYunBucketName     string
+	ReadabilityAppKey   string
+	EmbedlyAppKey       string
 	EnforceRedirect     bool
 	AvatarURL           string
 	SecretKey           string
@@ -352,6 +354,10 @@ func reloadConfig() {
 		UpYunPassword = Cfg.MustValue("app", "upyun_password", "")
 		UpYunBucketName = Cfg.MustValue("app", "upyun_bucketname", "")
 	}
+
+	ReadabilityAppKey = Cfg.MustValue("app", "readability_appkey", "")
+	EmbedlyAppKey = Cfg.MustValue("app", "embedly_appkey", "")
+
 	AvatarURL = Cfg.MustValue("app", "avatar_url")
 
 	CategoryHideOnHome = Cfg.MustInt("app", "category_hide_on_home", 0)
