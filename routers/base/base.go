@@ -63,7 +63,7 @@ func (this *BaseRouter) Prepare() {
 	}
 
 	// mobile detect
-	detect := gomobiledetect.NewMobileDetect(this.Ctx.Request, nil)
+	detect := mobiledetect.NewMobileDetect(this.Ctx.Request, nil)
 	this.IsMobile = detect.IsMobile()
 	this.Data["IsMobile"] = this.IsMobile
 	this.IsTablet = detect.IsTablet()
