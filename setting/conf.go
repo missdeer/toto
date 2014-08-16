@@ -73,6 +73,7 @@ var (
 	UpYunPassword       string
 	UpYunBucketName     string
 	ReadabilityAppKey   string
+	ReadabilityBackend  string
 	EmbedlyAppKey       string
 	EnforceRedirect     bool
 	AvatarURL           string
@@ -356,6 +357,7 @@ func reloadConfig() {
 	}
 
 	ReadabilityAppKey = Cfg.MustValue("app", "readability_appkey", "")
+	ReadabilityBackend = Cfg.MustValue("app", "readability_backend", "python")
 	EmbedlyAppKey = Cfg.MustValue("app", "embedly_appkey", "")
 
 	AvatarURL = Cfg.MustValue("app", "avatar_url")

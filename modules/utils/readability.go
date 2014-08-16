@@ -66,5 +66,13 @@ func renderEmbedlyExtract(content string) string {
 }
 
 func RenderReadability(content string) string {
-	return RenderMarkdown(content)
+	switch setting.ReadabilityBackend {
+	case "readability":
+		return renderReadability(content)
+	case "embedly":
+		return renderEmbedlyExtract(content)
+	default:
+		return renderPythonReadability(content)
+	}
+	return renderPythonReadability(content)
 }
