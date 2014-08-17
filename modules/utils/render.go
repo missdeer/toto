@@ -35,7 +35,7 @@ func Render(content string) string {
 				break
 			}
 			id := ids[1]
-			return s + fmt.Sprintf(`<iframe src="http://player.youku.com/embed/%s" allowfullscreen="" frameborder="0" height="440" width="680"></iframe>`, id)
+			return s + fmt.Sprintf(`<iframe src="http://player.youku.com/embed/%s" allowfullscreen="" frameborder="0" width="100%" height="420"></iframe>`, id)
 		}
 		break
 	case "!i!":
