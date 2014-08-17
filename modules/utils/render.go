@@ -9,12 +9,17 @@ import (
 
 func Render(content string) string {
 	// select the renderer
-	renderer := content[:3]
+	subs := regexp.MustCompile(`^!([A-Za-z0-9]+)!`).FindStringSubmatch(content)
+	if len(subs) <= 1 {
+		// no custom specified renderer
+		return RenderMarkdown(content)
+	}
+	renderer := subs[1]
 	switch renderer {
-	case "!m!":
+	case "m":
 		beego.Info("User indicates using markdown renderer!")
 		return RenderMarkdown(content[3:])
-	case "!y!":
+	case "y":
 		beego.Info("User indicates using youku rendereer!")
 		matched := regexp.MustCompile(`^!y!(http|https)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)?((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.[a-zA-Z]{2,4})(\:[0-9]+)?(/[^/][a-zA-Z0-9\.\,\?\'\\/\+&amp;%\$#\=~_\-@]*)*$`).MatchString(content)
 		if matched {
@@ -38,7 +43,7 @@ func Render(content string) string {
 			return s + fmt.Sprintf(`<iframe src="http://player.youku.com/embed/%s" allowfullscreen="" frameborder="0" width="100%" height="420"></iframe>`, id)
 		}
 		break
-	case "!i!":
+	case "i":
 		beego.Info("User indicates using image renderer!")
 		matched := regexp.MustCompile(`^!i!(http|https)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)?((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.[a-zA-Z]{2,4})(\:[0-9]+)?(/[^/][a-zA-Z0-9\.\,\?\'\\/\+&amp;%\$#\=~_\-@]*)*$`).MatchString(content)
 		if matched {
@@ -52,7 +57,7 @@ func Render(content string) string {
 			return s + fmt.Sprintf(`<img src="%s">`, raw)
 		}
 		break
-	case "!r!":
+	case "r":
 		beego.Info("User indicates using readability renderer!")
 		matched := regexp.MustCompile(`^!r!(http|https)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)?((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.[a-zA-Z]{2,4})(\:[0-9]+)?(/[^/][a-zA-Z0-9\.\,\?\'\\/\+&amp;%\$#\=~_\-@]*)*$`).MatchString(content)
 		if matched {
