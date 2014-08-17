@@ -7,6 +7,7 @@ import (
 	"github.com/missdeer/KellyBackend/setting"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os/exec"
 )
 
@@ -31,7 +32,7 @@ func renderPythonReadability(content string) string {
 
 func renderReadability(content string) string {
 	appkey := setting.ReadabilityAppKey
-	req := fmt.Sprintf("https://readability.com/api/content/v1/parser?url=%s&token=%s", content, appkey)
+	req := fmt.Sprintf("https://www.readability.com/api/content/v1/parser?token=%s&url=%s", appkey, url.QueryEscape(content))
 	resp, err := http.Get(req)
 	if err != nil {
 		beego.Error("read response error: ", err)
