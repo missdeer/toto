@@ -36,7 +36,7 @@ func renderPythonReadability(content string) string {
 
 func renderReadability(content string) string {
 	appkey := setting.ReadabilityAppKey
-	req := fmt.Sprintf("https://www.readability.com/api/content/v1/parser?token=%s&url=%s", appkey, url.QueryEscape(content))
+	req := fmt.Sprintf("https://www.readability.com/api/content/v1/parser?url=%s&token=%s", url.QueryEscape(content), appkey)
 	resp, err := http.Get(req)
 	if err != nil {
 		beego.Error("read response error: ", err)
