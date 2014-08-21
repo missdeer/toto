@@ -15,17 +15,21 @@ func renderPythonReadability(content string) string {
 	cmd := exec.Command("python", "-m", "readability.readability", "-u", content)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		beego.Error(err)
+		beego.Error("creating stdout pipe failed: ", err)
+		return ""
 	}
 	if err := cmd.Start(); err != nil {
-		beego.Error(err)
+		beego.Error("starting command failed: ", err)
+		return ""
 	}
 	raw, err := ioutil.ReadAll(stdout)
 	if err != nil {
-		beego.Error(err)
+		beego.Error("reading stdout from pipe failed: ", err)
+		return ""
 	}
 	if err := cmd.Wait(); err != nil {
-		beego.Error(err)
+		beego.Error("waiting from command failed:", err)
+		return ""
 	}
 	return string(raw)
 }
@@ -36,6 +40,7 @@ func renderReadability(content string) string {
 	resp, err := http.Get(req)
 	if err != nil {
 		beego.Error("read response error: ", err)
+		return ""
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
@@ -44,6 +49,7 @@ func renderReadability(content string) string {
 	if str, ok := res["content"].(string); ok {
 		return str
 	} else {
+		beego.Error("converting content to string failed")
 		return ""
 	}
 }
@@ -64,10 +70,11 @@ func renderEmbedlyExtract(content string) string {
 		beego.Error("json unmarshalling failed: ", err)
 		return ""
 	}
-	beego.Info(res)
+	fmt.Printf("%v\n", res)
 	if str, ok := res["content"].(string); ok {
 		return str
 	} else {
+		beego.Error("converting content to string failed")
 		return ""
 	}
 }
@@ -76,7 +83,6 @@ func RenderReadability(content string, interpreter string) string {
 	if len(interpreter) == 0 {
 		interpreter = setting.ReadabilityBackend
 	}
-	beego.Info("interpreter: ", interpreter)
 	switch interpreter {
 	case "readability", "r":
 		beego.Info("readability backend")
