@@ -30,7 +30,7 @@ func GetMailTmplData(lang string, user *models.User) map[interface{}]interface{}
 	data := make(map[interface{}]interface{}, 10)
 	data["AppName"] = setting.AppName
 	data["AppVer"] = setting.AppVer
-	data["AppUrl"] = "http://" + setting.AppHost + "/" //setting.AppUrl
+	data["AppUrl"] = "https://" + setting.AppHost + "/" //setting.AppUrl
 	data["AppLogo"] = setting.AppLogo
 	data["IsProMode"] = setting.IsProMode
 	data["Lang"] = lang
