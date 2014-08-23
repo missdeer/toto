@@ -163,7 +163,8 @@ textarea.form-control {
 
 /* avatar */
 .avatar img {
-  border-radius: 3px;
+  border-radius: 24px;
+  border:1px solid #eee;
   width: 48px;
   height: 48px;
 }
@@ -175,16 +176,19 @@ textarea.form-control {
 .avatar img.large {
   width: 64px;
   height: 64px;
+  border-radius: 32px;
 }
 
 .avatar img.middle {
   width: 32px;
   height: 32px;
+  border-radius: 16px;
 }
 
 .avatar img.small {
   width: 16px;
   height: 16px;
+  border-radius: 8px;
 }
 
 /* breadcrumb */
