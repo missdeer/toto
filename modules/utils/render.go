@@ -19,6 +19,24 @@ func Render(content string) string {
 	case "m":
 		beego.Info("User indicates using markdown renderer!")
 		return RenderMarkdown(content[3:])
+	case "mp":
+		beego.Info("User indicates using weixin mp render!")
+		matched := regexp.MustCompile(`^!mp!(http|https)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)?((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.[a-zA-Z]{2,4})(\:[0-9]+)?(/[^/][a-zA-Z0-9\.\,\?\'\\/\+&amp;%\$#\=~_\-@]*)*$`).MatchString(content)
+		if matched {
+			raw := content[4:]
+			u, err := url.Parse(raw)
+			if err != nil {
+				beego.Error("parsing URL failed, fallthrough using markdown renderer")
+				break
+			}
+			if u.Host != "mp.weixin.qq.com" {
+				beego.Error("not from mp.weixin.qq.com, fallthrough using markdown renderer")
+				break
+			}
+			s := fmt.Sprintf(`以下内容由系统自动提取自<a href="%s" target='_blank'>%s</a>，点击该链接可访问原文，所有权利归原文出处所有。<hr/>`, raw, u.Host)
+			return s + renderWeiXinMP(content[4:])
+		}
+		break
 	case "card":
 		beego.Info("User indicates using embedly renderer!")
 		matched := regexp.MustCompile(`^!card!(http|https)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)?((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.[a-zA-Z]{2,4})(\:[0-9]+)?(/[^/][a-zA-Z0-9\.\,\?\'\\/\+&amp;%\$#\=~_\-@]*)*$`).MatchString(content)
