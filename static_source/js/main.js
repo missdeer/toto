@@ -163,11 +163,7 @@
 			var $field = $e.find('[rel=filename]');
 			uploadFileChange($e, $file, $field, true);
 		});
-	}());
-
-	(function(){
-		var v = $.cookie('JsStorage');
-		if(v){
+	}()); (function(){ var v = $.cookie('JsStorage'); if(v){
 			var values = v.split(':::');
 			if(values.length > 1){
 				$.jStorage[values[0]].apply(this, values.splice(1));
@@ -180,9 +176,9 @@
 		$(document).on('submit', '#navbar-search.google', function(){
 			var q = $(this).find('[name=q]').val();
 			if($.trim(q) !== ''){
-				var host = window.location.hostname + ":" + window.location.port;
-				//var url = 'http://www.google.com/search?q=' + 'site:' + host + '%20' +  $.trim(q);
-				var url = 'http://www.baidu.com/#wd=site%3A' + host + '%20' + $.trim(q);
+				var host = 'yii.li' ; //window.location.hostname + ":" + window.location.port;
+				var url = 'https://s.yii.li/search?newwindow=1&safe=strict&q=' + 'site:' + host + '%20' +  $.trim(q);
+				//var url = 'http://www.baidu.com/#wd=site%3A' + host + '%20' + $.trim(q);
 				window.open(url, "_blank");
 			}
 			return false;

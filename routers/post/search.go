@@ -15,13 +15,9 @@
 package post
 
 import (
-	"strings"
-
-	"github.com/astaxie/beego"
-
-	"github.com/missdeer/KellyBackend/modules/post"
-	"github.com/missdeer/KellyBackend/modules/utils"
+	"fmt"
 	"github.com/missdeer/KellyBackend/routers/base"
+	"strings"
 )
 
 type SearchRouter struct {
@@ -29,31 +25,7 @@ type SearchRouter struct {
 }
 
 func (this *SearchRouter) Get() {
-	this.TplNames = "search/posts.html"
-
-	pers := 25
-
 	q := strings.TrimSpace(this.GetString("q"))
-
-	this.Data["Q"] = q
-
-	if len(q) == 0 {
-		return
-	}
-
-	page, _ := utils.StrTo(this.GetString("p")).Int()
-
-	posts, meta, err := post.SearchPost(q, page)
-	if err != nil {
-		this.Data["SearchError"] = true
-		beego.Error("SearchPosts: ", err)
-		return
-	}
-
-	if len(posts) > 0 {
-		this.SetPaginator(pers, meta.TotalFound)
-	}
-
-	this.Data["Posts"] = posts
-	this.Data["Meta"] = meta
+    fmt.Println("search ", q)
+	this.Redirect(fmt.Sprintf("https://s.yii.li/search?newwindow=1&safe=strict&q=%s+site%3Ayii.li&oq=%s+site%3Ayii.li", q, q), 302)
 }
