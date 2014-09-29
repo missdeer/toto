@@ -474,7 +474,7 @@ func settingLocales() {
 }
 
 func settingCompress() {
-	setting, err := compress.LoadJsonConf(CompressConfPath, IsProMode, ImgBedUrl)
+	setting, err := compress.LoadJsonConf(CompressConfPath, IsProMode, AppUrl) // ImgBedUrl)
 	if err != nil {
 		beego.Error(err)
 		return
