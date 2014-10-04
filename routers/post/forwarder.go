@@ -10,6 +10,7 @@ type ForwarderRouter struct {
 }
 
 func (this *ForwarderRouter) TaobaoItem() {
-	id := this.GetString("id")
-	this.Redirect(fmt.Sprintf("http://item.taobao.com/item.htm?id=%s", id), 302)
+	id := this.GetString(":id")
+	url := fmt.Sprintf("http://item.taobao.com/item.htm?id=%s", id)
+	this.Redirect(url, 302)
 }
