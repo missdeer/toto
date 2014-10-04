@@ -185,6 +185,9 @@ func main() {
 	beego.Router("/admin/model/get", adminR, "post:ModelGet")
 	beego.Router("/admin/model/select", adminR, "post:ModelSelect")
 
+	forwarderR := new(post.ForwarderRouter)
+	beego.Router("/i/:id", forwarderR, "get:TaobaoItem")
+
 	routes := map[string]beego.ControllerInterface{
 		"user":     new(admin.UserAdminRouter),
 		"post":     new(admin.PostAdminRouter),
