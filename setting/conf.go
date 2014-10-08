@@ -55,6 +55,20 @@ type AdRecords struct {
 	Records []AdRecord `xml:"ad"`
 }
 
+type ContactRecord struct {
+	XMLName     xml.Name `xml:"item"`
+	Url         string   `xml:"url"`
+	Icon        string   `xml:"icon"`
+	Qrcode      string   `xml:"qrcode"`
+	Title       string   `xml:"title"`
+	Description string   `xml:"description"`
+}
+
+type ContactRecords struct {
+	XMLName xml.Name        `xml:"contact"`
+	Records []ContactRecord `xml:"item"`
+}
+
 var (
 	AppName             string
 	AppVer              string
@@ -122,6 +136,9 @@ var (
 	// ads setting
 	Ads AdRecords
 
+	// contact settings
+	Contacts ContactRecords
+
 	// memcached setting
 	MemcachedEnabled bool
 	MemcachedConn    string
@@ -176,7 +193,29 @@ var (
 	AppConfPath      = "conf/app.ini"
 	CompressConfPath = "conf/compress.json"
 	AdsConfPath      = "conf/ads.xml"
+	ContactsConfPath = "conf/contact.xml"
 )
+
+func LoadContacts() {
+	fh, err := os.Open(ContactsConfPath)
+	if err != nil {
+		beego.Error(err)
+		return
+	}
+	defer fh.Close()
+	contactxml, err := ioutil.ReadAll(fh)
+	if err != nil {
+		beego.Error(err)
+		return
+	}
+
+	Contacts.Records = []ContactRecord{}
+	err = xml.Unmarshal(contactxml, &Contacts)
+	if err != nil {
+		beego.Error(err)
+		return
+	}
+}
 
 func LoadAds() {
 	fh, err := os.Open(AdsConfPath)
@@ -526,6 +565,7 @@ func configWatcher() {
 					}
 
 					LoadAds()
+					LoadContacts()
 					beego.Info("Ads config reloaded")
 				case ".json":
 					if checkEventTime(event.Name) {
