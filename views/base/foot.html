@@ -13,7 +13,9 @@
 			<p class="desc">
                 {{i18n .Lang "sidebar.follow_us"}}: 
                 {{range .Contacts}}
+                {{if .Url}}
                 <a target="_blank" href="{{.Url}}"><img width="14" height="14" src="{{.Icon}}">{{.Title}}</a>
+                {{end}}
                 {{end}}
 			</p>
 
