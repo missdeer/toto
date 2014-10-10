@@ -37,9 +37,9 @@ func i18nHTML(lang, format string, args ...interface{}) template.HTML {
 
 func boolicon(b bool) (s template.HTML) {
 	if b {
-		s = `<i style="color:green;" class="icon-check""></i>`
+		s = `<i style="color:green;" class="icon-check"></i>`
 	} else {
-		s = `<i class="icon-check-empty""></i>`
+		s = `<i class="icon-check-empty"></i>`
 	}
 	return
 }

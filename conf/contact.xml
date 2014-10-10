@@ -2,64 +2,64 @@
 <contact>
     <item>
         <url>https://www.facebook.com/kelly.shen.501</url>
-        <icon>{{.ImgBedUrl}}static/img/snsicon/32-f.png</icon>
+        <icon>https://dn-yiilidev.qbox.me/static/img/snsicon/32-f.png</icon>
         <qrcode></qrcode>
         <title>Facebook</title>
         <description></description>
     </item>
     <item>
         <url>https://twitter.com/misskerisdream</url>
-        <icon>{{.ImgBedUrl}}static/img/snsicon/32-t.png</icon>
+        <icon>https://dn-yiilidev.qbox.me/static/img/snsicon/32-t.png</icon>
         <qrcode></qrcode>
         <title>Twitter</title>
         <description></description>
     </item>
     <item>
         <url>https://plus.google.com/105276220177876343905</url>
-        <icon>{{.ImgBedUrl}}static/img/snsicon/32-g.png</icon>
+        <icon>https://dn-yiilidev.qbox.me/static/img/snsicon/32-g.png</icon>
         <qrcode></qrcode>
         <title>Google+</title>
         <description></description>
     </item>
     <item>
         <url>http://fanfou.com/misskerisdream</url>
-        <icon>{{.ImgBedUrl}}static/img/snsicon/32-fanfou.png</icon>
+        <icon>https://dn-yiilidev.qbox.me/static/img/snsicon/32-fanfou.png</icon>
         <qrcode></qrcode>
         <title>饭否</title>
         <description></description>
     </item>
     <item>
         <url>http://weibo.com/misskerisdream</url>
-        <icon>{{.ImgBedUrl}}static/img/snsicon/32-sinaweibo.png</icon>
+        <icon>https://dn-yiilidev.qbox.me/static/img/snsicon/32-sinaweibo.png</icon>
         <qrcode></qrcode>
         <title>新浪微博</title>
         <description></description>
     </item>
     <item>
         <url>http://t.qq.com/misskerisdream</url>
-        <icon>{{.ImgBedUrl}}static/img/snsicon/32-qqweibo.png</icon>
+        <icon>https://dn-yiilidev.qbox.me/static/img/snsicon/32-qqweibo.png</icon>
         <qrcode></qrcode>
         <title>腾讯微博</title>
         <description></description>
     </item>
     <item>
         <url>http://t.163.com/misskerisdream</url>
-        <icon>{{.ImgBedUrl}}static/img/snsicon/32-163weibo.png</icon>
+        <icon>https://dn-yiilidev.qbox.me/static/img/snsicon/32-163weibo.png</icon>
         <qrcode></qrcode>
         <title>网易微博</title>
         <description></description>
     </item>
     <item>
         <url>http://misskerisdream.t.sohu.com</url>
-        <icon>{{.ImgBedUrl}}static/img/snsicon/32-sohuweibo.png</icon>
+        <icon>https://dn-yiilidev.qbox.me/static/img/snsicon/32-sohuweibo.png</icon>
         <qrcode></qrcode>
         <title>搜狐微博</title>
         <description></description>
     </item>
     <item>
         <url></url>
-        <icon>{{.ImgBedUrl}}static/img/snsicon/32-weixin.png</icon>
-        <qrcode>{{.ImgBedUrl}}static/img/snsicon/weixin.jpg</qrcode>
+        <icon>https://dn-yiilidev.qbox.me/static/img/snsicon/32-weixin.png</icon>
+        <qrcode>https://dn-yiilidev.qbox.me/static/img/snsicon/weixin.jpg</qrcode>
         <title>微信公众号（扫一扫）</title>
         <description></description>
     </item>

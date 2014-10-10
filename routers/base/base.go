@@ -115,6 +115,7 @@ func (this *BaseRouter) Prepare() {
 	this.Data["SearchEnabled"] = setting.SearchEnabled
 	this.Data["NativeSearch"] = setting.NativeSearch
 	this.Data["SphinxEnabled"] = setting.SphinxEnabled
+	this.Data["Contacts"] = setting.Contacts.Records
 
 	// Redirect to make URL clean.
 	if this.setLang() {
