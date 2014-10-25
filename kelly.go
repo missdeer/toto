@@ -17,6 +17,7 @@ import (
 	"github.com/missdeer/KellyBackend/routers/attachment"
 	"github.com/missdeer/KellyBackend/routers/auth"
 	"github.com/missdeer/KellyBackend/routers/base"
+	"github.com/missdeer/KellyBackend/routers/pay"
 	"github.com/missdeer/KellyBackend/routers/post"
 	"github.com/missdeer/KellyBackend/setting"
 
@@ -174,6 +175,9 @@ func main() {
 
 	forwarderR := new(post.ForwarderRouter)
 	beego.Router("/i/:id([0-9]+)", forwarderR, "get:TaobaoItem")
+
+	alipayR := new(alipay.AlipayRouter)
+    beego.Router("/alipay", alipayR, "get:Pay;post:Pay")
 
 	routes := map[string]beego.ControllerInterface{
 		"user":     new(admin.UserAdminRouter),

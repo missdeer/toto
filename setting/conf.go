@@ -146,6 +146,12 @@ var (
 	// redis setting
 	RedisEnabled bool
 	RedisConn    string
+
+	// pay setting
+	AlipayPartnerId   string
+	AlipaySignKey     string
+	AlipaySellerEmail string
+	AlipaySellerId    string
 )
 
 var (
@@ -471,6 +477,12 @@ func reloadConfig() {
 	// memcached, redis
 	MemcachedEnabled = Cfg.MustBool("memcached", "enabled")
 	RedisEnabled = Cfg.MustBool("redis", "enabled")
+
+	// pay
+	AlipaySellerId = Cfg.MustValue("pay", "seller_id", "")
+	AlipaySellerEmail = Cfg.MustValue("pay", "seller_email", "")
+	AlipayPartnerId = Cfg.MustValue("pay", "pid", "")
+	AlipaySignKey = Cfg.MustValue("pay", "key", "")
 
 	// OAuth
 	GithubClientId = Cfg.MustValue("oauth", "github_client_id", "your_client_id")
