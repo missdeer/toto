@@ -4,7 +4,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/garyburd/redigo/redis"
-	"github.com/missdeer/KellyBackend/setting"
+	"github.com/missdeer/toto/setting"
 )
 
 var Mc *memcache.Client

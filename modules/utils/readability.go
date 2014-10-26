@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
-	"github.com/missdeer/KellyBackend/setting"
+	"github.com/missdeer/toto/setting"
 	"io/ioutil"
 	"net/http"
 	"net/url"

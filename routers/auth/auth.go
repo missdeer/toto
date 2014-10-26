@@ -18,11 +18,11 @@ import (
 	"github.com/astaxie/beego"
 	"strings"
 
-	"github.com/missdeer/KellyBackend/modules/auth"
-	"github.com/missdeer/KellyBackend/modules/models"
-	"github.com/missdeer/KellyBackend/modules/utils"
-	"github.com/missdeer/KellyBackend/routers/base"
-	"github.com/missdeer/KellyBackend/setting"
+	"github.com/missdeer/toto/modules/auth"
+	"github.com/missdeer/toto/modules/models"
+	"github.com/missdeer/toto/modules/utils"
+	"github.com/missdeer/toto/routers/base"
+	"github.com/missdeer/toto/setting"
 )
 
 // LoginRouter serves login page.

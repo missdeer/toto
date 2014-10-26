@@ -15,7 +15,7 @@
 package base
 
 import (
-	"github.com/missdeer/KellyBackend/modules/mailer"
+	"github.com/missdeer/toto/modules/mailer"
 )
 
 type TestRouter struct {

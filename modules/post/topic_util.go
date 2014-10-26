@@ -19,7 +19,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 
-	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/toto/modules/models"
 )
 
 func ListCategories(cats *[]models.Category) (int64, error) {

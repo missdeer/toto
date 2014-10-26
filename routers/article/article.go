@@ -16,8 +16,8 @@ package article
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/missdeer/KellyBackend/modules/models"
-	"github.com/missdeer/KellyBackend/routers/base"
+	"github.com/missdeer/toto/modules/models"
+	"github.com/missdeer/toto/routers/base"
 )
 
 type ArticleRouter struct {

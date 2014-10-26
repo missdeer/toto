@@ -20,8 +20,8 @@ import (
 
 	"github.com/astaxie/beego/orm"
 
-	"github.com/missdeer/KellyBackend/modules/utils"
-	"github.com/missdeer/KellyBackend/setting"
+	"github.com/missdeer/toto/modules/utils"
+	"github.com/missdeer/toto/setting"
 )
 
 // global settings name -> value

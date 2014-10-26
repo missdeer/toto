@@ -21,7 +21,7 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"github.com/missdeer/KellyBackend/setting"
+	"github.com/missdeer/toto/setting"
 )
 
 type Message struct {

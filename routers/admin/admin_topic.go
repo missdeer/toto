@@ -20,9 +20,9 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 
-	"github.com/missdeer/KellyBackend/modules/models"
-	"github.com/missdeer/KellyBackend/modules/post"
-	"github.com/missdeer/KellyBackend/modules/utils"
+	"github.com/missdeer/toto/modules/models"
+	"github.com/missdeer/toto/modules/post"
+	"github.com/missdeer/toto/modules/utils"
 )
 
 type TopicAdminRouter struct {

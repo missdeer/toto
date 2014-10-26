@@ -16,7 +16,7 @@ package attachment
 
 import (
 	"fmt"
-	"github.com/missdeer/KellyBackend/setting"
+	"github.com/missdeer/toto/setting"
 	"image"
 	"image/gif"
 	"image/jpeg"
@@ -30,9 +30,9 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"github.com/missdeer/KellyBackend/modules/models"
-	"github.com/missdeer/KellyBackend/modules/utils"
-	"github.com/missdeer/KellyBackend/upyun"
+	"github.com/missdeer/toto/modules/models"
+	"github.com/missdeer/toto/modules/utils"
+	"github.com/missdeer/toto/upyun"
 	. "github.com/qiniu/api/conf"
 	qiniuio "github.com/qiniu/api/io"
 	"github.com/qiniu/api/rs"

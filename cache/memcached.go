@@ -7,7 +7,7 @@ import (
 
 	"github.com/bradfitz/gomemcache/memcache"
 
-	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/toto/modules/models"
 )
 
 func MemcachedGetInt64(key string) (ret int64, err error) {

@@ -17,7 +17,7 @@ package auth
 import (
 	"github.com/astaxie/beego/orm"
 
-	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/toto/modules/models"
 )
 
 func UserFollow(user *models.User, theUser *models.User) {

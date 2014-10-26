@@ -20,9 +20,9 @@ import (
 	"github.com/astaxie/beego/orm"
 	"time"
 
-	"github.com/missdeer/KellyBackend/cache"
-	"github.com/missdeer/KellyBackend/modules/models"
-	"github.com/missdeer/KellyBackend/setting"
+	"github.com/missdeer/toto/cache"
+	"github.com/missdeer/toto/modules/models"
+	"github.com/missdeer/toto/setting"
 )
 
 func (this *ApiRouter) PostToggle() {

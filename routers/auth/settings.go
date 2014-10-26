@@ -17,8 +17,8 @@ package auth
 import (
 	"github.com/astaxie/beego"
 
-	"github.com/missdeer/KellyBackend/modules/auth"
-	"github.com/missdeer/KellyBackend/routers/base"
+	"github.com/missdeer/toto/modules/auth"
+	"github.com/missdeer/toto/routers/base"
 )
 
 // SettingsRouter serves user settings.

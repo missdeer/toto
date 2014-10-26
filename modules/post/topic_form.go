@@ -17,8 +17,8 @@ package post
 import (
 	"github.com/astaxie/beego/validation"
 
-	"github.com/missdeer/KellyBackend/modules/models"
-	"github.com/missdeer/KellyBackend/modules/utils"
+	"github.com/missdeer/toto/modules/models"
+	"github.com/missdeer/toto/modules/utils"
 )
 
 type TopicAdminForm struct {

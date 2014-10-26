@@ -17,7 +17,7 @@ package admin
 import (
 	"github.com/astaxie/beego/orm"
 
-	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/toto/modules/models"
 )
 
 type AdminRouter struct {

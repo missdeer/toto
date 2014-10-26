@@ -6,7 +6,7 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 
-	"github.com/missdeer/KellyBackend/modules/models"
+	"github.com/missdeer/toto/modules/models"
 )
 
 func RedisGetInt64(key string) (ret int64, err error) {

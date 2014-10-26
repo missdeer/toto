@@ -25,9 +25,9 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/session"
 
-	"github.com/missdeer/KellyBackend/modules/models"
-	"github.com/missdeer/KellyBackend/modules/utils"
-	"github.com/missdeer/KellyBackend/setting"
+	"github.com/missdeer/toto/modules/models"
+	"github.com/missdeer/toto/modules/utils"
+	"github.com/missdeer/toto/setting"
 )
 
 // CanRegistered checks if the username or e-mail is available.
