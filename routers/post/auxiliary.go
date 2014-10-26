@@ -23,18 +23,6 @@ type AuxiliaryRouter struct {
 	base.BaseRouter
 }
 
-func (this *AuxiliaryRouter) About() {
-	this.TplNames = "post/about.html"
-}
-
-func (this *AuxiliaryRouter) FAQ() {
-	this.TplNames = "post/faq.html"
-}
-
-func (this *AuxiliaryRouter) Contact() {
-	this.TplNames = "post/contact.html"
-}
-
 func (this *AuxiliaryRouter) Err401() {
 	this.TplNames = "post/error/401.html"
 }

@@ -42,17 +42,16 @@ type User struct {
 	NickName    string           `orm:"size(30)"`
 	Password    string           `orm:"size(128)"`
 	Url         string           `orm:"size(100)"`
-	Company     string           `orm:"size(30)"`
 	Location    string           `orm:"size(30)"`
 	Email       string           `orm:"size(80);unique"`
 	GrEmail     string           `orm:"size(32)"`
-	Info        string           ``
-	Github      string           `orm:"size(30)"`
-	Twitter     string           `orm:"size(30)"`
-	Google      string           `orm:"size(30)"`
+	Alipay      string           `orm:"size(80)"`
+	Paypal      string           `orm:"size(80)"`
+	MobilePhone string           `orm:"size(20)"`
+	Weixin      string           `orm:"size(30)"`
 	Weibo       string           `orm:"size(30)"`
-	Linkedin    string           `orm:"size(30)"`
-	Facebook    string           `orm:"size(30)"`
+	QQ          string           `orm:"size(30)"`
+	Info        string           ``
 	PublicEmail bool             ``
 	Followers   int              ``
 	Following   int              ``
@@ -61,6 +60,9 @@ type User struct {
 	IsAdmin     bool             `orm:"index"`
 	IsActive    bool             `orm:"index"`
 	IsForbid    bool             `orm:"index"`
+	Identity    int              `orm:"index"`
+	Score       int              `orm:"index"`
+	Coin        int              `orm:"index"`
 	Lang        int              `orm:"index"`
 	LangAdds    SliceStringField `orm:"size(50)"`
 	Rands       string           `orm:"size(10)"`

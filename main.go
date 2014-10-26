@@ -102,9 +102,9 @@ func main() {
 	beego.Router("/topic/:slug", posts, "get:Topic;post:TopicSubmit")
 
 	auxiliaryR := new(post.AuxiliaryRouter)
-	beego.Router("/faq", auxiliaryR, "get:FAQ")
-	beego.Router("/contact", auxiliaryR, "get:Contact")
-	beego.Router("/about", auxiliaryR, "get:About")
+	//beego.Router("/faq", auxiliaryR, "get:FAQ")
+	//beego.Router("/contact", auxiliaryR, "get:Contact")
+	//beego.Router("/about", auxiliaryR, "get:About")
 	beego.Router("/401", auxiliaryR, "get:Err401")
 	beego.Router("/403", auxiliaryR, "get:Err403")
 	beego.Router("/404", auxiliaryR, "get:Err404")
@@ -177,7 +177,7 @@ func main() {
 	beego.Router("/i/:id([0-9]+)", forwarderR, "get:TaobaoItem")
 
 	alipayR := new(alipay.AlipayRouter)
-    beego.Router("/alipay", alipayR, "get:Pay;post:Pay")
+	beego.Router("/alipay", alipayR, "get:Pay;post:Pay")
 
 	routes := map[string]beego.ControllerInterface{
 		"user":     new(admin.UserAdminRouter),
