@@ -23,7 +23,7 @@ func (this *AlipayRouter) Pay() {
 	sign_key := setting.AlipaySignKey
 	seller_email := setting.AlipaySellerEmail
 	seller_id := setting.AlipaySellerId
-	service := "trade_create_by_buyer" 
+	service := "trade_create_by_buyer"
 	_input_charset := "utf-8"
 	out_trade_no := this.GetString("out_trade_no")
 	subject := this.GetString("subject")
@@ -65,7 +65,7 @@ func (this *AlipayRouter) Pay() {
 	sum := md5.Sum([]byte(readyString))
 	sign := fmt.Sprintf("%032x", sum)
 	fmt.Println("sign result: ", sign)
-    fmt.Println("a md5 sum: ", fmt.Sprintf("%032x", md5.Sum([]byte("a"))))
+	fmt.Println("a md5 sum: ", fmt.Sprintf("%032x", md5.Sum([]byte("a"))))
 
 	var ff sort.StringSlice
 	//ff = append(ff, fmt.Sprintf("body=%s", url.QueryEscape(body)))

@@ -102,9 +102,6 @@ func main() {
 	beego.Router("/topic/:slug", posts, "get:Topic;post:TopicSubmit")
 
 	auxiliaryR := new(post.AuxiliaryRouter)
-	//beego.Router("/faq", auxiliaryR, "get:FAQ")
-	//beego.Router("/contact", auxiliaryR, "get:Contact")
-	//beego.Router("/about", auxiliaryR, "get:About")
 	beego.Router("/401", auxiliaryR, "get:Err401")
 	beego.Router("/403", auxiliaryR, "get:Err403")
 	beego.Router("/404", auxiliaryR, "get:Err404")
@@ -139,12 +136,6 @@ func main() {
 	login := new(auth.LoginRouter)
 	beego.Router("/login", login, "get:Get;post:Login")
 	beego.Router("/logout", login, "get:Logout")
-
-	//beego.InsertFilter("/login/*/access", beego.BeforeRouter, auth.OAuthAccess)
-	//beego.InsertFilter("/login/*", beego.BeforeRouter, auth.OAuthRedirect)
-
-	socialR := new(auth.SocialAuthRouter)
-	beego.Router("/register/connect", socialR, "get:Connect;post:ConnectPost")
 
 	register := new(auth.RegisterRouter)
 	beego.Router("/register", register, "get:Get;post:Register")

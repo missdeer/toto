@@ -152,6 +152,8 @@ var (
 	AlipaySignKey     string
 	AlipaySellerEmail string
 	AlipaySellerId    string
+
+	PaypalSecretAccount string
 )
 
 var (
@@ -382,8 +384,8 @@ func reloadConfig() {
 	AppName = Cfg.MustValue("app", "app_name", "")
 	beego.AppName = AppName
 
-	AppHost = Cfg.MustValue("app", "app_host", "127.0.0.1:8092")
-	AppUrl = Cfg.MustValue("app", "app_url", "http://127.0.0.1:8092/")
+	AppHost = Cfg.MustValue("app", "app_host", "127.0.0.1:8192")
+	AppUrl = Cfg.MustValue("app", "app_url", "http://127.0.0.1:8192/")
 	AppLogo = Cfg.MustValue("app", "app_logo", "")
 	ImgBedUrl = Cfg.MustValue("app", "imgbed_url", "")
 	QiniuEnabled = Cfg.MustBool("app", "qiniu_enabled", true)
@@ -453,11 +455,11 @@ func reloadConfig() {
 	ImageXSend = Cfg.MustBool("image", "image_xsend", false)
 	ImageXSendHeader = Cfg.MustValue("image", "image_xsend_header", "X-Accel-Redirect")
 
-	MailUser = Cfg.MustValue("mailer", "mail_name", "Yiili Community")
-	MailFrom = Cfg.MustValue("mailer", "mail_from", "noreply@yii.li")
+	MailUser = Cfg.MustValue("mailer", "mail_name", "Toto Noreplay")
+	MailFrom = Cfg.MustValue("mailer", "mail_from", "noreply@mail.yii.li")
 
 	// set mailer connect args
-	MailHost = Cfg.MustValue("mailer", "mail_host", "127.0.0.1:25")
+	MailHost = Cfg.MustValue("mailer", "mail_host", "hwsmtp.exmail.qq.com:25")
 	MailAuthUser = Cfg.MustValue("mailer", "mail_user", "example@example.com")
 	MailAuthPass = Cfg.MustValue("mailer", "mail_pass", "******")
 
@@ -483,6 +485,7 @@ func reloadConfig() {
 	AlipaySellerEmail = Cfg.MustValue("pay", "seller_email", "")
 	AlipayPartnerId = Cfg.MustValue("pay", "pid", "")
 	AlipaySignKey = Cfg.MustValue("pay", "key", "")
+	PaypalSecretAccount = Cfg.MustValue("pay", "paypal_secret_account", "")
 
 	// OAuth
 	GithubClientId = Cfg.MustValue("oauth", "github_client_id", "your_client_id")
