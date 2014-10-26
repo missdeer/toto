@@ -51,7 +51,7 @@ type AdRecord struct {
 }
 
 type AdRecords struct {
-	XMLName xml.Name   `xml:"yiiliads"`
+	XMLName xml.Name   `xml:"totoads"`
 	Records []AdRecord `xml:"ad"`
 }
 
@@ -306,7 +306,7 @@ func LoadConfig() *goconfig.ConfigFile {
 	beego.SessionOn = true
 	beego.SessionProvider = Cfg.MustValue("session", "session_provider", "file")
 	beego.SessionSavePath = Cfg.MustValue("session", "session_path", "sessions")
-	beego.SessionName = Cfg.MustValue("session", "session_name", "yiili_sess")
+	beego.SessionName = Cfg.MustValue("session", "session_name", "toto_sess")
 	beego.SessionCookieLifeTime = Cfg.MustInt("session", "session_life_time", 0)
 	beego.SessionGCMaxLifetime = Cfg.MustInt64("session", "session_gc_time", 86400)
 
@@ -315,7 +315,7 @@ func LoadConfig() *goconfig.ConfigFile {
 	beego.XSRFExpire = 86400 * 365
 
 	driverName := Cfg.MustValue("orm", "driver_name", "mysql")
-	dataSource := Cfg.MustValue("orm", "data_source", "root:root@/yiili?charset=utf8&loc=Local")
+	dataSource := Cfg.MustValue("orm", "data_source", "root:root@/toto?charset=utf8&loc=Local")
 	maxIdle := Cfg.MustInt("orm", "max_idle_conn", 30)
 	maxOpen := Cfg.MustInt("orm", "max_open_conn", 50)
 
@@ -428,8 +428,8 @@ func reloadConfig() {
 	LoginMaxRetries = Cfg.MustInt("app", "login_max_retries", 5)
 	LoginFailedBlocks = Cfg.MustInt("app", "login_failed_blocks", 10)
 
-	CookieRememberName = Cfg.MustValue("app", "cookie_remember_name", "yiili_magic")
-	CookieUserName = Cfg.MustValue("app", "cookie_user_name", "yiili_powerful")
+	CookieRememberName = Cfg.MustValue("app", "cookie_remember_name", "toto_magic")
+	CookieUserName = Cfg.MustValue("app", "cookie_user_name", "toto_powerful")
 
 	RealtimeRenderMD = Cfg.MustBool("app", "realtime_render_markdown")
 
@@ -464,7 +464,7 @@ func reloadConfig() {
 	orm.Debug = Cfg.MustBool("orm", "debug_log")
 
 	// search setting
-	SphinxIndex = Cfg.MustValue("search", "sphinx_index", "yiili, yiili_delta")
+	SphinxIndex = Cfg.MustValue("search", "sphinx_index", "toto, toto_delta")
 
 	SearchEnabled = Cfg.MustBool("search", "enabled")
 	SphinxEnabled = Cfg.MustBool("search", "sphinx_enabled")
