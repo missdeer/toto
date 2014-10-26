@@ -2,10 +2,9 @@ language: go
 go:
   - 1.2
   - 1.3
-  - tip
 env:
   - TRAVIS="yes"
 install:
-  - go get github.com/missdeer/KellyBackend/setting
+  - go get github.com/missdeer/toto/setting
 script:
   - go get -u -v && go build  .
