@@ -198,6 +198,6 @@ func main() {
 	cache.Init()
 
 	go api.ClearTodayReplys()
-	// For all unknown pages.
+
 	beego.Run()
 }

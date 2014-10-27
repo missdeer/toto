@@ -11,12 +11,14 @@
 				{{i18n .Lang "copyright"}} © 2014 {{i18n .Lang "beego_community"}} - {{i18n .Lang "footer_desc"}} Ver.{{.AppVer}} - {{i18n .Lang "loading_time"}} {{.PageStartTime|loadtimes}}ms.
 			</p>
 			<p class="desc">
+            <!--
                 {{i18n .Lang "sidebar.follow_us"}}: 
                 {{range .Contacts}}
                 {{if .Url}}
                 <a target="_blank" href="{{.Url}}"><img width="14" height="14" src="{{.Icon}}">{{.Title}}</a>
                 {{end}}
                 {{end}}
+            -->
 			</p>
 
             <!--
