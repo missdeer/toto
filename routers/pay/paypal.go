@@ -11,17 +11,20 @@ import (
 )
 
 // HomeRouter serves home page.
-type AlipayRouter struct {
+type PaypalRouter struct {
 	base.BaseRouter
 }
 
-func (this *AlipayRouter) Notify() {
+func (this *PaypalRouter) Notify() {
 }
 
-func (this *AlipayRouter) Return() {
+func (this *PaypalRouter) Success() {
 }
 
-func (this *AlipayRouter) Pay() {
+func (this *PaypalRouter) Canceled() {
+}
+
+func (this *PaypalRouter) Pay() {
 	finalUrl := `https://mapi.alipay.com/gateway.do?`
 
 	sign_type := "MD5"
@@ -40,14 +43,13 @@ func (this *AlipayRouter) Pay() {
 	logistics_fee := this.GetString("logistics_fee")
 	logistics_payment := this.GetString("logistics_payment")
 	//body := this.GetString("body")
-	notify_url := fmt.Sprintf(`https://%s/alipay/notify`, setting.AppHost)
-	return_url := fmt.Sprintf(`https://%s/alipay/return`, setting.AppHost)
+	//notify_url := `http://httpapi.sinaapp.com/alipay.php?action=notify`
 
 	var ss sort.StringSlice
 	//ss = append(ss, fmt.Sprintf("body=%s", body))
 	ss = append(ss, fmt.Sprintf("partner=%s", partner))
-	ss = append(ss, fmt.Sprintf("notify_url=%s", notify_url))
-	ss = append(ss, fmt.Sprintf("return_url=%s", return_url))
+	//ss = append(ss, fmt.Sprintf("sign_key=%s", sign_key))
+	//ss = append(ss, fmt.Sprintf("notify_url=%s", notify_url))
 	if len(seller_email) > 0 {
 		ss = append(ss, fmt.Sprintf("seller_email=%s", seller_email))
 	}
@@ -77,8 +79,7 @@ func (this *AlipayRouter) Pay() {
 	var ff sort.StringSlice
 	//ff = append(ff, fmt.Sprintf("body=%s", url.QueryEscape(body)))
 	ff = append(ff, fmt.Sprintf("partner=%s", url.QueryEscape(partner)))
-	ff = append(ff, fmt.Sprintf("notify_url=%s", url.QueryEscape(notify_url)))
-	ff = append(ff, fmt.Sprintf("return_url=%s", url.QueryEscape(return_url)))
+	//ff = append(ff, fmt.Sprintf("sign_key=%s", url.QueryEscape(sign_key)))
 	if len(seller_email) > 0 {
 		ff = append(ff, fmt.Sprintf("seller_email=%s", url.QueryEscape(seller_email)))
 	}
@@ -95,6 +96,7 @@ func (this *AlipayRouter) Pay() {
 	ff = append(ff, fmt.Sprintf("logistics_fee=%s", url.QueryEscape(logistics_fee)))
 	ff = append(ff, fmt.Sprintf("logistics_payment=%s", url.QueryEscape(logistics_payment)))
 	ff = append(ff, fmt.Sprintf("payment_type=%s", url.QueryEscape(payment_type)))
+	//ff = append(ff, fmt.Sprintf("notify_url=%s", url.QueryEscape(notify_url)))
 	ff.Sort()
 	ff = append(ff, fmt.Sprintf("sign=%s", url.QueryEscape(sign)))
 	ff = append(ff, fmt.Sprintf("sign_type=%s", url.QueryEscape(sign_type)))

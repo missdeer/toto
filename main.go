@@ -170,8 +170,16 @@ func main() {
 	forwarderR := new(post.ForwarderRouter)
 	beego.Router("/i/:id([0-9]+)", forwarderR, "get:TaobaoItem")
 
-	alipayR := new(alipay.AlipayRouter)
+	alipayR := new(pay.AlipayRouter)
 	beego.Router("/alipay", alipayR, "get:Pay;post:Pay")
+	beego.Router("/alipay/notify", alipayR, "get:Notify;post:Notify")
+	beego.Router("/alipay/return", alipayR, "get:Return;post:Return")
+
+	paypalR := new(pay.PaypalRouter)
+	beego.Router("/paypal", paypalR, "get:Pay;post:Pay")
+	beego.Router("/paypal/ipn", paypalR, "get:Notify;post:Notify")
+	beego.Router("/paypal/success", paypalR, "get:Success;post:Success")
+	beego.Router("/paypal/canceled", paypalR, "get:Canceled;post:Canceled")
 
 	routes := map[string]beego.ControllerInterface{
 		"user":     new(admin.UserAdminRouter),
