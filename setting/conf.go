@@ -580,8 +580,9 @@ func configWatcher() {
 					}
 
 					LoadAds()
-					LoadContacts()
 					beego.Info("Ads config reloaded")
+					LoadContacts()
+					beego.Info("contact config reloaded")
 				case ".json":
 					if checkEventTime(event.Name) {
 						continue

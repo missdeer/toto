@@ -20,8 +20,12 @@
         {{end}}
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
-                <li {{if .IsHome}}class="active"{{end}}><a href="{{.AppUrl}}">{{i18n .Lang "home"}}</a></li>
-                <li><a target="_blank" href="http://shop.yii.li">{{i18n .Lang "shop"}}</a></li>
+                <li><a href="{{.AppUrl}}">{{i18n .Lang "home"}}</a></li>
+                <li><a href="/bbs">{{i18n .Lang "bbs"}}</a></li>
+                <li><a href="/score">{{i18n .Lang "score"}}</a></li>
+                {{if .IsLogin}}
+                <li><a href="/heartwater">{{i18n .Lang "heartwater"}}</a></li>
+                {{end}}
             </ul>
             <ul class="nav navbar-nav navbar-right navbar-menu">
                 {{if .IsLogin}}
