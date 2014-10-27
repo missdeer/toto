@@ -558,9 +558,8 @@ func (this *BaseRouter) setLang() bool {
 		}
 	}
 
-	// 4. DefaucurLang language is English.
+	// 4. DefaucurLang language is Simplified Chinese.
 	if len(lang) == 0 {
-		//lang = "en-US"
 		lang = "zh-CN"
 		isNeedRedir = false
 	}

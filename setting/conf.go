@@ -510,7 +510,7 @@ func reloadConfig() {
 
 func settingLocales() {
 	// load locales with locale_LANG.ini files
-	langs := "zh-CN|en-US"
+	langs := "zh-CN"
 	for _, lang := range strings.Split(langs, "|") {
 		lang = strings.TrimSpace(lang)
 		files := []string{"conf/" + "locale_" + lang + ".ini"}
@@ -528,7 +528,7 @@ func settingLocales() {
 }
 
 func settingCompress() {
-	setting, err := compress.LoadJsonConf(CompressConfPath, IsProMode, AppUrl) // ImgBedUrl)
+	setting, err := compress.LoadJsonConf(CompressConfPath, IsProMode, ImgBedUrl)
 	if err != nil {
 		beego.Error(err)
 		return
