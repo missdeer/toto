@@ -154,23 +154,23 @@ func (form *ResetPwdForm) Placeholders() map[string]string {
 
 // Settings Profile form
 type ProfileForm struct {
-	NickName    string                  `valid:"Required;MaxSize(30)"`
-	Url         string                  `valid:"MaxSize(100)"`
-	Company     string                  `valid:"MaxSize(30)"`
-	Location    string                  `valid:"MaxSize(30)"`
-	Info        string                  `form:"type(textarea)" valid:"MaxSize(255)"`
-	Email       string                  `valid:"Required;Email;MaxSize(100)"`
-	PublicEmail bool                    `valid:""`
-	GrEmail     string                  `valid:"Required;MaxSize(80)"`
+	NickName    string `valid:"Required;MaxSize(30)"`
+	Url         string `valid:"MaxSize(100)"`
+	Company     string `valid:"MaxSize(30)"`
+	Location    string `valid:"MaxSize(30)"`
+	Info        string `form:"type(textarea)" valid:"MaxSize(255)"`
+	Email       string `valid:"Required;Email;MaxSize(100)"`
+	PublicEmail bool   `valid:""`
+	GrEmail     string `valid:"Required;MaxSize(80)"`
 	//Github      string                  `valid:"MaxSize(30)"`
 	//Twitter     string                  `valid:"MaxSize(30)"`
 	//Google      string                  `valid:"MaxSize(30)"`
 	//Weibo       string                  `valid:"MaxSize(30)"`
 	//Linkedin    string                  `valid:"MaxSize(30)"`
 	//Facebook    string                  `valid:"MaxSize(30)"`
-	Lang        int                     `form:"type(select);attr(rel,select2)" valid:""`
-	LangAdds    models.SliceStringField `form:"type(select);attr(rel,select2);attr(multiple,multiple)" valid:""`
-	Locale      i18n.Locale             `form:"-"`
+	Lang     int                     `form:"type(select);attr(rel,select2)" valid:""`
+	LangAdds models.SliceStringField `form:"type(select);attr(rel,select2);attr(multiple,multiple)" valid:""`
+	Locale   i18n.Locale             `form:"-"`
 }
 
 func (form *ProfileForm) LangSelectData() [][]string {

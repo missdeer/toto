@@ -157,8 +157,8 @@ var (
 
 var (
 	// OAuth
-	WeiboClientId        string
-	WeiboClientSecret    string
+	WeiboClientId     string
+	WeiboClientSecret string
 )
 
 const (
