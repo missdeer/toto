@@ -125,6 +125,9 @@ func main() {
 		beego.Router("/search", searchR, "get:Get")
 	}
 
+	heartwaterR := new(post.HeartwaterRouter)
+	beego.Router("/heartwater", heartwaterR, "get:Get")
+
 	user := new(auth.UserRouter)
 	beego.Router("/user/:username/comments", user, "get:Comments")
 	beego.Router("/user/:username/posts", user, "get:Posts")
