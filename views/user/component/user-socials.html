@@ -1,18 +1,8 @@
-{{if or .User.Github .User.Twitter .User.Google .User.Weibo .User.Linkedin .User.Facebook}}
+{{if or .User.Weibo }}
 <span class="socials pull-right">
    {{if .User.Weibo}}
         <a target="_blank" href="http://weibo.com/{{.User.Weibo}}">
             <i class="icon-weibo"></i>
-        </a>
-    {{end}}
-    {{if .User.QQ}}
-        <a target="_blank" href="http://www.qq.com/in/{{.User.QQ}}">
-            <i class="icon-qq-sign"></i>
-        </a>
-    {{end}}
-    {{if .User.Weixin}}
-        <a target="_blank" href="https://wx.qq.com/{{.User.Weixin}}">
-            <i class="icon-weixin-sign"></i>
         </a>
     {{end}}
 </span>

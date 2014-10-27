@@ -36,7 +36,6 @@ import (
 	"github.com/beego/compress"
 	"github.com/beego/i18n"
 	"github.com/beego/social-auth"
-	"github.com/beego/social-auth/apps"
 )
 
 const (
@@ -158,24 +157,8 @@ var (
 
 var (
 	// OAuth
-	GithubClientId       string
-	GithubClientSecret   string
-	GoogleClientId       string
-	GoogleClientSecret   string
 	WeiboClientId        string
 	WeiboClientSecret    string
-	QQClientId           string
-	QQClientSecret       string
-	TwitterClientId      string
-	TwitterClientSecret  string
-	FacebookClientId     string
-	FacebookClientSecret string
-	FanfouClientId       string
-	FanfouClientSecret   string
-	SohuClientId         string
-	SohuClientSecret     string
-	NeteaseClientId      string
-	NeteaseClientSecret  string
 )
 
 const (
@@ -185,8 +168,6 @@ const (
 
 var (
 	// Social Auth
-	GithubAuth *apps.Github
-	GoogleAuth *apps.Google
 	SocialAuth *social.SocialAuth
 )
 
@@ -353,24 +334,6 @@ func LoadConfig() *goconfig.ConfigFile {
 	social.DefaultAppUrl = AppUrl
 
 	// OAuth
-	var clientId, secret string
-
-	clientId = Cfg.MustValue("oauth", "github_client_id", "your_client_id")
-	secret = Cfg.MustValue("oauth", "github_client_secret", "your_client_secret")
-	GithubAuth = apps.NewGithub(clientId, secret)
-
-	clientId = Cfg.MustValue("oauth", "google_client_id", "your_client_id")
-	secret = Cfg.MustValue("oauth", "google_client_secret", "your_client_secret")
-	GoogleAuth = apps.NewGoogle(clientId, secret)
-
-	err = social.RegisterProvider(GithubAuth)
-	if err != nil {
-		beego.Error(err)
-	}
-	err = social.RegisterProvider(GoogleAuth)
-	if err != nil {
-		beego.Error(err)
-	}
 
 	settingLocales()
 	settingCompress()
@@ -488,24 +451,8 @@ func reloadConfig() {
 	PaypalSecretAccount = Cfg.MustValue("pay", "paypal_secret_account", "")
 
 	// OAuth
-	GithubClientId = Cfg.MustValue("oauth", "github_client_id", "your_client_id")
-	GithubClientSecret = Cfg.MustValue("oauth", "github_client_secret", "your_client_secret")
-	GoogleClientId = Cfg.MustValue("oauth", "google_client_id", "your_client_id")
-	GoogleClientSecret = Cfg.MustValue("oauth", "google_client_secret", "your_client_secret")
 	WeiboClientId = Cfg.MustValue("oauth", "weibo_client_id", "your_client_id")
 	WeiboClientSecret = Cfg.MustValue("oauth", "weibo_client_secret", "your_client_secret")
-	QQClientId = Cfg.MustValue("oauth", "qq_client_id", "your_client_id")
-	QQClientSecret = Cfg.MustValue("oauth", "qq_client_secret", "your_client_secret")
-	TwitterClientId = Cfg.MustValue("oauth", "twitter_client_id", "your_client_id")
-	TwitterClientSecret = Cfg.MustValue("oauth", "twitter_client_secret", "your_client_secret")
-	FacebookClientId = Cfg.MustValue("oauth", "facebook_client_id", "your_client_id")
-	FacebookClientSecret = Cfg.MustValue("oauth", "facebook_client_secret", "your_client_secret")
-	FanfouClientId = Cfg.MustValue("oauth", "fanfou_client_id", "your_client_id")
-	FanfouClientSecret = Cfg.MustValue("oauth", "fanfou_client_secret", "your_client_secret")
-	SohuClientId = Cfg.MustValue("oauth", "sohu_client_id", "your_client_id")
-	SohuClientSecret = Cfg.MustValue("oauth", "sohu_client_secret", "your_client_secret")
-	NeteaseClientId = Cfg.MustValue("oauth", "netease_client_id", "your_client_id")
-	NeteaseClientSecret = Cfg.MustValue("oauth", "netease_client_secret", "your_client_secret")
 }
 
 func settingLocales() {
