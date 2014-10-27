@@ -63,6 +63,11 @@ func (this *PostListRouter) ORCA() {
 func (this *PostListRouter) Home() {
 	this.Data["IsHome"] = true
 	this.TplNames = "post/home.html"
+}
+
+func (this *PostListRouter) BBS() {
+	this.Data["IsHome"] = false
+	this.TplNames = "post/bbs.html"
 
 	var cats []models.Category
 	this.setCategories(&cats)
