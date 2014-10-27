@@ -162,12 +162,12 @@ type ProfileForm struct {
 	Email       string                  `valid:"Required;Email;MaxSize(100)"`
 	PublicEmail bool                    `valid:""`
 	GrEmail     string                  `valid:"Required;MaxSize(80)"`
-	Github      string                  `valid:"MaxSize(30)"`
-	Twitter     string                  `valid:"MaxSize(30)"`
-	Google      string                  `valid:"MaxSize(30)"`
-	Weibo       string                  `valid:"MaxSize(30)"`
-	Linkedin    string                  `valid:"MaxSize(30)"`
-	Facebook    string                  `valid:"MaxSize(30)"`
+	//Github      string                  `valid:"MaxSize(30)"`
+	//Twitter     string                  `valid:"MaxSize(30)"`
+	//Google      string                  `valid:"MaxSize(30)"`
+	//Weibo       string                  `valid:"MaxSize(30)"`
+	//Linkedin    string                  `valid:"MaxSize(30)"`
+	//Facebook    string                  `valid:"MaxSize(30)"`
 	Lang        int                     `form:"type(select);attr(rel,select2)" valid:""`
 	LangAdds    models.SliceStringField `form:"type(select);attr(rel,select2);attr(multiple,multiple)" valid:""`
 	Locale      i18n.Locale             `form:"-"`
