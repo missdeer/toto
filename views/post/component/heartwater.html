@@ -1,0 +1,12 @@
+{{range .Heartwater}}
+<div class="post cell">
+	<h3 class="title">
+        <a href="/publish/{{.Id}}">主场：{{.HomeTeam}}</a> vs. <a href="/publish/{{.Id}}">客场：{{.GuestTeam}}</a>
+	</h3>
+	<div class="meta">
+        <a class="tag"  href="/publish/daxiao/{{.Id}}">{{ with $v := index .Daxiao 0 }}大：{{$v.Da}} - 小：{{$v.Xiao}}{{end}}</a> • 
+        <a class="tag"  href="/publish/yazhi/{{.Id}}">{{ with $v := index .Yazhi 0 }}主：{{$v.HomeHandcip}} - 客：{{$v.GuestHandcip}}{{end}}</a> • 
+        <span class="time">开赛时间：{{.StartTime}}</span>
+	</div>
+</div>
+{{end}}
