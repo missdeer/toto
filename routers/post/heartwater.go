@@ -51,15 +51,13 @@ func (this *HeartwaterRouter) FetchFromDataSource() {
 				beego.Error("json unmarshalling data source failed: ", err)
 				break
 			}
-			beego.Info("parsed data source: ", res)
 
-			var data string
 			if setting.MemcachedEnabled {
-				cache.MemcachedSetString("heartwater", &data)
+				cache.MemcachedSetHeartwater("heartwater", &res)
 			}
 
 			if setting.RedisEnabled {
-				cache.RedisSetString("heartwater", &data)
+				cache.RedisSetHeartwater("heartwater", &res)
 			}
 		}
 	}

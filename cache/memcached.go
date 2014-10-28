@@ -112,3 +112,26 @@ func MemcachedSetCategories(key string, categories *[]models.Category) (err erro
 	err = Mc.Set(&memcache.Item{Key: setting.AppName + key, Value: buf.Bytes()})
 	return err
 }
+
+func MemcachedGetHeartwater(key string, heartwater *[]models.HeartwaterRecord) (err error) {
+	var c *memcache.Item
+	if c, err = Mc.Get(setting.AppName + key); err != nil {
+		return err
+	}
+
+	var buf bytes.Buffer
+	buf.Write(c.Value)
+	decoder := gob.NewDecoder(&buf)
+	err = decoder.Decode(&heartwater)
+	return err
+}
+
+func MemcachedSetHeartwater(key string, heartwater *[]models.HeartwaterRecord) (err error) {
+	var buf bytes.Buffer
+	encoder := gob.NewEncoder(&buf)
+	if err = encoder.Encode(&heartwater); err != nil {
+		return err
+	}
+	err = Mc.Set(&memcache.Item{Key: setting.AppName + key, Value: buf.Bytes()})
+	return err
+}

@@ -331,6 +331,10 @@ func LoadConfig() *goconfig.ConfigFile {
 		RedisConn = Cfg.MustValue("redis", "conn", "127.0.0.1:6379")
 	}
 
+	if MemcachedEnabled == false && RedisEnabled == false {
+		beego.Error("you must enable one of memcached or redis at least")
+	}
+
 	social.DefaultAppUrl = AppUrl
 
 	// OAuth

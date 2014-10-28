@@ -100,3 +100,26 @@ func RedisSetCategories(key string, categories *[]models.Category) (err error) {
 	_, err = Rd.Do("SET", setting.AppName+key, buf.Bytes())
 	return err
 }
+
+func RedisGetHeartwater(key string, heartwater *[]models.HeartwaterRecord) (err error) {
+	c, err := redis.Bytes(Rd.Do("GET", setting.AppName+key))
+	if err != nil {
+		return err
+	}
+
+	var buf bytes.Buffer
+	buf.Write(c)
+	decoder := gob.NewDecoder(&buf)
+	err = decoder.Decode(&heartwater)
+	return err
+}
+
+func RedisSetHeartwater(key string, heartwater *[]models.HeartwaterRecord) (err error) {
+	var buf bytes.Buffer
+	encoder := gob.NewEncoder(&buf)
+	if err = encoder.Encode(&heartwater); err != nil {
+		return err
+	}
+	_, err = Rd.Do("SET", setting.AppName+key, buf.Bytes())
+	return err
+}
