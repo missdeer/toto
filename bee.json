@@ -5,6 +5,7 @@
         "watch_all": true,
 		"controllers": ".",
 		"models": ".",
+        "views": ".",
 		"others": [
 			"$GOPATH/src/github.com/astaxie/beego"
 		]
