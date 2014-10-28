@@ -1,5 +1,9 @@
 package models
 
+import (
+	"html/template"
+)
+
 type HeartwaterOp struct {
 	Home  float32
 	Guest float32
@@ -38,7 +42,7 @@ type HeartwaterRecord struct {
 	StartTime   string
 	LeagueId    string
 	GuestteamID string
-	HomeTeam    string
+	HomeTeam    template.HTML
 	Yazhi       []HeartwaterYazhi
-	GuestTeam   string
+	GuestTeam   template.HTML
 }
