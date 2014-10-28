@@ -175,6 +175,7 @@ func main() {
 
 	forwarderR := new(post.ForwarderRouter)
 	beego.Router("/i/:id([0-9]+)", forwarderR, "get:TaobaoItem")
+	beego.Router("/favicon.ico", forwarderR, "get:Favicon")
 
 	alipayR := new(pay.AlipayRouter)
 	beego.Router("/alipay", alipayR, "get:Pay;post:Pay")
