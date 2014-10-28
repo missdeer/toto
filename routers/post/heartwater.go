@@ -22,6 +22,18 @@ func (this *HeartwaterRouter) Get() {
 		return
 	}
 	this.Data["IsHome"] = false
+    // read from memcached or redis
+
+    var res []models.HeartwaterRecord
+    if setting.MemcachedEnabled {
+        cache.MemcachedGetHeartwater("heartwater", &res)
+    }
+
+    if setting.RedisEnabled {
+        cache.RedisGetHeartwater("heartwater", &res)
+    }
+    this.Data["Heartwater"] = res
+
 	this.TplNames = "post/heartwater.html"
 }
 
