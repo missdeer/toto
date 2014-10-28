@@ -7,30 +7,31 @@ import (
 	"github.com/garyburd/redigo/redis"
 
 	"github.com/missdeer/toto/modules/models"
+	"github.com/missdeer/toto/setting"
 )
 
 func RedisGetInt64(key string) (ret int64, err error) {
-	ret, err = redis.Int64(Rd.Do("GET", key))
+	ret, err = redis.Int64(Rd.Do("GET", setting.AppName+key))
 	return ret, err
 }
 
 func RedisSetInt64(key string, val int64) (err error) {
-	_, err = Rd.Do("SET", key, val)
+	_, err = Rd.Do("SET", setting.AppName+key, val)
 	return err
 }
 
 func RedisGetString(key string) (ret string, err error) {
-	ret, err = redis.String(Rd.Do("GET", key))
+	ret, err = redis.String(Rd.Do("GET", setting.AppName+key))
 	return ret, err
 }
 
 func RedisSetString(key string, val *string) (err error) {
-	_, err = Rd.Do("SET", key, *val)
+	_, err = Rd.Do("SET", setting.AppName+key, *val)
 	return err
 }
 
 func RedisGetPosts(key string, posts *[]models.Post) (err error) {
-	p, err := redis.Bytes(Rd.Do("GET", key))
+	p, err := redis.Bytes(Rd.Do("GET", setting.AppName+key))
 	if err != nil {
 		return err
 	}
@@ -49,12 +50,12 @@ func RedisSetPosts(key string, posts *[]models.Post) (err error) {
 		return err
 	}
 
-	_, err = Rd.Do("SET", key, buf.Bytes())
+	_, err = Rd.Do("SET", setting.AppName+key, buf.Bytes())
 	return err
 }
 
 func RedisGetTopics(key string, topics *[]models.Topic) (err error) {
-	t, err := redis.Bytes(Rd.Do("GET", key))
+	t, err := redis.Bytes(Rd.Do("GET", setting.AppName+key))
 	if err != nil {
 		return err
 	}
@@ -73,12 +74,12 @@ func RedisSetTopics(key string, topics *[]models.Topic) (err error) {
 		return err
 	}
 
-	_, err = Rd.Do("SET", key, buf.Bytes())
+	_, err = Rd.Do("SET", setting.AppName+key, buf.Bytes())
 	return err
 }
 
 func RedisGetCategories(key string, categories *[]models.Category) (err error) {
-	c, err := redis.Bytes(Rd.Do("GET", key))
+	c, err := redis.Bytes(Rd.Do("GET", setting.AppName+key))
 	if err != nil {
 		return err
 	}
@@ -96,6 +97,6 @@ func RedisSetCategories(key string, categories *[]models.Category) (err error) {
 	if err = encoder.Encode(&categories); err != nil {
 		return err
 	}
-	_, err = Rd.Do("SET", key, buf.Bytes())
+	_, err = Rd.Do("SET", setting.AppName+key, buf.Bytes())
 	return err
 }

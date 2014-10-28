@@ -8,11 +8,12 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 
 	"github.com/missdeer/toto/modules/models"
+	"github.com/missdeer/toto/setting"
 )
 
 func MemcachedGetInt64(key string) (ret int64, err error) {
 	var val *memcache.Item
-	if val, err = Mc.Get(key); err != nil {
+	if val, err = Mc.Get(setting.AppName + key); err != nil {
 		return 0, err
 	}
 
@@ -22,13 +23,13 @@ func MemcachedGetInt64(key string) (ret int64, err error) {
 
 func MemcachedSetInt64(key string, val int64) (err error) {
 	buf := []byte(strconv.FormatInt(val, 10))
-	err = Mc.Set(&memcache.Item{Key: key, Value: buf})
+	err = Mc.Set(&memcache.Item{Key: setting.AppName + key, Value: buf})
 	return err
 }
 
 func MemcachedGetString(key string) (ret string, err error) {
 	var val *memcache.Item
-	if val, err = Mc.Get(key); err != nil {
+	if val, err = Mc.Get(setting.AppName + key); err != nil {
 		return
 	}
 	return string(val.Value), nil
@@ -36,13 +37,13 @@ func MemcachedGetString(key string) (ret string, err error) {
 
 func MemcachedSetString(key string, val *string) (err error) {
 	buf := []byte(*val)
-	err = Mc.Set(&memcache.Item{Key: key, Value: buf})
+	err = Mc.Set(&memcache.Item{Key: setting.AppName + key, Value: buf})
 	return err
 }
 
 func MemcachedGetPosts(key string, posts *[]models.Post) (err error) {
 	var p *memcache.Item
-	if p, err = Mc.Get(key); err != nil {
+	if p, err = Mc.Get(setting.AppName + key); err != nil {
 		return err
 	}
 
@@ -59,14 +60,14 @@ func MemcachedSetPosts(key string, posts *[]models.Post) (err error) {
 	if err = encoder.Encode(posts); err != nil {
 		return err
 	}
-	PostsCache := &memcache.Item{Key: key, Value: buf.Bytes()}
+	PostsCache := &memcache.Item{Key: setting.AppName + key, Value: buf.Bytes()}
 	err = Mc.Set(PostsCache)
 	return err
 }
 
 func MemcachedGetTopics(key string, topics *[]models.Topic) (err error) {
 	var t *memcache.Item
-	if t, err = Mc.Get(key); err != nil {
+	if t, err = Mc.Get(setting.AppName + key); err != nil {
 		return err
 	}
 
@@ -84,14 +85,14 @@ func MemcachedSetTopics(key string, topics *[]models.Topic) (err error) {
 		return err
 	}
 
-	TopicsCache := &memcache.Item{Key: key, Value: buf.Bytes()}
+	TopicsCache := &memcache.Item{Key: setting.AppName + key, Value: buf.Bytes()}
 	err = Mc.Set(TopicsCache)
 	return err
 }
 
 func MemcachedGetCategories(key string, categories *[]models.Category) (err error) {
 	var c *memcache.Item
-	if c, err = Mc.Get(key); err != nil {
+	if c, err = Mc.Get(setting.AppName + key); err != nil {
 		return err
 	}
 
@@ -108,6 +109,6 @@ func MemcachedSetCategories(key string, categories *[]models.Category) (err erro
 	if err = encoder.Encode(&categories); err != nil {
 		return err
 	}
-	err = Mc.Set(&memcache.Item{Key: key, Value: buf.Bytes()})
+	err = Mc.Set(&memcache.Item{Key: setting.AppName + key, Value: buf.Bytes()})
 	return err
 }
