@@ -30,8 +30,9 @@
             <div class="cell first">联赛</div>
             <div class="cell last">
                 <ul class="sidebar-list">
+                    {{ $TeamId := .TeamId }}
                     {{range $id, $name := .Team }}
-                    <li><a href="/score/standings/{{$id}}">{{$name}}</a></li>
+                    <li><a href="/score/standings/{{$id}}"{{if eq $id $TeamId}} style="color:red"{{end}}>{{$name}}</a></li>
                     {{end}}
                 </ul>
             </div>

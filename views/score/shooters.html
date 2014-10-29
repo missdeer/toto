@@ -1,10 +1,9 @@
 {{template "../base/base.html" .}}
 {{template "../base/base_common.html" .}}
 {{define "meta"}}
-    <title>{{i18n .Lang "heartwater"}} - {{i18n .Lang "app_name"}} - {{i18n .Lang "app_intro"}}</title>
+    <title>{{i18n .Lang "score"}} - {{i18n .Lang "app_name"}} - {{i18n .Lang "app_intro"}}</title>
     <meta name="description" content="{{i18n .Lang "app_desc"}}" />
     <meta name="keywords" content="{{i18n .Lang "app_keywords"}}">
-    <meta http-equiv="refresh" content="15" />
 {{end}}
 {{define "body"}}
 <div class="row">
@@ -13,31 +12,31 @@
         <div class="box">
             <div class="cell breadcrumb first">
                 <i class="icon-level-up"></i>
-                <a href="/heartwater/football" {{if eq .Type 0}}style="color:red"{{end}}>{{i18n .Lang "heartwater.football"}}</a>| 
-                <a href="/heartwater/basketball" {{if eq .Type 1}}style="color:red"{{end}}> {{i18n .Lang "heartwater.basketball"}}</a>
+                <a href="/score/standings/{{.TeamId}}" style="color:red">积分榜</a>| 
+                <a href="/score/shooters/{{.TeamId}}">射手榜</a>| 
+                <a href="/score/assistants/{{.TeamId}}">助攻榜</a>| 
+                <a href="/score/cards/{{.TeamId}}">红黄牌榜</a>
             </div>
 
-            {{if .RecordNum}}
             <div class="post-list">
-                {{if eq .Type 0}}
-                {{template "../heartwater/detail/football.html" dict "root" . "Heartwater" .Heartwater}}
-                {{end}}
-
-                {{if eq .Type 1}}
-                {{template "../heartwater/detail/basketball.html" dict "root" . "Heartwater" .Heartwater}}
-                {{end}}
-            </div>
-            {{end}}
-
-            <div class="cell last low">
-                <i class="icon-caret-right"></i>当前一共 {{.RecordNum}}场比赛
+                {{template "../score/detail/standing.html" dict "root" . "Score" .Score}}
             </div>
 
         </div>
 	</div>
 
     <div id="sidebar" class="col-md-3">
-        {{template "../post/component/sidebar.html" .}}	
+        <div class="box">
+            <div class="cell first">联赛</div>
+            <div class="cell last">
+                <ul class="sidebar-list">
+                    {{ $TeamId := .TeamId }}
+                    {{range $id, $name := .Team }}
+                    <li><a href="/score/standings/{{$id}}"{{if eq $id $TeamId}} style="color:red"{{end}}>{{$name}}</a></li>
+                    {{end}}
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 {{end}}
