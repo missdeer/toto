@@ -13,6 +13,23 @@ import (
 	"time"
 )
 
+var (
+	teamMap = map[int]string{
+		8:   `英超`,
+		70:  `英冠`,
+		13:  `意甲`,
+		7:   `西甲`,
+		9:   `德甲`,
+		51:  `中超`,
+		16:  `法甲`,
+		17:  `法乙`,
+		1:   `荷甲`,
+		63:  `葡超`,
+		121: `俄超`,
+		26:  `巴甲`,
+	}
+)
+
 type ScoreRouter struct {
 	base.BaseRouter
 }
@@ -38,6 +55,7 @@ func (this *ScoreRouter) FootballShooters() {
 		this.Data["RecordNum"] = 0
 	} else {
 		this.Data["Score"] = res
+		this.Data["Team"] = teamMap
 	}
 
 	this.TplNames = "score/shooters.html"
@@ -65,6 +83,7 @@ func (this *ScoreRouter) FootballAssistants() {
 		this.Data["RecordNum"] = 0
 	} else {
 		this.Data["Score"] = res
+		this.Data["Team"] = teamMap
 	}
 
 	this.TplNames = "score/assistants.html"
@@ -92,6 +111,7 @@ func (this *ScoreRouter) FootballCards() {
 		this.Data["RecordNum"] = 0
 	} else {
 		this.Data["Score"] = res
+		this.Data["Team"] = teamMap
 	}
 
 	this.TplNames = "score/cards.html"
@@ -119,6 +139,7 @@ func (this *ScoreRouter) FootballStandings() {
 		this.Data["RecordNum"] = 0
 	} else {
 		this.Data["Score"] = res
+		this.Data["Team"] = teamMap
 	}
 
 	this.TplNames = "score/standings.html"
@@ -158,8 +179,7 @@ func (this *ScoreRouter) fetchFootballDataSource(id int) error {
 }
 
 func (this *ScoreRouter) FetchFromDataSource() {
-	ids := []int{8, 70, 13, 7, 9, 51, 16, 17, 1, 63, 121, 26}
-	for _, id := range ids {
+	for id, _ := range teamMap {
 		this.fetchFootballDataSource(id)
 	}
 
@@ -167,7 +187,7 @@ func (this *ScoreRouter) FetchFromDataSource() {
 	for {
 		select {
 		case <-timer.C:
-			for _, id := range ids {
+			for id, _ := range teamMap {
 				this.fetchFootballDataSource(id)
 			}
 		}
