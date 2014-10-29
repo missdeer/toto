@@ -78,54 +78,60 @@ func (this *HeartwaterRouter) Football() {
 	this.TplNames = "heartwater/heartwater.html"
 }
 
+func (this *HeartwaterRouter) fetchFootballDataSource() error {
+	// read from data source and save to memcached or redis
+	url := "http://zqcf2010.com:8080/front/recommend/game/list"
+	resp, err := http.Get(url)
+	if err != nil {
+		beego.Error("read response from http://zqcf2010.com:8080/front/recommend/game/list error: ", err)
+		return err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		beego.Error("read body from heartwater response error: ", err)
+		return err
+	}
+	beginPos := bytes.Index(body, []byte("[{"))
+	if beginPos == -1 {
+		beego.Error("unexpect response: ", string(body))
+		if string(body) == `var gameList=[];` {
+			// clear memcached & redis
+			if setting.MemcachedEnabled {
+				cache.MemcachedRemove("hw-football")
+			}
+
+			if setting.RedisEnabled {
+				cache.RedisRemove("hw-football")
+			}
+		}
+		return err
+	}
+	body = body[beginPos : len(body)-1]
+
+	var res []models.HeartwaterRecord
+	if err = json.Unmarshal(body, &res); err != nil {
+		beego.Error("json unmarshalling data source failed: ", err)
+		return err
+	}
+
+	if setting.MemcachedEnabled {
+		cache.MemcachedSetHeartwater("hw-football", &res)
+	}
+
+	if setting.RedisEnabled {
+		cache.RedisSetHeartwater("hw-football", &res)
+	}
+
+	return nil
+}
+
 func (this *HeartwaterRouter) FetchFromDataSource() {
 	timer := time.NewTicker(15 * time.Second) // update data every 15 seconds
 	for {
 		select {
 		case <-timer.C:
-			// read from data source and save to memcached or redis
-			url := "http://zqcf2010.com:8080/front/recommend/game/list"
-			resp, err := http.Get(url)
-			if err != nil {
-				beego.Error("read response from http://zqcf2010.com:8080/front/recommend/game/list error: ", err)
-				break
-			}
-			defer resp.Body.Close()
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				beego.Error("read body from heartwater response error: ", err)
-				break
-			}
-			beginPos := bytes.Index(body, []byte("[{"))
-			if beginPos == -1 {
-				beego.Error("unexpect response: ", string(body))
-				if string(body) == `var gameList=[];` {
-					// clear memcached & redis
-					if setting.MemcachedEnabled {
-						cache.MemcachedRemove("hw-football")
-					}
-
-					if setting.RedisEnabled {
-						cache.RedisRemove("hw-football")
-					}
-				}
-				break
-			}
-			body = body[beginPos : len(body)-1]
-
-			var res []models.HeartwaterRecord
-			if err = json.Unmarshal(body, &res); err != nil {
-				beego.Error("json unmarshalling data source failed: ", err)
-				break
-			}
-
-			if setting.MemcachedEnabled {
-				cache.MemcachedSetHeartwater("hw-football", &res)
-			}
-
-			if setting.RedisEnabled {
-				cache.RedisSetHeartwater("hw-football", &res)
-			}
+			this.fetchFootballDataSource()
 		}
 	}
 	timer.Stop()
