@@ -50,6 +50,43 @@ func (this *HeartwaterRouter) Basketball() {
 	this.TplNames = "heartwater/heartwater.html"
 }
 
+func (this *HeartwaterRouter) FootballLeague() {
+	if this.CheckLoginRedirect() {
+		return
+	}
+	this.Data["IsHome"] = false
+	// read from memcached or redis
+
+	var res []models.HeartwaterRecord
+	var err error
+	if setting.MemcachedEnabled {
+		err = cache.MemcachedGetHeartwater("hw-football", &res)
+	}
+
+	if setting.RedisEnabled {
+		err = cache.RedisGetHeartwater("hw-football", &res)
+	}
+
+	if err != nil {
+		this.Data["RecordNum"] = 0
+	} else {
+		// filter the league
+		leagueId := this.GetString(":id")
+		var r []models.HeartwaterRecord
+		for _, v := range res {
+			if v.LeagueId == leagueId {
+				r = append(r, v)
+			}
+		}
+
+		this.Data["Heartwater"] = r
+		this.Data["RecordNum"] = len(r)
+	}
+	this.Data["Type"] = TYPE_FOOTBALL
+
+	this.TplNames = "heartwater/heartwater.html"
+}
+
 func (this *HeartwaterRouter) Football() {
 	if this.CheckLoginRedirect() {
 		return

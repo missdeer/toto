@@ -128,6 +128,7 @@ func main() {
 	heartwaterR := new(post.HeartwaterRouter)
 	beego.Router("/heartwater", heartwaterR, "get:Football")
 	beego.Router("/heartwater/football", heartwaterR, "get:Football")
+	beego.Router("/football/league/:id", heartwaterR, "get:FootballLeague")
 	beego.Router("/heartwater/basketball", heartwaterR, "get:Basketball")
 	go heartwaterR.FetchFromDataSource()
 
