@@ -56,6 +56,7 @@ func (this *ScoreRouter) FootballShooters() {
 	} else {
 		this.Data["Score"] = res
 		this.Data["Team"] = teamMap
+		this.Data["TeamId"] = id
 	}
 
 	this.TplNames = "score/shooters.html"
@@ -84,6 +85,7 @@ func (this *ScoreRouter) FootballAssistants() {
 	} else {
 		this.Data["Score"] = res
 		this.Data["Team"] = teamMap
+		this.Data["TeamId"] = id
 	}
 
 	this.TplNames = "score/assistants.html"
@@ -112,6 +114,7 @@ func (this *ScoreRouter) FootballCards() {
 	} else {
 		this.Data["Score"] = res
 		this.Data["Team"] = teamMap
+		this.Data["TeamId"] = id
 	}
 
 	this.TplNames = "score/cards.html"
@@ -140,6 +143,7 @@ func (this *ScoreRouter) FootballStandings() {
 	} else {
 		this.Data["Score"] = res
 		this.Data["Team"] = teamMap
+		this.Data["TeamId"] = id
 	}
 
 	this.TplNames = "score/standings.html"
