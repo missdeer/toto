@@ -164,6 +164,7 @@ func (this *HeartwaterRouter) fetchFootballDataSource() error {
 }
 
 func (this *HeartwaterRouter) FetchFromDataSource() {
+    this.fetchFootballDataSource()
 	timer := time.NewTicker(15 * time.Second) // update data every 15 seconds
 	for {
 		select {
