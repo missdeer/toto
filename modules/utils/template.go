@@ -142,6 +142,10 @@ func minus(a string, b string) int {
 	return ai - bi
 }
 
+func plusplus(a int) int {
+	return a + 1
+}
+
 func init() {
 	rand.Seed(time.Now().UnixNano())
 	// Register template functions.
@@ -159,6 +163,7 @@ func init() {
 	beego.AddFuncMap("randomAdRecord", randomAdRecord)
 	beego.AddFuncMap("topicIntro", topicIntro)
 	beego.AddFuncMap("minus", minus)
+	beego.AddFuncMap("plusplus", plusplus)
 }
 
 func RenderTemplate(TplNames string, Data map[interface{}]interface{}) string {
