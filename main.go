@@ -16,6 +16,7 @@ import (
 	"github.com/missdeer/toto/routers/attachment"
 	"github.com/missdeer/toto/routers/auth"
 	"github.com/missdeer/toto/routers/base"
+	"github.com/missdeer/toto/routers/heartwater"
 	"github.com/missdeer/toto/routers/pay"
 	"github.com/missdeer/toto/routers/post"
 	"github.com/missdeer/toto/setting"
@@ -125,7 +126,7 @@ func main() {
 		beego.Router("/search", searchR, "get:Get")
 	}
 
-	heartwaterR := new(post.HeartwaterRouter)
+	heartwaterR := new(heartwater.HeartwaterRouter)
 	beego.Router("/heartwater", heartwaterR, "get:Football")
 	beego.Router("/heartwater/football", heartwaterR, "get:Football")
 	beego.Router("/football/league/:id", heartwaterR, "get:FootballLeague")
