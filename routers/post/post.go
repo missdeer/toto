@@ -678,11 +678,11 @@ func (this *PostRouter) NewSubmit() {
 
 		// update recent/home/category/topics posts cache
 		if setting.MemcachedEnabled {
-			cache.Mc.Delete("recent-posts-count")
-			cache.Mc.Delete("recent-posts")
-			cache.Mc.Delete("recent-category")
-			cache.Mc.Delete("home-posts")
-			cache.Mc.Delete("today-topten-posts")
+			cache.MemcachedRemove("recent-posts-count")
+			cache.MemcachedRemove("recent-posts")
+			cache.MemcachedRemove("recent-category")
+			cache.MemcachedRemove("home-posts")
+			cache.MemcachedRemove("today-topten-posts")
 
 			if len(post.Category.Slug) == 0 {
 				key := fmt.Sprintf(`category-slug-%d`, form.Category)
@@ -711,21 +711,21 @@ func (this *PostRouter) NewSubmit() {
 			}
 
 			categoryCountKey := fmt.Sprintf(`category-%s-count`, post.Category.Slug)
-			cache.Mc.Delete(categoryCountKey)
+			cache.MemcachedRemove(categoryCountKey)
 			categoryKey := fmt.Sprintf(`category-%s`, post.Category.Slug)
-			cache.Mc.Delete(categoryKey)
+			cache.MemcachedRemove(categoryKey)
 			topicCountKey := fmt.Sprintf(`topic-%s-count`, post.Topic.Slug)
-			cache.Mc.Delete(topicCountKey)
+			cache.MemcachedRemove(topicCountKey)
 			topicKey := fmt.Sprintf(`topic-%s`, post.Topic.Slug)
-			cache.Mc.Delete(topicKey)
+			cache.MemcachedRemove(topicKey)
 		}
 
 		if setting.RedisEnabled {
-			cache.Rd.Do("DEL", "recent-posts-count")
-			cache.Rd.Do("DEL", "recent-posts")
-			cache.Rd.Do("DEL", "recent-category")
-			cache.Rd.Do("DEL", "home-posts")
-			cache.Rd.Do("DEL", "today-topten-posts")
+			cache.RedisRemove("recent-posts-count")
+			cache.RedisRemove("recent-posts")
+			cache.RedisRemove("recent-category")
+			cache.RedisRemove("home-posts")
+			cache.RedisRemove("today-topten-posts")
 
 			if len(post.Category.Slug) == 0 {
 				key := fmt.Sprintf(`category-slug-%d`, form.Category)
@@ -754,13 +754,13 @@ func (this *PostRouter) NewSubmit() {
 			}
 
 			categoryCountKey := fmt.Sprintf(`category-%s-count`, post.Category.Slug)
-			cache.Rd.Do("DEL", categoryCountKey)
+			cache.RedisRemove(categoryCountKey)
 			categoryKey := fmt.Sprintf(`category-%s`, post.Category.Slug)
-			cache.Rd.Do("DEL", categoryKey)
+			cache.RedisRemove(categoryKey)
 			topicCountKey := fmt.Sprintf(`topic-%s-count`, post.Topic.Slug)
-			cache.Rd.Do("DEL", topicCountKey)
+			cache.RedisRemove(topicCountKey)
 			topicKey := fmt.Sprintf(`topic-%s`, post.Topic.Slug)
-			cache.Rd.Do("DEL", topicKey)
+			cache.RedisRemove(topicKey)
 		}
 	}
 }
@@ -865,14 +865,14 @@ func (this *PostRouter) SingleSubmit() {
 	// update cold posts cache
 	if postMd.Replys == 1 {
 		if setting.MemcachedEnabled {
-			cache.Mc.Delete("cold-posts-count")
-			cache.Mc.Delete("cold-posts")
-			cache.Mc.Delete("cold-category")
+			cache.MemcachedRemove("cold-posts-count")
+			cache.MemcachedRemove("cold-posts")
+			cache.MemcachedRemove("cold-category")
 		}
 		if setting.RedisEnabled {
-			cache.Rd.Do("DEL", "cold-posts-count")
-			cache.Rd.Do("DEL", "cold-posts")
-			cache.Rd.Do("DEL", "cold-category")
+			cache.RedisRemove("cold-posts-count")
+			cache.RedisRemove("cold-posts")
+			cache.RedisRemove("cold-category")
 		}
 	}
 }
@@ -922,34 +922,34 @@ func (this *PostRouter) EditSubmit() {
 	}
 	// update recent/home/category/topics posts cache
 	if setting.MemcachedEnabled {
-		cache.Mc.Delete("recent-posts-count")
-		cache.Mc.Delete("recent-posts")
-		cache.Mc.Delete("recent-category")
-		cache.Mc.Delete("home-posts")
-		cache.Mc.Delete("today-topten-posts")
+		cache.MemcachedRemove("recent-posts-count")
+		cache.MemcachedRemove("recent-posts")
+		cache.MemcachedRemove("recent-category")
+		cache.MemcachedRemove("home-posts")
+		cache.MemcachedRemove("today-topten-posts")
 		categoryCountKey := fmt.Sprintf(`category-%s-count`, postMd.Category.Slug)
-		cache.Mc.Delete(categoryCountKey)
+		cache.MemcachedRemove(categoryCountKey)
 		categoryKey := fmt.Sprintf(`category-%s`, postMd.Category.Slug)
-		cache.Mc.Delete(categoryKey)
+		cache.MemcachedRemove(categoryKey)
 		topicCountKey := fmt.Sprintf(`topic-%s-count`, postMd.Topic.Slug)
-		cache.Mc.Delete(topicCountKey)
+		cache.MemcachedRemove(topicCountKey)
 		topicKey := fmt.Sprintf(`topic-%s`, postMd.Topic.Slug)
-		cache.Mc.Delete(topicKey)
+		cache.MemcachedRemove(topicKey)
 	}
 	if setting.RedisEnabled {
-		cache.Rd.Do("DEL", "recent-posts-count")
-		cache.Rd.Do("DEL", "recent-posts")
-		cache.Rd.Do("DEL", "recent-category")
-		cache.Rd.Do("DEL", "home-posts")
-		cache.Rd.Do("DEL", "today-topten-posts")
+		cache.RedisRemove("recent-posts-count")
+		cache.RedisRemove("recent-posts")
+		cache.RedisRemove("recent-category")
+		cache.RedisRemove("home-posts")
+		cache.RedisRemove("today-topten-posts")
 		categoryCountKey := fmt.Sprintf(`category-%s-count`, postMd.Category.Slug)
-		cache.Rd.Do("DEL", categoryCountKey)
+		cache.RedisRemove(categoryCountKey)
 		categoryKey := fmt.Sprintf(`category-%s`, postMd.Category.Slug)
-		cache.Rd.Do("DEL", categoryKey)
+		cache.RedisRemove(categoryKey)
 		topicCountKey := fmt.Sprintf(`topic-%s-count`, postMd.Topic.Slug)
-		cache.Rd.Do("DEL", topicCountKey)
+		cache.RedisRemove(topicCountKey)
 		topicKey := fmt.Sprintf(`topic-%s`, postMd.Topic.Slug)
-		cache.Rd.Do("DEL", topicKey)
+		cache.RedisRemove(topicKey)
 	}
 }
 

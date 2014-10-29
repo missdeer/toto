@@ -59,6 +59,9 @@ func (this *HeartwaterRouter) FetchFromDataSource() {
 			beginPos := bytes.Index(body, []byte("[{"))
 			if beginPos == -1 {
 				beego.Error("unexpect response: ", string(body))
+				if string(body) == `var gameList=[];` {
+					// clear memcached & redis
+				}
 				break
 			}
 			body = body[beginPos : len(body)-1]

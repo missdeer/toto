@@ -11,6 +11,10 @@ import (
 	"github.com/missdeer/toto/setting"
 )
 
+func MemcachedRemove(key string) error {
+	return Mc.Delete(key)
+}
+
 func MemcachedGetInt64(key string) (ret int64, err error) {
 	var val *memcache.Item
 	if val, err = Mc.Get(setting.AppName + key); err != nil {

@@ -10,6 +10,11 @@ import (
 	"github.com/missdeer/toto/setting"
 )
 
+func RedisRemove(key string) error {
+	_, err := Rd.Do("DEL", key)
+	return err
+}
+
 func RedisGetInt64(key string) (ret int64, err error) {
 	ret, err = redis.Int64(Rd.Do("GET", setting.AppName+key))
 	return ret, err
