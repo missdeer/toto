@@ -78,14 +78,14 @@ func MemcachedGetTopics(key string, topics *[]models.Topic) (err error) {
 	var buf bytes.Buffer
 	buf.Write(t.Value)
 	decoder := gob.NewDecoder(&buf)
-	err = decoder.Decode(&topics)
+	err = decoder.Decode(topics)
 	return err
 }
 
 func MemcachedSetTopics(key string, topics *[]models.Topic) (err error) {
 	var buf bytes.Buffer
 	encoder := gob.NewEncoder(&buf)
-	if err = encoder.Encode(&topics); err != nil {
+	if err = encoder.Encode(topics); err != nil {
 		return err
 	}
 
@@ -103,14 +103,14 @@ func MemcachedGetCategories(key string, categories *[]models.Category) (err erro
 	var buf bytes.Buffer
 	buf.Write(c.Value)
 	decoder := gob.NewDecoder(&buf)
-	err = decoder.Decode(&categories)
+	err = decoder.Decode(categories)
 	return err
 }
 
 func MemcachedSetCategories(key string, categories *[]models.Category) (err error) {
 	var buf bytes.Buffer
 	encoder := gob.NewEncoder(&buf)
-	if err = encoder.Encode(&categories); err != nil {
+	if err = encoder.Encode(categories); err != nil {
 		return err
 	}
 	err = Mc.Set(&memcache.Item{Key: setting.AppName + key, Value: buf.Bytes()})
@@ -126,14 +126,37 @@ func MemcachedGetHeartwater(key string, heartwater *[]models.HeartwaterRecord) (
 	var buf bytes.Buffer
 	buf.Write(c.Value)
 	decoder := gob.NewDecoder(&buf)
-	err = decoder.Decode(&heartwater)
+	err = decoder.Decode(heartwater)
 	return err
 }
 
 func MemcachedSetHeartwater(key string, heartwater *[]models.HeartwaterRecord) (err error) {
 	var buf bytes.Buffer
 	encoder := gob.NewEncoder(&buf)
-	if err = encoder.Encode(&heartwater); err != nil {
+	if err = encoder.Encode(heartwater); err != nil {
+		return err
+	}
+	err = Mc.Set(&memcache.Item{Key: setting.AppName + key, Value: buf.Bytes()})
+	return err
+}
+
+func MemcachedGetFootballScore(key string, score *models.FootballScore) (err error) {
+	var c *memcache.Item
+	if c, err = Mc.Get(setting.AppName + key); err != nil {
+		return err
+	}
+
+	var buf bytes.Buffer
+	buf.Write(c.Value)
+	decoder := gob.NewDecoder(&buf)
+	err = decoder.Decode(score)
+	return err
+}
+
+func MemcachedSetFootballScore(key string, score *models.FootballScore) (err error) {
+	var buf bytes.Buffer
+	encoder := gob.NewEncoder(&buf)
+	if err = encoder.Encode(score); err != nil {
 		return err
 	}
 	err = Mc.Set(&memcache.Item{Key: setting.AppName + key, Value: buf.Bytes()})

@@ -1,8 +1,8 @@
 package score
 
 import (
-	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/missdeer/toto/cache"
 	"github.com/missdeer/toto/modules/models"
@@ -20,21 +20,20 @@ type ScoreRouter struct {
 func (this *ScoreRouter) FootballShooters() {
 	// read from memcached or redis
 
-	var res []models.ScoreRecord
+	var res models.FootballScore
 	var err error
 	if setting.MemcachedEnabled {
-		err = cache.MemcachedGetScore("score-fb", &res)
+		err = cache.MemcachedGetFootballScore("score-fb", &res)
 	}
 
 	if setting.RedisEnabled {
-		err = cache.RedisGetScore("score-fb", &res)
+		err = cache.RedisGetFootballScore("score-fb", &res)
 	}
 
 	if err != nil {
 		this.Data["RecordNum"] = 0
 	} else {
 		this.Data["Score"] = res
-		this.Data["RecordNum"] = len(res)
 	}
 
 	this.TplNames = "score/shooters.html"
@@ -43,21 +42,20 @@ func (this *ScoreRouter) FootballShooters() {
 func (this *ScoreRouter) FootballAssistants() {
 	// read from memcached or redis
 
-	var res []models.ScoreRecord
+	var res models.FootballScore
 	var err error
 	if setting.MemcachedEnabled {
-		err = cache.MemcachedGetScore("score-fb", &res)
+		err = cache.MemcachedGetFootballScore("score-fb", &res)
 	}
 
 	if setting.RedisEnabled {
-		err = cache.RedisGetScore("score-fb", &res)
+		err = cache.RedisGetFootballScore("score-fb", &res)
 	}
 
 	if err != nil {
 		this.Data["RecordNum"] = 0
 	} else {
 		this.Data["Score"] = res
-		this.Data["RecordNum"] = len(res)
 	}
 
 	this.TplNames = "score/assistants.html"
@@ -66,21 +64,20 @@ func (this *ScoreRouter) FootballAssistants() {
 func (this *ScoreRouter) FootballCards() {
 	// read from memcached or redis
 
-	var res []models.ScoreRecord
+	var res models.FootballScore
 	var err error
 	if setting.MemcachedEnabled {
-		err = cache.MemcachedGetScore("score-fb", &res)
+		err = cache.MemcachedGetFootballScore("score-fb", &res)
 	}
 
 	if setting.RedisEnabled {
-		err = cache.RedisGetScore("score-fb", &res)
+		err = cache.RedisGetFootballScore("score-fb", &res)
 	}
 
 	if err != nil {
 		this.Data["RecordNum"] = 0
 	} else {
 		this.Data["Score"] = res
-		this.Data["RecordNum"] = len(res)
 	}
 
 	this.TplNames = "score/cards.html"
@@ -89,21 +86,20 @@ func (this *ScoreRouter) FootballCards() {
 func (this *ScoreRouter) FootballStandings() {
 	// read from memcached or redis
 
-	var res []models.ScoreRecord
+	var res models.FootballScore
 	var err error
 	if setting.MemcachedEnabled {
-		err = cache.MemcachedGetScore("score-fb", &res)
+		err = cache.MemcachedGetFootballScore("score-fb", &res)
 	}
 
 	if setting.RedisEnabled {
-		err = cache.RedisGetScore("score-fb", &res)
+		err = cache.RedisGetFootballScore("score-fb", &res)
 	}
 
 	if err != nil {
 		this.Data["RecordNum"] = 0
 	} else {
 		this.Data["Score"] = res
-		this.Data["RecordNum"] = len(res)
 	}
 
 	this.TplNames = "score/standings.html"
@@ -124,18 +120,18 @@ func (this *ScoreRouter) fetchFootballDataSource(id int) error {
 		return err
 	}
 
-	var res []models.ScoreRecord
+	var res models.FootballScore
 	if err = json.Unmarshal(body, &res); err != nil {
 		beego.Error("json unmarshalling data source failed: ", err)
 		return err
 	}
 
 	if setting.MemcachedEnabled {
-		cache.MemcachedSetScore("score-fb", &res)
+		cache.MemcachedSetFootballScore("score-fb", &res)
 	}
 
 	if setting.RedisEnabled {
-		cache.RedisSetScore("score-fb", &res)
+		cache.RedisSetFootballScore("score-fb", &res)
 	}
 
 	return nil

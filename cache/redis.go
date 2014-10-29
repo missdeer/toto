@@ -68,14 +68,14 @@ func RedisGetTopics(key string, topics *[]models.Topic) (err error) {
 	var buf bytes.Buffer
 	buf.Write(t)
 	decoder := gob.NewDecoder(&buf)
-	err = decoder.Decode(&topics)
+	err = decoder.Decode(topics)
 	return err
 }
 
 func RedisSetTopics(key string, topics *[]models.Topic) (err error) {
 	var buf bytes.Buffer
 	encoder := gob.NewEncoder(&buf)
-	if err = encoder.Encode(&topics); err != nil {
+	if err = encoder.Encode(topics); err != nil {
 		return err
 	}
 
@@ -92,14 +92,14 @@ func RedisGetCategories(key string, categories *[]models.Category) (err error) {
 	var buf bytes.Buffer
 	buf.Write(c)
 	decoder := gob.NewDecoder(&buf)
-	err = decoder.Decode(&categories)
+	err = decoder.Decode(categories)
 	return err
 }
 
 func RedisSetCategories(key string, categories *[]models.Category) (err error) {
 	var buf bytes.Buffer
 	encoder := gob.NewEncoder(&buf)
-	if err = encoder.Encode(&categories); err != nil {
+	if err = encoder.Encode(categories); err != nil {
 		return err
 	}
 	_, err = Rd.Do("SET", setting.AppName+key, buf.Bytes())
@@ -115,16 +115,39 @@ func RedisGetHeartwater(key string, heartwater *[]models.HeartwaterRecord) (err 
 	var buf bytes.Buffer
 	buf.Write(c)
 	decoder := gob.NewDecoder(&buf)
-	err = decoder.Decode(&heartwater)
+	err = decoder.Decode(heartwater)
 	return err
 }
 
 func RedisSetHeartwater(key string, heartwater *[]models.HeartwaterRecord) (err error) {
 	var buf bytes.Buffer
 	encoder := gob.NewEncoder(&buf)
-	if err = encoder.Encode(&heartwater); err != nil {
+	if err = encoder.Encode(heartwater); err != nil {
 		return err
 	}
 	_, err = Rd.Do("SET", setting.AppName+key, buf.Bytes())
+	return err
+}
+
+func RedisSetFootballScore(key string, score *models.FootballScore) (err error) {
+	var buf bytes.Buffer
+	encoder := gob.NewEncoder(&buf)
+	if err = encoder.Encode(score); err != nil {
+		return err
+	}
+	_, err = Rd.Do("SET", setting.AppName+key, buf.Bytes())
+	return err
+}
+
+func RedisGetFootballScore(key string, score *models.FootballScore) (err error) {
+	c, err := redis.Bytes(Rd.Do("GET", setting.AppName+key))
+	if err != nil {
+		return err
+	}
+
+	var buf bytes.Buffer
+	buf.Write(c)
+	decoder := gob.NewDecoder(&buf)
+	err = decoder.Decode(score)
 	return err
 }
