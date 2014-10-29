@@ -1,0 +1,22 @@
+{{range $i, $v := .Score}}
+<div class="post cell">
+	<div class="avatar">
+        <img src="http://data.ballpo.com/pic/{{.Teamid}}.png">
+	</div>
+	<h3 class="title">
+        {{$i}} : {{.Name}}  
+		<div class="data pull-right">
+            积分 {{.Point}}
+		</div>
+	</h3>
+	<div class="meta">
+        <span class="time">场次：{{.Appear}}</span>|
+        <span class="time">胜：{{.Win}}</span>|
+        <span class="time">平：{{.Draw}}</span>|
+        <span class="time">负：{{.Lose}}</span>|
+        <span class="time">进球：{{.Goal}}</span>|
+        <span class="time">失球：{{.Conceded}}</span>|
+        <span class="time">净胜球：{{minus .Goal .Conceded}}</span>
+	</div>
+</div>
+{{end}}

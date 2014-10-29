@@ -22,6 +22,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -135,6 +136,12 @@ func loginto(uris ...string) template.HTMLAttr {
 	return template.HTMLAttr(to)
 }
 
+func minus(a string, b string) int {
+	ai, _ := strconv.Atoi(a)
+	bi, _ := strconv.Atoi(b)
+	return ai - bi
+}
+
 func init() {
 	rand.Seed(time.Now().UnixNano())
 	// Register template functions.
@@ -151,6 +158,7 @@ func init() {
 	beego.AddFuncMap("timeLessThan", timeLessThan)
 	beego.AddFuncMap("randomAdRecord", randomAdRecord)
 	beego.AddFuncMap("topicIntro", topicIntro)
+	beego.AddFuncMap("minus", minus)
 }
 
 func RenderTemplate(TplNames string, Data map[interface{}]interface{}) string {

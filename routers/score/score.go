@@ -54,7 +54,7 @@ func (this *ScoreRouter) FootballShooters() {
 	if err != nil {
 		this.Data["RecordNum"] = 0
 	} else {
-		this.Data["Score"] = res
+		this.Data["Score"] = res.Playerrank[0].Playerrank
 		this.Data["Team"] = teamMap
 		this.Data["TeamId"] = id
 	}
@@ -83,7 +83,7 @@ func (this *ScoreRouter) FootballAssistants() {
 	if err != nil {
 		this.Data["RecordNum"] = 0
 	} else {
-		this.Data["Score"] = res
+		this.Data["Score"] = res.Assistrank[0].Playerassistrank
 		this.Data["Team"] = teamMap
 		this.Data["TeamId"] = id
 	}
@@ -112,7 +112,7 @@ func (this *ScoreRouter) FootballCards() {
 	if err != nil {
 		this.Data["RecordNum"] = 0
 	} else {
-		this.Data["Score"] = res
+		this.Data["Score"] = res.Cardrank[0].Standings
 		this.Data["Team"] = teamMap
 		this.Data["TeamId"] = id
 	}
@@ -141,7 +141,7 @@ func (this *ScoreRouter) FootballStandings() {
 	if err != nil {
 		this.Data["RecordNum"] = 0
 	} else {
-		this.Data["Score"] = res
+		this.Data["Score"] = res.Standings[0].Standings
 		this.Data["Team"] = teamMap
 		this.Data["TeamId"] = id
 	}
