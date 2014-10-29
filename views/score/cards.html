@@ -12,14 +12,14 @@
         <div class="box">
             <div class="cell breadcrumb first">
                 <i class="icon-level-up"></i>
-                <a href="/score/standings/{{.TeamId}}" style="color:red">积分榜</a>| 
+                <a href="/score/standings/{{.TeamId}}">积分榜</a>| 
                 <a href="/score/shooters/{{.TeamId}}">射手榜</a>| 
                 <a href="/score/assistants/{{.TeamId}}">助攻榜</a>| 
-                <a href="/score/cards/{{.TeamId}}">红黄牌榜</a>
+                <a href="/score/cards/{{.TeamId}}" style="color:red">红黄牌榜</a>
             </div>
 
             <div class="post-list">
-                {{template "../score/detail/standing.html" dict "root" . "Score" .Score}}
+                {{template "../score/detail/card.html" dict "root" . "Score" .Score}}
             </div>
 
         </div>
@@ -32,7 +32,7 @@
                 <ul class="sidebar-list">
                     {{ $TeamId := .TeamId }}
                     {{range $id, $name := .Team }}
-                    <li><a href="/score/standings/{{$id}}"{{if eq $id $TeamId}} style="color:red"{{end}}>{{$name}}</a></li>
+                    <li><a href="/score/cards/{{$id}}"{{if eq $id $TeamId}} style="color:red"{{end}}>{{$name}}</a></li>
                     {{end}}
                 </ul>
             </div>
