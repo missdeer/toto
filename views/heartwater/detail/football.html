@@ -1,0 +1,15 @@
+{{range .Heartwater}}
+<div class="post noavatar cell">
+	<h3 class="title" style="margin-left:18px">
+        <a href="/game/team/{{.HometeamID}}">主场：{{.HomeTeam}}</a> vs. <a href="/game/team/{{.GuestteamID}}">客场：{{.GuestTeam}}</a>
+	</h3>
+	<div class="meta" style="font-size:15px;margin-left:18px">
+        <div>大小球：<a class="tag"  href="/publish/da/{{.Id}}">{{ with $v := index .Daxiao 0 }}选大：{{$v.Da}}{{end}}</a> 盘口：{{ with $v := index .Daxiao 0 }}{{$v.HandicapShow}}{{end}} <a class="tag" href="/publish/xiao/{{.Id}}">{{ with $v := index .Daxiao 0 }}选小：{{$v.Xiao}}{{end}}</a>
+        |
+        亚盘：<a class="tag"  href="/publish/home/{{.Id}}">{{ with $v := index .Yazhi 0 }}选主：{{$v.HomeHandcip}}{{end}}</a> 盘口：{{ with $v := index .Yazhi 0 }}{{$v.HandicapShow}}{{end}} <a class="tag" href="/publish/guest/{{.Id}}">{{ with $v := index .Yazhi 0 }}选客：{{$v.GuestHandcip}}{{end}}</a></div>
+        <br>
+        <a style="color:#FFFFFF;background:{{.Bgcolor}}" href="/game/league/{{.LeagueId}}">{{.League}}</a> -
+        <span class="time">开赛时间：{{.StartTime}}</span>
+	</div>
+</div>
+{{end}}

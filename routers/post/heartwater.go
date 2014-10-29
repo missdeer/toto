@@ -13,11 +13,16 @@ import (
 	"time"
 )
 
+const (
+	TYPE_FOOTBALL = iota
+	TYPE_BASKETBALL
+)
+
 type HeartwaterRouter struct {
 	base.BaseRouter
 }
 
-func (this *HeartwaterRouter) Get() {
+func (this *HeartwaterRouter) Basketball() {
 	if this.CheckLoginRedirect() {
 		return
 	}
@@ -27,11 +32,11 @@ func (this *HeartwaterRouter) Get() {
 	var res []models.HeartwaterRecord
 	var err error
 	if setting.MemcachedEnabled {
-		err = cache.MemcachedGetHeartwater("heartwater", &res)
+		err = cache.MemcachedGetHeartwater("hw-basket", &res)
 	}
 
 	if setting.RedisEnabled {
-		err = cache.RedisGetHeartwater("heartwater", &res)
+		err = cache.RedisGetHeartwater("hw-basket", &res)
 	}
 
 	if err != nil {
@@ -40,8 +45,37 @@ func (this *HeartwaterRouter) Get() {
 		this.Data["Heartwater"] = res
 		this.Data["RecordNum"] = len(res)
 	}
+	this.Data["Type"] = TYPE_BASKETBALL
 
-	this.TplNames = "post/heartwater.html"
+	this.TplNames = "heartwater/heartwater.html"
+}
+
+func (this *HeartwaterRouter) Football() {
+	if this.CheckLoginRedirect() {
+		return
+	}
+	this.Data["IsHome"] = false
+	// read from memcached or redis
+
+	var res []models.HeartwaterRecord
+	var err error
+	if setting.MemcachedEnabled {
+		err = cache.MemcachedGetHeartwater("hw-football", &res)
+	}
+
+	if setting.RedisEnabled {
+		err = cache.RedisGetHeartwater("hw-football", &res)
+	}
+
+	if err != nil {
+		this.Data["RecordNum"] = 0
+	} else {
+		this.Data["Heartwater"] = res
+		this.Data["RecordNum"] = len(res)
+	}
+	this.Data["Type"] = TYPE_FOOTBALL
+
+	this.TplNames = "heartwater/heartwater.html"
 }
 
 func (this *HeartwaterRouter) FetchFromDataSource() {
@@ -68,11 +102,11 @@ func (this *HeartwaterRouter) FetchFromDataSource() {
 				if string(body) == `var gameList=[];` {
 					// clear memcached & redis
 					if setting.MemcachedEnabled {
-						cache.MemcachedRemove("heartwater")
+						cache.MemcachedRemove("hw-football")
 					}
 
 					if setting.RedisEnabled {
-						cache.RedisRemove("hearwater")
+						cache.RedisRemove("hw-football")
 					}
 				}
 				break
@@ -86,11 +120,11 @@ func (this *HeartwaterRouter) FetchFromDataSource() {
 			}
 
 			if setting.MemcachedEnabled {
-				cache.MemcachedSetHeartwater("heartwater", &res)
+				cache.MemcachedSetHeartwater("hw-football", &res)
 			}
 
 			if setting.RedisEnabled {
-				cache.RedisSetHeartwater("heartwater", &res)
+				cache.RedisSetHeartwater("hw-football", &res)
 			}
 		}
 	}
