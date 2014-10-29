@@ -19,6 +19,7 @@ import (
 	"github.com/missdeer/toto/routers/heartwater"
 	"github.com/missdeer/toto/routers/pay"
 	"github.com/missdeer/toto/routers/post"
+	"github.com/missdeer/toto/routers/score"
 	"github.com/missdeer/toto/setting"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -133,11 +134,20 @@ func main() {
 	beego.Router("/heartwater/basketball", heartwaterR, "get:Basketball")
 	go heartwaterR.FetchFromDataSource()
 
+	scoreR := new(score.ScoreRouter)
+	beego.Router("/score", scoreR, "get:FootballStandings")
+	beego.Router("/score/standings", scoreR, "get:FootballStandings")
+	beego.Router("/score/shooters", scoreR, "get:FootballShooters")
+	beego.Router("/score/assistants", scoreR, "get:FootballAssistants")
+	beego.Router("/score/cards", scoreR, "get:FootballCards")
+	beego.Router("/score/standings/:id", scoreR, "get:FootballStandings")
+	beego.Router("/score/shooters/:id", scoreR, "get:FootballShooters")
+	beego.Router("/score/assistants/:id", scoreR, "get:FootballAssistants")
+	beego.Router("/score/cards/:id", scoreR, "get:FootballCards")
+	go scoreR.FetchFromDataSource()
+
 	newsR := new(post.NewsRouter)
 	beego.Router("/news", newsR, "get:Home")
-
-	scoreR := new(post.ScoreRouter)
-	beego.Router("/score", scoreR, "get:Home")
 
 	user := new(auth.UserRouter)
 	beego.Router("/user/:username/comments", user, "get:Comments")

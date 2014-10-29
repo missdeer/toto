@@ -1,52 +1,52 @@
 package models
 
 type Standing struct {
-	Ranking  int `json:",string"`
+	Ranking  string
 	Name     string
-	Teamid   int `json:",string"`
-	Appear   int `json:",string"`
-	Win      int `json:",string"`
-	Draw     int `json:",string"`
-	Lose     int `json:",string"`
-	Goal     int `json:",string"`
-	Conceded int `json:",string"`
-	Point    int `json:",string"`
+	Teamid   string
+	Appear   string
+	Win      string
+	Draw     string
+	Lose     string
+	Goal     string
+	Conceded string
+	Point    string
 }
 
 type StandingElement struct {
-	Id        int `json:",string"`
+	Id        string
 	Name      string
 	Standings []Standing
 }
 
 type PlayerRank struct {
-	Ranking  int `json:",string"`
+	Ranking  string
 	Name     string
 	Team     string
-	Teamid   int `json:",string"`
-	Goal     int `json:",string"`
-	Appear   int `json:",string,omitempty"`
-	Period   int `json:",string,omitempty"`
-	Penalty  int `json:",string,omitempty"`
-	Epicycle int `json:",string,omitempty"`
-	Point    int `json:",string,omitempty"`
+	Teamid   string
+	Goal     string
+	Appear   string
+	Period   string
+	Penalty  string
+	Epicycle string
+	Point    string
 }
 
 type PlayerrankElement struct {
-	Id         int `json:",string"`
+	Id         string
 	Name       string
 	Playerrank []PlayerRank
 }
 
 type Assistant struct {
-	Ranking int `json:",string"`
+	Ranking string
 	Name    string
 	Team    string
-	Assists int `json:",string"`
+	Assists string
 }
 
 type AssistantElement struct {
-	Id               int `json:",string"`
+	Id               string
 	Name             string
 	Playerassistrank []Assistant
 }
@@ -54,12 +54,12 @@ type AssistantElement struct {
 type Card struct {
 	Name            string
 	Team            string
-	YellowCardCount int `json:",string"`
-	RedCardCount    int `json:",string"`
+	YellowCardCount string
+	RedCardCount    string
 }
 
 type CardrankElement struct {
-	Id        int `json:",string"`
+	Id        string
 	Name      string
 	Standings []Card
 }

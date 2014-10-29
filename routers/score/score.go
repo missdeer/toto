@@ -21,13 +21,17 @@ func (this *ScoreRouter) FootballShooters() {
 	// read from memcached or redis
 
 	var res models.FootballScore
-	var err error
+	id, err := this.GetInt(":id")
+	if err != nil {
+		id = 13
+	}
+	key := fmt.Sprintf("score-fb%d", id)
 	if setting.MemcachedEnabled {
-		err = cache.MemcachedGetFootballScore("score-fb", &res)
+		err = cache.MemcachedGetFootballScore(key, &res)
 	}
 
 	if setting.RedisEnabled {
-		err = cache.RedisGetFootballScore("score-fb", &res)
+		err = cache.RedisGetFootballScore(key, &res)
 	}
 
 	if err != nil {
@@ -43,13 +47,18 @@ func (this *ScoreRouter) FootballAssistants() {
 	// read from memcached or redis
 
 	var res models.FootballScore
-	var err error
+	id, err := this.GetInt(":id")
+	if err != nil {
+		id = 13
+	}
+
+	key := fmt.Sprintf("score-fb%d", id)
 	if setting.MemcachedEnabled {
-		err = cache.MemcachedGetFootballScore("score-fb", &res)
+		err = cache.MemcachedGetFootballScore(key, &res)
 	}
 
 	if setting.RedisEnabled {
-		err = cache.RedisGetFootballScore("score-fb", &res)
+		err = cache.RedisGetFootballScore(key, &res)
 	}
 
 	if err != nil {
@@ -65,13 +74,18 @@ func (this *ScoreRouter) FootballCards() {
 	// read from memcached or redis
 
 	var res models.FootballScore
-	var err error
+	id, err := this.GetInt(":id")
+	if err != nil {
+		id = 13
+	}
+
+	key := fmt.Sprintf("score-fb%d", id)
 	if setting.MemcachedEnabled {
-		err = cache.MemcachedGetFootballScore("score-fb", &res)
+		err = cache.MemcachedGetFootballScore(key, &res)
 	}
 
 	if setting.RedisEnabled {
-		err = cache.RedisGetFootballScore("score-fb", &res)
+		err = cache.RedisGetFootballScore(key, &res)
 	}
 
 	if err != nil {
@@ -87,13 +101,18 @@ func (this *ScoreRouter) FootballStandings() {
 	// read from memcached or redis
 
 	var res models.FootballScore
-	var err error
+	id, err := this.GetInt(":id")
+	if err != nil {
+		id = 13
+	}
+
+	key := fmt.Sprintf("score-fb%d", id)
 	if setting.MemcachedEnabled {
-		err = cache.MemcachedGetFootballScore("score-fb", &res)
+		err = cache.MemcachedGetFootballScore(key, &res)
 	}
 
 	if setting.RedisEnabled {
-		err = cache.RedisGetFootballScore("score-fb", &res)
+		err = cache.RedisGetFootballScore(key, &res)
 	}
 
 	if err != nil {
@@ -126,12 +145,13 @@ func (this *ScoreRouter) fetchFootballDataSource(id int) error {
 		return err
 	}
 
+	key := fmt.Sprintf("score-fb%d", id)
 	if setting.MemcachedEnabled {
-		cache.MemcachedSetFootballScore("score-fb", &res)
+		cache.MemcachedSetFootballScore(key, &res)
 	}
 
 	if setting.RedisEnabled {
-		cache.RedisSetFootballScore("score-fb", &res)
+		cache.RedisSetFootballScore(key, &res)
 	}
 
 	return nil
