@@ -15,9 +15,11 @@
                 <i class="icon-level-up"></i> {{i18n .Lang "heartwater"}}
             </div>
 
+            {{if .RecordNum}}
             <div class="post-list">
                 {{template "post/component/heartwater.html" dict "root" . "Heartwater" .Heartwater}}
             </div>
+            {{end}}
 
             <div class="cell last low">
                 <i class="icon-caret-right"></i>当前一共 {{.RecordNum}}场比赛

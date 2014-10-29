@@ -25,15 +25,21 @@ func (this *HeartwaterRouter) Get() {
 	// read from memcached or redis
 
 	var res []models.HeartwaterRecord
+	var err error
 	if setting.MemcachedEnabled {
-		cache.MemcachedGetHeartwater("heartwater", &res)
+		err = cache.MemcachedGetHeartwater("heartwater", &res)
 	}
 
 	if setting.RedisEnabled {
-		cache.RedisGetHeartwater("heartwater", &res)
+		err = cache.RedisGetHeartwater("heartwater", &res)
 	}
-	this.Data["Heartwater"] = res
-	this.Data["RecordNum"] = len(res)
+
+	if err != nil {
+		this.Data["RecordNum"] = 0
+	} else {
+		this.Data["Heartwater"] = res
+		this.Data["RecordNum"] = len(res)
+	}
 
 	this.TplNames = "post/heartwater.html"
 }
@@ -61,6 +67,13 @@ func (this *HeartwaterRouter) FetchFromDataSource() {
 				beego.Error("unexpect response: ", string(body))
 				if string(body) == `var gameList=[];` {
 					// clear memcached & redis
+					if setting.MemcachedEnabled {
+						cache.MemcachedRemove("heartwater")
+					}
+
+					if setting.RedisEnabled {
+						cache.RedisRemove("hearwater")
+					}
 				}
 				break
 			}
