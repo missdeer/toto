@@ -28,6 +28,7 @@ var (
 		121: `俄超`,
 		26:  `巴甲`,
 	}
+	teamLogoMap = make(map[string]string, 2048)
 )
 
 type ScoreRouter struct {
@@ -168,6 +169,21 @@ func (this *ScoreRouter) fetchFootballDataSource(id int) error {
 	if err = json.Unmarshal(body, &res); err != nil {
 		beego.Error("json unmarshalling data source failed: ", err)
 		return err
+	}
+
+	// get the team ids
+	for _, v := range res.Standings[0].Standings {
+		teamLogoMap[v.Name] = v.Teamid
+	}
+	for _, v := range res.Playerrank[0].Playerrank {
+		teamLogoMap[v.Team] = v.Teamid
+	}
+	// fill the team ids
+	for i, v := range res.Assistrank[0].Playerassistrank {
+		res.Assistrank[0].Playerassistrank[i].Teamid = teamLogoMap[v.Team]
+	}
+	for i, v := range res.Cardrank[0].Standings {
+		res.Cardrank[0].Standings[i].Teamid = teamLogoMap[v.Team]
 	}
 
 	key := fmt.Sprintf("score-fb%d", id)
