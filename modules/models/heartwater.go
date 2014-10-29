@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"html/template"
 )
 
@@ -29,16 +30,16 @@ type HeartwaterRecord struct {
 	Turn        string
 	Op          HeartwaterOp
 	Gy          string
-	Status      string
-	catchStat   string
+	Status      json.Number
+	CatchStat   string
 	HometeamID  string
-	GameId      uint
-	State       string
+	GameId      json.Number
+	State       json.Number
 	Daxiao      []HeartwaterDaxiao
 	League      string
 	Living      string
 	Bgcolor     string
-	Id          uint
+	Id          json.Number
 	StartTime   string
 	LeagueId    string
 	GuestteamID string

@@ -57,6 +57,10 @@ func (this *HeartwaterRouter) FetchFromDataSource() {
 				break
 			}
 			beginPos := bytes.Index(body, []byte("[{"))
+			if beginPos == -1 {
+				beego.Error("unexpect response: ", string(body))
+				break
+			}
 			body = body[beginPos : len(body)-1]
 
 			var res []models.HeartwaterRecord
