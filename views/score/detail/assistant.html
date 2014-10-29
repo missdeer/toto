@@ -1,5 +1,9 @@
 {{range $i, $v := .Score}}
-<div class="post noavatar cell">
+<div class="post cell">
+	<div class="avatar">
+        <img src="http://data.ballpo.com/pic/{{.Teamid}}.png">
+	</div>
+
 	<h3 class="title">
         {{plusplus $i}} : {{.Name}}  
 	</h3>

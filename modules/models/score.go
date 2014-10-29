@@ -42,6 +42,7 @@ type Assistant struct {
 	Ranking string
 	Name    string
 	Team    string
+	Teamid  string `json:",omitempty"`
 	Assists string
 }
 
@@ -54,6 +55,7 @@ type AssistantElement struct {
 type Card struct {
 	Name            string
 	Team            string
+	Teamid          string `json:",omitempty"`
 	YellowCardCount string
 	RedCardCount    string
 }
