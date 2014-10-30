@@ -152,12 +152,24 @@ func (this *HeartwaterRouter) fetchFootballDataSource() error {
 		return err
 	}
 
+	var result []models.HeartwaterRecord
+	for _, r := range res {
+		t, err := time.Parse("2006-01-02 15:04 -0700", r.StartTime+" +0800")
+		if err != nil {
+			beego.Error("parse time failed: ", err)
+			continue
+		}
+		if t.After(time.Now()) {
+			result = append(result, r)
+		}
+	}
+
 	if setting.MemcachedEnabled {
-		cache.MemcachedSetHeartwater("hw-football", &res)
+		cache.MemcachedSetHeartwater("hw-football", &result)
 	}
 
 	if setting.RedisEnabled {
-		cache.RedisSetHeartwater("hw-football", &res)
+		cache.RedisSetHeartwater("hw-football", &result)
 	}
 
 	return nil
