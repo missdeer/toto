@@ -28,7 +28,7 @@ var (
 		121: `俄超`,
 		26:  `巴甲`,
 	}
-	teamLogoMap = make(map[string]string, 2048)
+	teamLogoMap = make(map[string]string, 20480)
 )
 
 type ScoreRouter struct {
