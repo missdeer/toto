@@ -86,7 +86,6 @@ prebuilt_commit() {
     pwd
     ls
 	git add --all;
-    git add -f ./ifconfig-*
     git commit -m "Automatic pre build by travis at $(date)";
 }
 
