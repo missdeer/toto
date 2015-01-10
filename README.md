@@ -9,10 +9,6 @@ Download the pre-built binaries for variant platforms:
 
 [Darwin amd64](https://github.com/missdeer/toto/raw/prebuilt/toto-darwin-amd64)
 
-[DragonflyBSD x86](https://github.com/missdeer/toto/raw/prebuilt/toto-dragonfly-386)
-
-[DragonflyBSD amd64](https://github.com/missdeer/toto/raw/prebuilt/toto-dragonfly-amd64)
-
 [OpenBSD x86](https://github.com/missdeer/toto/raw/prebuilt/toto-openbsd-386)
 
 [OpenBSD amd64](https://github.com/missdeer/toto/raw/prebuilt/toto-openbsd-amd64)
