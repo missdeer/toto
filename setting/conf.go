@@ -27,7 +27,7 @@ import (
 	"time"
 
 	"github.com/Unknwon/goconfig"
-	"github.com/howeyc/fsnotify"
+	"github.com/go-fsnotify/fsnotify"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/cache"
@@ -506,7 +506,7 @@ func configWatcher() {
 	go func() {
 		for {
 			select {
-			case event := <-watcher.Event:
+			case event := <-watcher.Events:
 				switch filepath.Ext(event.Name) {
 				case ".ini":
 					if checkEventTime(event.Name) {
@@ -547,11 +547,11 @@ func configWatcher() {
 		}
 	}()
 
-	if err := watcher.WatchFlags("conf", fsnotify.FSN_MODIFY); err != nil {
+	if err := watcher.Add("conf"); err != nil {
 		beego.Error(err)
 	}
 
-	if err := watcher.WatchFlags("conf/global", fsnotify.FSN_MODIFY); err != nil {
+	if err := watcher.Add("conf/global"); err != nil {
 		beego.Error(err)
 	}
 }
