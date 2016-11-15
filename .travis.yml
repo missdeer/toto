@@ -1,9 +1,9 @@
 language: go
 go:
-- 1.4
+- 1.7.3
+- tip
 script:
 - go build .
-- pwd && cd build && ./travis-build.sh
 env:
   global:
   - GITHUB_REPO: missdeer/toto

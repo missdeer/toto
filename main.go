@@ -82,11 +82,11 @@ func main() {
 	} else {
 		beego.Info("Development mode enabled")
 	}
-	beego.Info(beego.AppName, setting.APP_VER, setting.AppUrl)
+	beego.Info(beego.BConfig.AppName, setting.APP_VER, setting.AppUrl)
 
 	if !setting.IsProMode {
 		beego.SetStaticPath("/static_source", "static_source")
-		beego.DirectoryIndex = true
+		beego.BConfig.WebConfig.DirectoryIndex = true
 	}
 
 	// Add Filters
@@ -110,11 +110,11 @@ func main() {
 	beego.Router("/500", auxiliaryR, "get:Err500")
 	beego.Router("/503", auxiliaryR, "get:Err503")
 
-	beego.Errorhandler("401", unauthorized_handler)
-	beego.Errorhandler("403", forbidden_handler)
-	beego.Errorhandler("404", not_found_handler)
-	beego.Errorhandler("500", internal_server_error_handler)
-	beego.Errorhandler("503", service_unavailable_handler)
+	beego.ErrorHandler("401", unauthorized_handler)
+	beego.ErrorHandler("403", forbidden_handler)
+	beego.ErrorHandler("404", not_found_handler)
+	beego.ErrorHandler("500", internal_server_error_handler)
+	beego.ErrorHandler("503", service_unavailable_handler)
 
 	postR := new(post.PostRouter)
 	beego.Router("/new", postR, "get:New;post:NewSubmit")
@@ -224,7 +224,7 @@ func main() {
 	articleR := new(article.ArticleRouter)
 	beego.Router("/a/:slug", articleR, "get:Show")
 
-	if beego.RunMode == "dev" {
+	if beego.BConfig.RunMode == "dev" {
 		beego.Router("/test/:tmpl(mail/.*)", new(base.TestRouter))
 	}
 

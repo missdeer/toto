@@ -47,7 +47,7 @@ func (this *HeartwaterRouter) Basketball() {
 	}
 	this.Data["Type"] = TYPE_BASKETBALL
 
-	this.TplNames = "heartwater/heartwater.html"
+	this.TplName = "heartwater/heartwater.html"
 }
 
 func (this *HeartwaterRouter) FootballLeague() {
@@ -84,7 +84,7 @@ func (this *HeartwaterRouter) FootballLeague() {
 	}
 	this.Data["Type"] = TYPE_FOOTBALL
 
-	this.TplNames = "heartwater/heartwater.html"
+	this.TplName = "heartwater/heartwater.html"
 }
 
 func (this *HeartwaterRouter) Football() {
@@ -112,7 +112,7 @@ func (this *HeartwaterRouter) Football() {
 	}
 	this.Data["Type"] = TYPE_FOOTBALL
 
-	this.TplNames = "heartwater/heartwater.html"
+	this.TplName = "heartwater/heartwater.html"
 }
 
 func (this *HeartwaterRouter) fetchFootballDataSource() error {

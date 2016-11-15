@@ -11,5 +11,5 @@ type ScoreRouter struct {
 
 func (this *ScoreRouter) Home() {
 	this.Data["IsHome"] = false
-	this.TplNames = "post/score.html"
+	this.TplName = "post/score.html"
 }

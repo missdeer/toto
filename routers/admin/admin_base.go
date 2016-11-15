@@ -76,7 +76,7 @@ func (this *ModelAdminRouter) ModelPrepare() {
 
 		if _, ok := values[":id"]; ok {
 			if this.GetString(":id") == "new" {
-				this.TplNames = fmt.Sprintf("admin/%s/new.html", model)
+				this.TplName = fmt.Sprintf("admin/%s/new.html", model)
 
 			} else {
 				if this.QueryObject() == false {
@@ -84,13 +84,13 @@ func (this *ModelAdminRouter) ModelPrepare() {
 				}
 
 				if this.GetString(":action") == "delete" {
-					this.TplNames = fmt.Sprintf("admin/%s/delete.html", model)
+					this.TplName = fmt.Sprintf("admin/%s/delete.html", model)
 				} else {
-					this.TplNames = fmt.Sprintf("admin/%s/edit.html", model)
+					this.TplName = fmt.Sprintf("admin/%s/edit.html", model)
 				}
 			}
 		} else {
-			this.TplNames = fmt.Sprintf("admin/%s/list.html", model)
+			this.TplName = fmt.Sprintf("admin/%s/list.html", model)
 		}
 
 		name := fmt.Sprintf("%sAdmin", model)

@@ -11,5 +11,5 @@ type NewsRouter struct {
 
 func (this *NewsRouter) Home() {
 	this.Data["IsHome"] = false
-	this.TplNames = "post/news.html"
+	this.TplName = "post/news.html"
 }

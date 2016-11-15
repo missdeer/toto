@@ -38,7 +38,7 @@ func (this *UploadRouter) Post() {
 
 	defer func() {
 		this.Data["json"] = &result
-		this.ServeJson()
+		this.ServeJSON()
 	}()
 
 	// check permition

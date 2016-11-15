@@ -60,7 +60,7 @@ func (this *ScoreRouter) FootballShooters() {
 		this.Data["TeamId"] = id
 	}
 
-	this.TplNames = "score/shooters.html"
+	this.TplName = "score/shooters.html"
 }
 
 func (this *ScoreRouter) FootballAssistants() {
@@ -89,7 +89,7 @@ func (this *ScoreRouter) FootballAssistants() {
 		this.Data["TeamId"] = id
 	}
 
-	this.TplNames = "score/assistants.html"
+	this.TplName = "score/assistants.html"
 }
 
 func (this *ScoreRouter) FootballCards() {
@@ -118,7 +118,7 @@ func (this *ScoreRouter) FootballCards() {
 		this.Data["TeamId"] = id
 	}
 
-	this.TplNames = "score/cards.html"
+	this.TplName = "score/cards.html"
 }
 
 func (this *ScoreRouter) FootballStandings() {
@@ -147,7 +147,7 @@ func (this *ScoreRouter) FootballStandings() {
 		this.Data["TeamId"] = id
 	}
 
-	this.TplNames = "score/standings.html"
+	this.TplName = "score/standings.html"
 }
 
 func (this *ScoreRouter) fetchFootballDataSource(id int) error {

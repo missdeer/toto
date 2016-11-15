@@ -32,7 +32,7 @@ func (this *ApiRouter) PostToggle() {
 
 	defer func() {
 		this.Data["json"] = result
-		this.ServeJson()
+		this.ServeJSON()
 	}()
 
 	if !this.IsAjax() {

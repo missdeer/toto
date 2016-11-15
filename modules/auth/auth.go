@@ -175,7 +175,7 @@ func LogoutUser(ctx *context.Context) {
 	beego.GlobalSessions.SessionDestroy(ctx.ResponseWriter, ctx.Request)
 }
 
-func GetUserIdFromSession(sess session.SessionStore) int {
+func GetUserIdFromSession(sess session.Store) int {
 	if id, ok := sess.Get("auth_user_id").(int); ok && id > 0 {
 		return id
 	}
@@ -183,7 +183,7 @@ func GetUserIdFromSession(sess session.SessionStore) int {
 }
 
 // get user if key exist in session
-func GetUserFromSession(user *models.User, sess session.SessionStore) bool {
+func GetUserFromSession(user *models.User, sess session.Store) bool {
 	id := GetUserIdFromSession(sess)
 	if id > 0 {
 		u := models.User{Id: id}
